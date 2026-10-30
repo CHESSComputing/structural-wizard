@@ -1,0 +1,1646 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.45 system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Diffraction Worksheet EDXRD Example</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow column of numbered steps; finished steps collapse to their answer, the open step expands, a sticky strip tracks fit with the chosen technique */
+:root{
+  --bg:#f3f5f8; --panel:#ffffff; --ink:#18202b; --muted:#5d6878; --line:#d9dfe7; --chip:#f7f9fb;
+  --sample:#d9661f; --tech:#7a45c2; --ser3:#2a64c5; --imag:#b8336f;
+  --ok:#2f9a5f; --warn:#c98a0b; --block:#b9c0ca; --bad:#c6362f; --off-ink:#9aa3af;
+  --f-display:"Archivo",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11151b; --panel:#181d25; --ink:#e7ebf1; --muted:#97a2b2; --line:#2a313c; --chip:#1d232d;
+  --sample:#f08a48; --tech:#a985e6; --ser3:#6c9bf0; --imag:#e9709f;
+  --ok:#4cc184; --warn:#e7ad35; --block:#3a424f; --bad:#ef6b62; --off-ink:#5e6876; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11151b; --panel:#181d25; --ink:#e7ebf1; --muted:#97a2b2; --line:#2a313c; --chip:#1d232d;
+  --sample:#f08a48; --tech:#a985e6; --ser3:#6c9bf0; --imag:#e9709f;
+  --ok:#4cc184; --warn:#e7ad35; --block:#3a424f; --bad:#ef6b62; --off-ink:#5e6876; color-scheme:dark}
+
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:780px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+header{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 24px}
+h1{font-family:var(--f-display);font-stretch:118%;font-weight:800;font-size:clamp(28px,4.4vw,40px);letter-spacing:-.01em;margin:0;line-height:1;text-wrap:balance}
+.sub{margin:6px 0 0;color:var(--muted);max-width:60ch}
+.ghost{font:500 13px var(--f-mono);background:none;border:1px solid var(--line);color:var(--ink);padding:8px 12px;border-radius:5px;cursor:pointer}
+.ghost:hover{border-color:var(--ink)}
+.disclaimer{margin:0;font-size:13.5px;background:color-mix(in srgb,var(--warn) 12%,var(--panel));border:1px solid color-mix(in srgb,var(--warn) 45%,var(--line));border-radius:6px;padding:9px 14px}
+.disclaimer b{color:var(--warn)}
+.intro-note{margin:0;font-size:14px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--tech);border-radius:6px;padding:10px 14px}
+
+.fit{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--tech);border-radius:6px;padding:10px 14px;display:flex;flex-direction:column;gap:4px;box-shadow:0 6px 18px -14px rgba(0,0,0,.4)}
+.fit .top{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+.fit .tn{font-family:var(--f-display);font-stretch:110%;font-weight:700}
+.fit ul{margin:0;padding-left:18px;font-size:13px;color:var(--muted)}
+.fit li.b{color:var(--bad)} .fit li.c{color:var(--ink)}
+
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:6px;--hue:var(--sample)}
+.step[data-sec="tech"]{--hue:var(--tech)}
+.group{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;padding:14px 2px 2px;border-top:2px solid var(--line);margin-top:6px}
+.group h2{margin:0;font-family:var(--f-display);font-stretch:112%;font-weight:800;font-size:19px;line-height:1.2;overflow-wrap:anywhere}
+.group .gk{font:500 11.5px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.group .gp{font:400 12px var(--f-mono);color:var(--muted);margin-left:auto}
+.step.sub{margin-left:18px}
+@media (max-width:560px){.step.sub{margin-left:0}}
+.fit .mn{font:500 11.5px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.phblock{border:1px solid var(--line);border-radius:6px;padding:12px;display:flex;flex-direction:column;gap:14px}
+.phplain{display:flex;flex-direction:column;gap:14px}
+.phhead{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.phname{font-family:var(--f-display);font-stretch:110%;font-weight:700;font-size:16px}
+.phmeta{font:400 12px var(--f-mono);color:var(--muted)}
+.phhead .focus{margin-left:auto;font-size:12.5px;padding:4px 9px}
+.unit{display:flex;align-items:center;gap:8px;max-width:220px}
+.unit span{font:500 13px var(--f-mono);color:var(--muted)}
+.geofig{margin:4px 0 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.geofig svg{width:170px;max-width:100%;height:auto;flex:none}
+.geofig figcaption{font-size:12.5px;color:var(--muted);flex:1;min-width:160px}
+.headline{margin:0;font-size:15.5px;line-height:1.5}
+.headline b{font-family:var(--f-mono);font-weight:500;color:var(--tech);white-space:nowrap}
+.gfig{margin:0;display:flex;flex-direction:column;gap:6px}
+.gfig svg{width:100%;height:auto;display:block}
+.gfig figcaption{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--muted)}
+.gfig .key{display:inline-flex;align-items:center;gap:6px}
+.gfig .key i{width:14px;height:4px;border-radius:2px;display:inline-block}
+.rnotes{font-size:12.5px}
+.bgrid{display:grid;grid-template-columns:repeat(2,minmax(0,160px));gap:8px}
+.bgrid label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted)}
+.rnote{font-family:var(--f-body);font-size:12px;color:var(--muted)}
+.rnote.warn{color:var(--warn)}
+.rtag{font:500 10.5px var(--f-mono);text-transform:uppercase;letter-spacing:.05em;padding:1px 6px;border-radius:99px;border:1px solid currentColor;margin-left:4px}
+.rtag.ok{color:var(--ok)} .rtag.lo,.rtag.hi{color:var(--warn)}
+.rbig{font-family:var(--f-display);font-stretch:110%;font-size:17px;color:var(--ink);margin:6px 0}
+.rbig b{font-size:22px;color:var(--tech)}
+.subg{list-style:none;display:flex;align-items:center;gap:10px;padding:6px 2px 0 18px;font:500 11.5px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sample);--hue:var(--sample)}
+.subg.t{color:var(--tech);--hue:var(--tech);padding-left:36px;margin-top:6px}
+.subg .edit{margin-left:auto;text-transform:none;letter-spacing:0}
+.step.tstep{margin-left:36px}
+.addtech{list-style:none;padding:2px 0 0 36px;--hue:var(--tech)}
+@media (max-width:560px){.subg,.subg.t,.addtech{padding-left:0}.step.tstep{margin-left:0}}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (max-width:620px){.tiles{grid-template-columns:minmax(0,1fr)}}
+.tile{background:var(--chip);border:1px solid var(--line);border-radius:6px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.tile .k{font-size:12px;color:var(--muted)}
+.tile .v{font-family:var(--f-display);font-stretch:110%;font-weight:800;font-size:26px;line-height:1.1;color:var(--tech);font-variant-numeric:tabular-nums}
+.tile .v.sm{font-family:var(--f-mono);font-weight:500;font-size:16px;line-height:1.3;overflow-wrap:anywhere}
+.tile .s{font-size:12px;color:var(--muted)}
+.check{display:flex;align-items:center;gap:8px;font-size:13.5px}
+.check input{width:17px;height:17px;accent-color:var(--hue);margin:0}
+.latbox{display:flex;flex-direction:column;gap:8px}
+.latrow{display:flex;flex-wrap:wrap;align-items:end;gap:8px 12px}
+.latrow label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted);width:110px}
+.latn{font-weight:700;min-width:120px;padding-bottom:7px}
+.latn small{font:400 12px var(--f-mono);color:var(--muted)}
+.dtab{width:100%;border-collapse:collapse;margin:8px 0;font-size:12.5px}
+.dtab th,.dtab td{text-align:left;padding:4px 8px 4px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.dtab th{color:var(--muted);font-weight:500}
+.latrow.wide{align-items:start}
+.latrow .dsp{width:auto;flex:1;min-width:220px}
+.latrow .dsn{flex-basis:100%;margin:0}
+.othmsg{color:var(--ink);font-size:13.5px}
+.step[data-sec="img"]{--hue:var(--imag)}
+.step[data-sec="img"] .tc:hover{border-color:var(--imag)}
+.step[data-sec="img"] .tc[aria-pressed="true"]{border-color:var(--imag);background:color-mix(in srgb,var(--imag) 12%,var(--panel))}
+.step[data-sec="img"] .customform{border-left-color:var(--imag)}
+.subg.im{color:var(--imag);--hue:var(--imag);padding-left:36px;margin-top:6px}
+.addtech{display:flex;flex-wrap:wrap;gap:6px 22px}
+.addimg{color:var(--imag)}
+.iflags{margin:0;padding-left:18px;font-size:13px;color:var(--ink)}
+.iflags li::marker{color:var(--warn)}
+.summary h4.im{color:var(--imag)}
+.ebreak td:first-child{font-family:var(--f-body);font-weight:700;white-space:nowrap}
+.ebreak td{font-family:var(--f-body)}
+.ebreak tr.d td:first-child{color:var(--tech)}
+.ebreak tr.i td:first-child{color:var(--imag)}
+.ebreak tr.all td{border-top:2px solid var(--line)}
+.bgrid.g3{grid-template-columns:repeat(3,minmax(0,140px))}
+.checks{display:flex;flex-wrap:wrap;gap:8px 20px}
+.check.bad{color:var(--bad);font-weight:700}
+.check.bad input{accent-color:var(--bad);outline:2px solid var(--bad);outline-offset:1px}
+.clash{margin:0;color:var(--bad);font-size:13px;font-weight:700}
+.check.off{opacity:.5;cursor:not-allowed}
+.flagbox{border:1px solid color-mix(in srgb,var(--warn) 55%,var(--line));background:color-mix(in srgb,var(--warn) 10%,var(--panel));border-radius:6px;padding:8px 12px;font-size:13px}
+.flagbox b{color:var(--warn)}
+.tc .tflag{display:block;margin-top:6px;color:var(--warn);font-size:12px}
+.flagbox ul{margin:4px 0 0;padding-left:18px}
+.flagd{color:var(--warn)}
+.redbox{border-color:color-mix(in srgb,var(--bad) 60%,var(--line));background:color-mix(in srgb,var(--bad) 9%,var(--panel))}.redbox b{color:var(--bad)}
+.redflag{color:var(--bad);font-weight:600}
+.redtag{margin-left:10px;color:var(--bad);font-size:12px;font-weight:600;letter-spacing:0;text-transform:none}
+.hrow{display:flex;flex-direction:column;gap:6px;padding-left:4px}
+.tc.off{opacity:.45;cursor:not-allowed;border-style:dashed}
+.tc.off:hover{border-color:var(--line)}
+.wonly{color:var(--ink);font-size:13.5px}
+.hbtns{display:flex;gap:8px;flex-wrap:wrap}
+.exnote{margin:6px 0 0;font:500 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--tech)}
+.echeck{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-family:var(--f-body);font-size:13px;color:var(--ink)}
+.echeck.warn b{color:var(--warn)}
+.summary h4{margin:4px 0 0;font:500 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--tech)}
+.summary h3{margin:6px 0 0;font-family:var(--f-display);font-stretch:110%;font-weight:700;font-size:16px;border-top:1px solid var(--line);padding-top:10px}
+.shead{display:flex;align-items:center;gap:12px;padding:12px 16px}
+.num{width:28px;height:28px;flex:none;border-radius:50%;display:grid;place-items:center;font:500 13px var(--f-mono);border:1.5px solid var(--line);color:var(--muted)}
+.step[data-state="open"] .num{border-color:var(--hue);color:var(--hue)}
+.step[data-state="done"] .num{background:var(--hue);border-color:var(--hue);color:var(--panel)}
+.stitle{font-family:var(--f-display);font-stretch:115%;font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.step[data-state="open"] .stitle,.step[data-state="done"] .stitle{color:var(--hue)}
+.htext{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.answer{font-size:14.5px;color:var(--ink);overflow-wrap:anywhere}
+.answer small{color:var(--muted)}
+.step[data-state="todo"]{background:transparent;border-style:dashed}
+.step[data-state="todo"] .shead{padding-block:10px}
+.edit{all:unset;cursor:pointer;font:500 12.5px var(--f-mono);color:var(--hue);padding:4px 6px;border-radius:4px}
+.edit:focus-visible{outline:2px solid var(--hue)}
+.sbody{padding:2px 16px 16px 56px;display:flex;flex-direction:column;gap:16px}
+@media (max-width:560px){.sbody{padding-left:16px}}
+
+.q{display:flex;flex-direction:column;gap:7px}
+.qlabel{font-weight:700;font-size:13.5px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.hint{font-size:12.5px;color:var(--muted);margin:0}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{font:inherit;font-size:13.5px;color:var(--ink);background:var(--chip);border:1.5px solid var(--line);border-radius:5px;padding:6px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .15s,border-color .15s}
+.opt:hover{border-color:var(--hue)}
+.opt:focus-visible,.tc:focus-visible,.done:focus-visible,input:focus-visible,select:focus-visible,.add:focus-visible,.del:focus-visible,textarea:focus-visible,.ghost:focus-visible{outline:2px solid var(--hue,var(--tech));outline-offset:2px}
+.opt[aria-pressed="true"]{background:color-mix(in srgb,var(--hue) 16%,var(--panel));border-color:var(--hue);font-weight:700}
+.tri{display:inline-flex;width:13px;height:11px;flex:none;background:var(--warn);clip-path:polygon(50% 0,100% 100%,0 100%);color:var(--panel);font:700 8.5px/1 var(--f-body);font-style:normal;justify-content:center;align-items:flex-end;padding-bottom:1px;box-sizing:border-box}
+.opt .tri,.opt .x{display:none}
+.opt.caution .tri{display:inline-flex}
+.opt .x{font-style:normal;font-size:11px}
+.opt.blocked .x{display:inline}
+.opt.blocked .lab{text-decoration:line-through}
+.opt.blocked{color:var(--off-ink);background:transparent;border-style:dashed;border-color:var(--block);cursor:not-allowed;opacity:.6}
+.opt.conflict{border-color:var(--bad);color:var(--bad)}
+
+.tcards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (max-width:560px){.tcards{grid-template-columns:minmax(0,1fr)}}
+.tc{all:unset;box-sizing:border-box;cursor:pointer;border:1.5px solid var(--line);background:var(--chip);border-radius:6px;padding:10px 12px;display:flex;flex-direction:column;gap:3px}
+.tc:hover{border-color:var(--tech)}
+.tc[aria-pressed="true"]{border-color:var(--tech);background:color-mix(in srgb,var(--tech) 12%,var(--panel))}
+.tc b{font-family:var(--f-display);font-stretch:108%;font-size:15px}
+.tc span{font-size:12.5px;color:var(--muted)}
+.tc.custom{border-style:dashed}
+.customform{display:flex;flex-direction:column;gap:12px;border-left:3px solid var(--tech);padding-left:12px}
+
+input[type=text],select,textarea{font:inherit;font-size:14px;color:var(--ink);background:var(--chip);border:1.5px solid var(--line);border-radius:5px;padding:7px 9px;width:100%;box-sizing:border-box;min-width:0}
+textarea{min-height:64px;resize:vertical}
+.mlist{display:flex;flex-direction:column;gap:10px}
+.mcard{border:1px solid var(--line);border-radius:6px;padding:10px;display:flex;flex-direction:column;gap:10px}
+.mtop{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) 28px;gap:6px;align-items:center}
+@media (max-width:560px){.mtop{grid-template-columns:minmax(0,1fr) 28px}.mtop>:nth-child(2){grid-column:1;grid-row:2}}
+.msub{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding-left:12px;border-left:2px solid var(--line)}
+.sublab{font-size:12.5px;color:var(--muted)}
+.mdet{display:flex;flex-direction:column;gap:6px;padding-left:12px;border-left:2px solid var(--line)}
+.mdet:empty{display:none}
+.inl{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.inl select{width:auto}
+.prow{display:grid;grid-template-columns:48px minmax(0,1fr) minmax(0,.9fr) 84px 28px;gap:6px;align-items:center}
+.prow .ck{display:flex;justify-content:center}
+.prow .ck input{width:18px;height:18px;accent-color:var(--hue);cursor:pointer;margin:0}
+.prow.off input[type=text],.prow.off select,.prow.off input[type=number]{opacity:.7}
+.prow input,.prow select{font-size:13.5px;padding:5px 8px}
+.phead{font:400 11.5px var(--f-mono);color:var(--muted)}
+.phead em{font-style:normal;opacity:.75}
+.pfoot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.psum{font:400 12px var(--f-mono);color:var(--muted)}
+input[type=number]{font:inherit;font-size:14px;color:var(--ink);background:var(--chip);border:1.5px solid var(--line);border-radius:5px;padding:7px 9px;width:100%;box-sizing:border-box;min-width:0;font-variant-numeric:tabular-nums}
+.del{all:unset;cursor:pointer;text-align:center;color:var(--muted);padding:4px 0;border-radius:4px}
+.del:hover{color:var(--bad)}
+.add{all:unset;cursor:pointer;font:500 12.5px var(--f-mono);color:var(--hue);width:max-content}
+
+.slider{display:flex;flex-direction:column;gap:6px}
+.sval{font:500 13px var(--f-mono);font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:10px;border-radius:5px;margin:4px 0;background:var(--line);cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--panel);border:3px solid var(--hue);box-shadow:0 1px 3px rgba(0,0,0,.35)}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--panel);border:3px solid var(--hue)}
+.ends{display:flex;justify-content:space-between;font:400 11.5px var(--f-mono);color:var(--muted)}
+.readout{font:400 12.5px var(--f-mono);color:var(--muted);background:var(--chip);border-radius:4px;padding:8px 10px;font-variant-numeric:tabular-nums}
+.readout b{color:var(--ink);font-weight:500}
+
+.foot{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.done{font:700 14px var(--f-body);background:var(--hue);color:var(--panel);border:none;border-radius:5px;padding:9px 16px;cursor:pointer}
+.done:disabled{opacity:.4;cursor:not-allowed}
+.need{font-size:12.5px;color:var(--muted)}
+
+.summary{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--ok);border-radius:6px;padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.summary h2{margin:0;font-family:var(--f-display);font-stretch:118%;font-weight:800;font-size:18px}
+.summary dl{margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 16px;font-size:14px}
+.summary dt{color:var(--muted)} .summary dd{margin:0;overflow-wrap:anywhere}
+@media (max-width:480px){.summary dl{grid-template-columns:minmax(0,1fr)}.summary dd{margin-bottom:6px}}
+.next{font-size:13px;color:var(--muted);margin:0}
+.toast{font:500 12.5px var(--f-mono);color:var(--ok)}
+.copyfall{width:100%;min-height:140px;font:12.5px var(--f-mono)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Diffraction Worksheet</h1><p class="exnote">EDXRD example, filled in. Edit freely. “Start from blank” clears it; “Reset example” brings the example values back.</p>
+      <p class="sub">The diffraction worksheet collects the information needed to prepare for a successful beamtime. It helps guide experimental setup and data collection, allocate resources, and efficiently coordinate measurements across samples and techniques. <b>Please complete it as thoroughly as possible.</b></p>
+      <p class="sub">The worksheet supplements, but does not replace, your detailed experimental plan. Your scientific and characterization goals, as well as all experimental timing, sequencing, and priorities, should be communicated in that plan.</p>
+    </div>
+    <span class="hbtns"><button class="ghost" id="reseed" type="button">Reset example</button><button class="ghost" id="restart" type="button">Start from blank</button></span>
+  </header>
+  <div class="fit" id="fit" hidden></div>
+  <ol class="steps" id="steps"></ol>
+  <section class="summary" id="summary" hidden></section>
+</div>
+
+<script>
+const TECHS=[
+  {id:'ff',name:'Far-field HEDM',short:'Grain-resolved orientation and full strain tensor for hundreds to thousands of grains.'},
+  {id:'nf',name:'Near-field HEDM',short:'Spatially resolved orientation maps inside and between grains. No strain.'},
+  {id:'powder',name:'Angular dispersive (ADXRD)',short:'Also known as powder diffraction. Continuous rings from many grains: phases, lattice strain and texture, averaged.'},
+  {id:'edd',name:'Energy dispersive (EDXRD)',short:'White beam, fixed angle: lattice strain point by point in a small gauge volume.'}
+];
+const TN=Object.fromEntries(TECHS.map(t=>[t.id,t.name]));
+const XTAL=['FCC','BCC','HCP','Other','Unknown'];
+const DIST=[['equiaxed','Unimodal / equiaxed'],['gradient','Size gradient'],['bimodal','Bimodal']];
+const GEOM=[['round','Round bar cross section'],['square','Square cross section'],['plate','Plate'],['custom','Custom']];
+// Geometry-based flags wait until the plan has the details they need
+const GEOM_FLAGS=false;
+const LATT=[['single','Single phase'],['multi','Multiphase']];
+const SL={w:{min:100,max:100000},d:{min:1,max:1000},d2:{min:1,max:1000},t:{min:10,max:10000},span:{min:.1,max:3,lin:true},uspan:{min:.1,max:2,lin:true}};
+const LV={ok:0,caution:1,blocked:2};
+const BW=1000,BH=200;
+// Geometry step (BUILD.geom) is held back until sample geometry is designed
+const SAMPLE_SUBS=['micro','geom','energy','env'],TECH_SUBS=['tech','beam','scan'];
+// Grain-size flags need a sample geometry and beam; off until those steps exist
+const GRAIN_FLAGS=false;
+
+
+const uid=()=>Math.random().toString(36).slice(2,9);
+const NEWTECH=()=>({tth:null,tthUnsure:false,ds:{map:null,nx:null,ny:null,nz:null,fly:false,rot:false},id:uid(),tech:null,custom:{name:'',notes:'',closest:null},beam:{mode:'rec',w:2000,h:null,nz:1,ny:1},energy:{line:null,emin:null,emax:null,unsure:false},det:{kind:'large',rmin:5,rmax:8,dmin:null,dmax:null,unsure:false}});
+const NEWENV=()=>({mode:null,weight:'',travel:'',dof:'',exNote:'',kind:null,frame:null,heat:false,tmin:null,tmax:null,hot:false,cool:false,special:''});
+const NEWPLAN=()=>({env:NEWENV(),mat:{src:null,preset:'',rho:null,base:''},lat:{},micro:{},geom:null,custom2:'',th:null,t:1000,techs:[NEWTECH()],imgs:[]});
+/* a technique entry seen together with its sample: what the rules and beam maths read */
+const ctx=(P,T)=>({...P,tech:T.tech,custom:T.custom,beam:T.beam,energy:T.energy,det:T.det,ds:T.ds,tth:T.tth,tthUnsure:T.tthUnsure});
+const PATHLABEL={square:'Side length (beam path)',round:'Diameter (beam path)',plate:'Thickness (beam path)',dense:'Path length through the region of interest'};
+function geomText(P){const t=P.th!=null?P.th+' mm thick':'';
+  if(P.geom==='custom')return `Custom: ${esc(P.custom2||'')}${t?', '+t:''}`;
+  const g=GEOM.find(x=>x[0]===P.geom);return g?`${g[1]}${t?', '+t:''}`:''}
+function geoSVG(g){
+  const shape={square:'<rect x="62" y="18" width="44" height="44" rx="2"/>',round:'<circle cx="84" cy="40" r="23"/>',plate:'<rect x="76" y="3" width="16" height="74" rx="2"/>',
+    dense:'<path d="M52 22 C60 6 96 4 112 16 C126 26 124 54 110 66 C94 78 62 76 52 62 C44 50 46 32 52 22 Z"/>'}[g]||'';
+  return `<svg class="geo" viewBox="0 0 170 80" role="img" aria-label="Top view of the beam passing through the sample"><g fill="var(--chip)" stroke="var(--sample)" stroke-width="2">${shape}</g><line x1="6" y1="40" x2="152" y2="40" stroke="var(--tech)" stroke-width="2.5"/><polygon points="152,34 164,40 152,46" fill="var(--tech)"/><text x="6" y="32" font-size="10" fill="var(--muted)" font-family="IBM Plex Mono,monospace">beam</text></svg>`}
+const NEWMICRO=()=>({dist:null,d:50,span:1,uspan:.5,d2:25,tex:null,texNote:'',def:null});
+const DEF=[['high','Highly deformed'],['some','Somewhat deformed'],['none','Undeformed lattice']];
+const defText=M=>({high:'highly deformed',some:'somewhat deformed',none:'undeformed lattice'})[M.def]||'';
+const TEX=[['random','Random or weak'],['strong','Significant texture expected'],['unsure','Not sure']];
+const texText=M=>M.tex==='strong'?'significant texture'+(M.texNote?` (${esc(M.texNote)})`:''):M.tex==='random'?'random or weak texture':M.tex==='unsure'?'texture not known':'';
+/* phases whose microstructure is described: every phase of a multiphase material, or the material itself */
+function phaseList(m){return m.phase==='multi'
+  ?m.phases.map((p,i)=>({key:String(i),interest:p.interest,label:p.name||`Phase ${i+1}`,meta:[p.xtal,p.frac!=null?p.frac+'%':''].filter(Boolean).join(' · ')})).filter(p=>p.interest)
+  :[{key:'0',label:m.name,meta:m.xtal||''}]}
+const inScope=m=>phaseList(m);
+const microOf=(P,k)=>(P.micro[k]=P.micro[k]||NEWMICRO());
+const distName=M=>M.dist==='gradient'?'Size gradient':M.dist==='bimodal'?`Bimodal (fine ≈ ${um(sizes(M).lo)}, coarse ≈ ${um(sizes(M).hi)})`:'Unimodal';
+const NEWPHASE=()=>({name:'',xtal:'',frac:null,interest:false});
+const NEWMAT=()=>({id:uid(),name:'',comp:'',phase:null,xtal:'',phases:[NEWPHASE(),NEWPHASE()],plan:NEWPLAN()});
+const BLANK=()=>({open:'mat',done:{},materials:[NEWMAT()]});
+const KEY='diffWorksheet.edxrdExample.v1';
+const SEED={"open": null, "materials": [{"id": "st1", "name": "Steel 4140", "comp": "Fe", "phase": "single", "xtal": "BCC", "phases": [{"name": "", "xtal": "", "frac": null, "interest": false}, {"name": "", "xtal": "", "frac": null, "interest": false}], "plan": {"mat": {"src": "preset", "preset": "steel4140", "rho": null, "base": ""}, "lat": {"0": {"a": 2.88}}, "micro": {"0": {"dist": "equiaxed", "d": 16, "span": 1, "uspan": 0.5, "d2": 25, "tex": "random", "texNote": "", "def": "some"}}, "geom": "plate", "custom2": "", "th": 20, "t": 20000, "beamKind": "white", "white": true, "techs": [{"id": "ed1", "tech": "edd", "tth": 5.5, "tthUnsure": false, "custom": {"name": "", "notes": "", "closest": null}, "beam": {"mode": "custom", "w": 50, "h": 50, "nz": 1, "ny": 1}, "energy": {"line": null, "emin": null, "emax": null, "unsure": false}, "det": {"kind": "large", "rmin": 5, "rmax": 8, "dmin": null, "dmax": null, "unsure": false}, "ds": {"map": "map3", "nx": 100, "ny": 20, "nz": 3, "fly": false, "flyT": true, "rot": false, "rotN": null, "rotR": null, "avg": true, "ax": 1, "ay": 1, "az": 1}}], "imgs": [], "env": {"mode": "ex", "weight": "25 lb", "travel": "100 mm", "dof": "x,y,z,w", "exNote": "each area of interest has only 40 mm of scanning", "kind": null, "frame": null, "heat": false, "tmin": null, "tmax": null, "hot": false, "special": ""}}}], "done": {"mat": true, "st1:micro": true, "st1:geom": true, "st1:energy": true, "st1:env": true, "st1:ed1:tech": true, "st1:ed1:tth": true, "st1:ed1:beam": true, "st1:ed1:dset": true}};
+let W=load()||JSON.parse(JSON.stringify(SEED));
+function load(){try{const s=localStorage.getItem(KEY);if(!s)return null;const o=JSON.parse(s);
+  o.materials=(o.materials||[]).map(m=>{const plan={...NEWPLAN(),...(m.plan||{})};
+    if(Array.isArray(plan.techs))plan.techs=plan.techs.map(T=>{const N=NEWTECH();const det={...N.det,...(T.det||{})};if(!det.kind)det.kind='large';if(!(det.rmin>0)){det.rmin=5;det.rmax=8}return {...N,...T,id:T.id,det}});
+    if(plan.pE==null&&plan.hedmE!=null)plan.pE=plan.hedmE;
+    if(o.done)(plan.techs||[]).forEach(T=>{const k=`${m.id}:${T.id}:energy`;if(o.done[k]){o.done[`${m.id}:energy`]=true;delete o.done[k]}if(o.open===k)o.open=`${m.id}:energy`});
+    if(!plan.micro){plan.micro={};if(m.plan&&m.plan.dist)plan.micro['0']={dist:m.plan.dist,d:m.plan.d,span:m.plan.span,uspan:m.plan.uspan??.5,d2:m.plan.d2}}
+    const phases=(m.phases||[]).map((p,i)=>({...NEWPHASE(),...p,interest:p.interest??(plan.focus===String(i))}));
+    if(!Array.isArray(m.plan&&m.plan.techs)){            // older saves: one technique stored on the plan itself
+      const T=NEWTECH();const op=m.plan||{};
+      if(op.tech!==undefined){T.tech=op.tech;T.custom=op.custom||T.custom;T.beam={...T.beam,...(op.beam||{})}}
+      plan.techs=[T];delete plan.tech;delete plan.custom;delete plan.beam;
+      o.done=o.done||{};
+      ['tech','beam','scan'].forEach(sub=>{const ok=`${m.id}:${sub}`,nk=`${m.id}:${T.id}:${sub}`;if(o.done[ok]){o.done[nk]=true;delete o.done[ok]}if(o.open===ok)o.open=nk});
+    }
+    return {...NEWMAT(),...m,phases:phases.length?phases:[NEWPHASE(),NEWPHASE()],plan}});return o.materials.length?{...BLANK(),...o}:null}catch(e){return null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(W))}catch(e){}}
+
+/* ---------- helpers ---------- */
+const $=q=>document.querySelector(q);
+const esc=t=>String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function um(v){return v>=1000?(v/1000).toPrecision(v>=10000?3:2).replace(/\.0+$/,'')+' mm':(v<10?v.toFixed(1):Math.round(v))+' µm'}
+function sci(n){if(n<1000)return n<10?n.toFixed(1):Math.round(n).toString();const e=Math.floor(Math.log10(n));return (n/10**e).toFixed(1)+'×10'+String(e).split('').map(c=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[c]).join('')}
+const toPos=(k,v)=>{const s=SL[k];return s.lin?Math.round(1000*(v-s.min)/(s.max-s.min)):Math.round(1000*Math.log(v/s.min)/Math.log(s.max/s.min))};
+const fromPos=(k,p)=>{const s=SL[k];return s.lin?s.min+(s.max-s.min)*p/1000:s.min*Math.pow(s.max/s.min,p/1000)};
+const named=()=>W.materials.filter(m=>m.name.trim());
+const matById=id=>W.materials.find(m=>m.id===id);
+
+/* ---------- sample physics (same assumptions as the wizard) ---------- */
+function sizes(s){if(s.dist==='gradient'){const h=10**(s.span/2);return {lo:s.d/h,hi:s.d*h}}if(s.dist==='bimodal')return {lo:Math.min(s.d,s.d2),hi:Math.max(s.d,s.d2)};return {lo:s.d,hi:s.d}}
+const isUni=s=>s.dist!=='gradient'&&s.dist!=='bimodal';
+/* reported average and range of grain size */
+function stats(P){
+  if(P.dist==='gradient'){const z=sizes(P);return {avg:(z.hi-z.lo)/Math.log(z.hi/z.lo),lo:z.lo,hi:z.hi,note:'average across the gradient'}}
+  if(P.dist==='bimodal'){const z=sizes(P);return {avg:(z.lo+z.hi)/2,lo:z.lo,hi:z.hi,note:'average assumes equal volume of each population'}}
+  return {avg:P.d,lo:null,hi:null,note:''};
+}
+const statLine=P=>{const s=stats(P);return s.lo==null?`average ≈ ${um(s.avg)}`:`average ≈ ${um(s.avg)}, range ≈ ${um(s.lo)} – ${um(s.hi)}`};
+const popWord=s=>s.dist==='gradient'?'end of the gradient':'population';
+function invD3(s){const z=sizes(s);if(s.dist==='gradient')return (z.lo**-3-z.hi**-3)/(3*Math.log(z.hi/z.lo));if(s.dist==='bimodal')return .5/z.lo**3+.5/z.hi**3;return 1/s.d**3}
+function coarseCount(s,V){const z=sizes(s);if(s.dist==='gradient')return V*(s.d**-3-z.hi**-3)/(3*Math.log(z.hi/z.lo));if(s.dist==='bimodal')return V*.5/z.hi**3;return V/s.d**3}
+const litW=s=>s.geom==='plate'?BW:Math.min(BW,s.t);
+const diffVol=s=>litW(s)*BH*s.t;
+const gaugeLen=s=>Math.min(s.t,litW(s)/Math.sin(6*Math.PI/180));
+const gaugeVol=s=>litW(s)*BH*gaugeLen(s);
+function vol(v){const mm=v/1e9;return mm>=1e-3?(+mm.toPrecision(2))+' mm³':sci(v)+' µm³'}
+
+/* ---------- beam size: grains per beam volume from the worksheet ---------- */
+const LIM={ff:{lo:500,hi:5000,sug:1000},nf:{lo:500,hi:2000,sug:1000,maxH:300},powder:{lo:10000,hi:Infinity}};   // EDXRD: no grain target; the gauge volume is reported instead
+const DEFAULT_W=2000;
+const fmtN=n=>{if(!isFinite(n))return '—';if(n<10)return (+n.toFixed(1)).toString();const e=10**(Math.floor(Math.log10(n))-1);return (Math.round(n/e)*e).toLocaleString('en-US')};
+function scanSummary(m,P){const c=beamChoice(m,P);if(!(c.w>0&&c.h>0)||!(P.th>0))return null;
+  const mc=beamModel(m,P,c.w),ny=nyEff(P),n=P.beam.nz*ny,B=P.beam;
+  const per=mc.ph.map(x=>({label:x.label,N:x.perH*c.h*n}));const tot=per.reduce((a,x)=>a+x.N,0);
+  return {n,ny,mc,c,per,vol:`${um(ny*mc.wl)} × ${um(B.nz*c.h)} × ${um(mc.t)}`,grains:fmtN(tot)}}
+const showWide=P=>P.beam.mode==='custom'&&P.beam.w>0&&P.beam.w<sampleWidth(P);
+const nyEff=P=>showWide(P)?P.beam.ny:1;
+function sampleWidth(P){const t=(P.th||0)*1000;return P.geom==='round'||P.geom==='square'?t:Infinity}
+function beamPhases(m,P){
+  return inScope(m).map(p=>{const M=microOf(P,p.key);
+    const fr=m.phase==='multi'?m.phases[+p.key]?.frac:null;
+    const f=m.phase==='multi'&&fr>0?fr/100:1;
+    return {label:m.phase==='multi'?p.label:m.name,n:f*invD3(M),fKnown:m.phase!=='multi'||fr>0}})}
+function beamModel(m,P,w){
+  const id=effTech(P),t=(P.th||0)*1000,wl=Math.min(w,sampleWidth(P));
+  const tth=(P.tth>0?P.tth:7)*Math.PI/180;   // unknown take-off angle: assume the middle of 5–9°
+  const L=id==='edd'?Math.min(t,wl/Math.sin(tth)):t;   // EDXRD gauge length along the beam for the chosen take-off angle
+  const ph=beamPhases(m,P).map(x=>({...x,perH:wl*L*x.n}));   // grains per µm of beam height
+  const lim=LIM[id]||null;
+  let lo=null,hi=null,mid=null;
+  if(lim&&ph.length){lo=Math.max(...ph.map(x=>lim.lo/x.perH));hi=isFinite(lim.hi)?Math.min(...ph.map(x=>lim.hi/x.perH)):Infinity;
+    // middle of the grain target (e.g. 2,750 for 500–5,000), set by the most numerous phase, kept inside the shared range when one exists
+    if(isFinite(lim.hi)){const nMid=lim.sug??(lim.lo+lim.hi)/2;mid=Math.min(...ph.map(x=>nMid/x.perH));if(lo<=hi)mid=Math.min(Math.max(mid,lo),hi)}
+    if(lim.maxH){hi=Math.min(hi,lim.maxH);if(mid)mid=Math.min(mid,lim.maxH)}}       // hardware limit on beam height (near-field beamstop)
+  return {id,t,wl,L,ph,lim,lo,hi,mid,maxH:lim&&lim.maxH||null};
+}
+/* EDXRD gauge lengths along the beam for incident width w (receiving slit taken as the same width):
+   FWHM ≈ w / sin 2θ ; tip-to-tip = w (1 + cos 2θ) / sin 2θ = w / tan θ ; both capped at the sample thickness */
+function gaugeLens(w,tthDeg,t){const a=tthDeg*Math.PI/180,f=w/Math.sin(a),tt=w*(1+Math.cos(a))/Math.sin(a);
+  return {fwhm:Math.min(f,t||Infinity),tip:Math.min(tt,t||Infinity),fCap:t&&f>t,tCap:t&&tt>t}}
+const dvol=(mc,h)=>`${um(mc.wl)} × ${um(h)} × ${um(mc.L)}`;   // width on sample × height × thickness (EDD: gauge length)
+const beamTitle=T=>isHedm(T)?'Beam size per rotation series':'Beam size';
+const defFor=(sub,T)=>sub==='beam'?{...SUB.beam,title:beamTitle(T)}:SUB[sub];
+const flyT=D=>D.flyT??(D.flyMode==='trans'||(!D.flyMode&&!!D.fly));
+const flyClash=D=>flyT(D)&&!!D.rot;               // a rotation series is always fly-scanned, so it cannot be combined with a flown translation
+const avgClash=D=>!!D.avg&&!!D.rot;               // ...nor with fly-scanning over a unit of interrogation
+const flyLock=D=>(flyT(D)||!!D.avg)&&!D.rot;
+const dsPoints=D=>D.map==='point'?1:D.map==='map1'?(D.nx>0?D.nx:0):D.map==='map2'?(D.nx>0&&D.ny>0?D.nx*D.ny:0):D.map==='map3'?(D.nx>0&&D.ny>0&&D.nz>0?D.nx*D.ny*D.nz:0):0;
+const dsGrid=D=>D.map==='map3'?`${D.nx} × ${D.ny} × ${D.nz}`:D.map==='map2'?`${D.nx} × ${D.ny}`:`${D.nx} along the line`;
+const avgOk=D=>!D.avg||(D.ax>0&&D.ay>0&&D.az>0);
+function avgGrains(m,P,D){const ph=beamPhases(m,P),v=D.ax*D.ay*D.az*1e9;return ph.map(x=>({label:x.label,N:x.n*v}))}
+const nice=v=>{if(!isFinite(v)||v<=0)return v;const e=10**Math.floor(Math.log10(v));return Math.round(v/e*10)/10*e};
+const niceDn=v=>{if(!isFinite(v)||v<=0)return v;const e=10**(Math.floor(Math.log10(v))-1);return Math.floor(v/e)*e};
+const niceUp=v=>{if(!isFinite(v)||v<=0)return v;const e=10**(Math.floor(Math.log10(v))-1);return Math.ceil(v/e)*e};
+function beamChoice(m,P){const B=P.beam;
+  if(B.mode==='custom')return {w:B.w,h:B.h};
+  const md=beamModel(m,P,DEFAULT_W);let h=md.mid?nice(md.mid):md.lo?niceUp(md.lo):null;if(h&&md.maxH)h=Math.min(h,md.maxH);return {w:DEFAULT_W,h}}
+
+/* EDXRD gauge volume, top-down schematic (not to scale): incident and diffracted beams cross in a parallelogram */
+function drawGauge(fig,mc,c,P){
+  const sv=fig.querySelector('svg');sv.setAttribute('viewBox','0 0 460 250');
+  const W=460,cx=230,cy=118,bw=34,ang=24*Math.PI/180;          // drawn angle exaggerated for clarity
+  const mono='font-family="IBM Plex Mono,monospace" font-size="10.5"';
+  const hw=bw/2,Lh=hw/Math.tan(ang/2)*0.0+hw/Math.sin(ang);     // half-length of the parallelogram along the beam
+  // parallelogram: intersection of horizontal band |y|<=hw and tilted band |(-sin a)x+(cos a)y|<=hw
+  const sa=Math.sin(ang),ca=Math.cos(ang);
+  const pt=(y,u)=>{const x=(y*ca-u)/sa;return [cx+x,cy-y]};   // solve -sa*x+ca*y=u
+  const P1=pt(hw,hw),P2=pt(hw,-hw),P3=pt(-hw,-hw),P4=pt(-hw,hw);
+  const poly=[P1,P2,P3,P4].map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' ');
+  const t=(P.th||0)*1000,capped=mc.L<c.w/Math.sin((P.tth>0?P.tth:7)*Math.PI/180)-1;
+  let g='';
+  // sample faces (dashed) when the gauge is capped by the thickness
+  g+=`<rect x="${cx-150}" y="30" width="300" height="176" rx="6" fill="none" stroke="var(--sample)" stroke-dasharray="5 4"/><text x="${cx-144}" y="44" fill="var(--sample)" ${mono}>sample (top view)</text>`;
+  // incident beam band
+  g+=`<rect x="10" y="${cy-hw}" width="${W-20}" height="${bw}" style="fill:color-mix(in srgb,var(--tech) 14%,transparent)"/><line x1="10" x2="${W-14}" y1="${cy}" y2="${cy}" stroke="var(--tech)" stroke-width="1.5"/><polygon points="${W-14},${cy-5} ${W-4},${cy} ${W-14},${cy+5}" fill="var(--tech)"/>`;
+  g+=`<text x="14" y="${cy-hw-6}" fill="var(--tech)" ${mono}>incident beam</text>`;
+  // diffracted beam band at 2θ
+  const dx=Math.cos(ang),dy=-Math.sin(ang),ex=cx+dx*230,ey=cy+dy*230,nx=-dy*hw,ny=dx*hw;
+  g+=`<polygon points="${(cx-dx*40+nx).toFixed(1)},${(cy-dy*40+ny).toFixed(1)} ${(ex+nx).toFixed(1)},${(ey+ny).toFixed(1)} ${(ex-nx).toFixed(1)},${(ey-ny).toFixed(1)} ${(cx-dx*40-nx).toFixed(1)},${(cy-dy*40-ny).toFixed(1)}" style="fill:color-mix(in srgb,var(--ok) 14%,transparent)"/>`;
+  g+=`<line x1="${cx}" y1="${cy}" x2="${(cx+dx*215).toFixed(1)}" y2="${(cy+dy*215).toFixed(1)}" stroke="var(--ok)" stroke-width="1.5"/><text x="${(cx+dx*150).toFixed(1)}" y="${(cy+dy*150-12).toFixed(1)}" fill="var(--ok)" ${mono}>to detector</text>`;
+  g+=`<path d="M${cx+60} ${cy} A60 60 0 0 0 ${(cx+60*dx).toFixed(1)} ${(cy+60*dy).toFixed(1)}" fill="none" stroke="var(--ink)"/><text x="${cx+70}" y="${cy-30}" fill="var(--ink)" ${mono}>2θ = ${P.tth>0?P.tth+'°':'7° (assumed)'}</text>`;
+  // gauge parallelogram
+  g+=`<polygon points="${poly}" fill="var(--warn)" fill-opacity=".55" stroke="var(--warn)" stroke-width="2"/>`;
+  // dimension labels
+  const GL=gaugeLens(mc.wl,P.tth>0?P.tth:7,(P.th||0)*1000);
+  const dim=(x1,x2,y,label,col)=>`<line x1="${x1.toFixed(1)}" x2="${x2.toFixed(1)}" y1="${y}" y2="${y}" stroke="${col}"/><line x1="${x1.toFixed(1)}" x2="${x1.toFixed(1)}" y1="${y-4}" y2="${y+4}" stroke="${col}"/><line x1="${x2.toFixed(1)}" x2="${x2.toFixed(1)}" y1="${y-4}" y2="${y+4}" stroke="${col}"/><text x="${cx}" y="${y+13}" text-anchor="middle" fill="${col}" ${mono}>${label}</text>`;
+  const fx=hw/sa,tx=hw*(1+ca)/sa;                       // half-lengths in the drawing
+  g+=dim(cx-fx,cx+fx,cy+hw+12,`FWHM ≈ ${um(GL.fwhm)}${GL.fCap?' (capped at thickness)':''}`,'var(--ink)');
+  g+=dim(cx-tx,cx+tx,cy+hw+40,`tip to tip ≈ ${um(GL.tip)}${GL.tCap?' (capped at thickness)':''}`,'var(--muted)');
+  g+=`<line x1="22" x2="22" y1="${cy-hw}" y2="${cy+hw}" stroke="var(--ink)" stroke-width="1.5"/><text x="14" y="${cy+hw+14}" fill="var(--ink)" ${mono}>width ${um(mc.wl)}</text>`;
+  g+=`<text x="${cx}" y="236" text-anchor="middle" fill="var(--muted)" ${mono}>height ${um(c.h)} into the page · not to scale (angle exaggerated)</text>`;
+  sv.innerHTML=g;
+  fig.querySelector('figcaption').innerHTML='Gauge volume (orange): where the incident beam and the diffracted beam seen by the detector overlap. Seen from above it is a parallelogram; with the beam height it is a parallelepiped.';
+}
+function drawGrains(fig,mc,c){
+  const sv=fig.querySelector('svg'),W=460,H=230,L=56,R=16,T=12,B=40,cols=['var(--tech)','var(--sample)','var(--ser3)','var(--muted)'];
+  const lg=Math.log10,lim=mc.lim;
+  const marks=[c.h,mc.hi,mc.lo].filter(v=>v>0&&isFinite(v));
+  const x0=0,x1=Math.min(5,Math.max(3.7,Math.ceil(lg(Math.max(...marks,1))+0.6)));          // 1 µm .. up to 100 mm
+  const ys=mc.ph.flatMap(p=>[p.perH*10**x0,p.perH*10**x1]).filter(v=>v>0);
+  if(lim){ys.push(lim.lo);if(isFinite(lim.hi))ys.push(lim.hi)}
+  if(!ys.length){sv.innerHTML='';return}
+  let y0=Math.floor(lg(Math.max(Math.min(...ys),0.1))),y1=Math.ceil(lg(Math.max(...ys)));
+  y0=Math.max(y0,y1-8);if(y1-y0<3)y0=y1-3;
+  const X=v=>L+(W-L-R)*(lg(v)-x0)/(x1-x0),Y=v=>T+(H-T-B)*(1-(Math.min(Math.max(lg(v),y0),y1)-y0)/(y1-y0));
+  const mono='font-family="IBM Plex Mono,monospace" font-size="10.5"';
+  let g='';
+  for(let e=y0;e<=y1;e++)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(10**e)}" y2="${Y(10**e)}" stroke="var(--line)"/><text x="${L-6}" y="${Y(10**e)+3.5}" text-anchor="end" fill="var(--muted)" ${mono}>${e>=6?(10**(e-6)).toLocaleString('en-US')+'M':(10**e).toLocaleString('en-US')}</text>`;
+  for(let e=x0;e<=x1;e++)g+=`<line x1="${X(10**e)}" x2="${X(10**e)}" y1="${H-B}" y2="${H-B+4}" stroke="var(--muted)"/><text x="${X(10**e)}" y="${H-B+16}" text-anchor="middle" fill="var(--muted)" ${mono}>${e<3?10**e+' µm':10**(e-3)+' mm'}</text>`;
+  g+=`<text x="${(L+W-R)/2}" y="${H-6}" text-anchor="middle" fill="var(--muted)" font-size="11.5">Beam height at ${um(mc.wl)} on the sample</text>`;
+  g+=`<text x="12" y="${(T+H-B)/2}" text-anchor="middle" fill="var(--muted)" font-size="11.5" transform="rotate(-90 12 ${(T+H-B)/2})">Grains in beam</text>`;
+  if(lim){const top=isFinite(lim.hi)?Y(lim.hi):T;g+=`<rect x="${L}" y="${top}" width="${W-L-R}" height="${Y(lim.lo)-top}" style="fill:color-mix(in srgb,var(--ok) 13%,transparent)"/><text x="${L+6}" y="${top+13}" text-anchor="start" fill="var(--ok)" ${mono}>target ${fmtN(lim.lo)}${isFinite(lim.hi)?'–'+fmtN(lim.hi):'+'} grains</text>`}
+  mc.ph.forEach((p,i)=>{const a=10**x0,b=10**x1,col=cols[i%cols.length];
+    g+=`<line x1="${X(a)}" y1="${Y(p.perH*a)}" x2="${X(b)}" y2="${Y(p.perH*b)}" stroke="${col}" stroke-width="2.5"/>`;
+    if(c.h>0)g+=`<circle cx="${X(c.h)}" cy="${Y(p.perH*c.h)}" r="5" fill="${col}" stroke="var(--panel)" stroke-width="2"/>`});
+  if(mc.maxH)g+=`<rect x="${X(mc.maxH)}" y="${T}" width="${W-R-X(mc.maxH)}" height="${H-B-T}" style="fill:color-mix(in srgb,var(--bad) 8%,transparent)"/><line x1="${X(mc.maxH)}" x2="${X(mc.maxH)}" y1="${T}" y2="${H-B}" stroke="var(--bad)" stroke-width="1.5"/><text x="${X(mc.maxH)+5}" y="${H-B-6}" fill="var(--bad)" ${mono}>beamstop limit ${mc.maxH} µm</text>`;
+  if(c.h>0)g+=`<line x1="${X(c.h)}" x2="${X(c.h)}" y1="${T}" y2="${H-B}" stroke="var(--ink)" stroke-dasharray="3 3"/><text x="${X(c.h)+5}" y="${T+11}" fill="var(--ink)" ${mono}>your beam ${um(c.h)}</text>`;
+  sv.innerHTML=g;
+  fig.querySelector('figcaption').innerHTML=mc.ph.map((p,i)=>`<span class="key"><i style="background:${cols[i%cols.length]}"></i>${esc(p.label)}</span>`).join('')+(lim?'<span class="key"><i style="background:color-mix(in srgb,var(--ok) 35%,transparent)"></i>target range</span>':'');
+}
+
+const MU_E0=15,MU_DE=1;// keV grid 15–200, mass attenuation coefficients mu/rho (cm²/g), Elam/xraydb (NIST-consistent)
+const MU={"C":[0.8074,0.6952,0.6084,0.5402,0.4858,0.442,0.4061,0.3766,0.3519,0.3312,0.3136,0.2986,0.2857,0.2745,0.2647,0.2562,0.2486,0.2419,0.236,0.2306,0.2258,0.2215,0.2175,0.2139,0.2106,0.2076,0.2049,0.2023,0.1999,0.1977,0.1957,0.1937,0.1919,0.1902,0.1886,0.1871,0.1856,0.1843,0.183,0.1817,0.1805,0.1794,0.1783,0.1773,0.1763,0.1753,0.1744,0.1735,0.1726,0.1718,0.171,0.1702,0.1694,0.1687,0.1679,0.1672,0.1666,0.1659,0.1652,0.1646,0.164,0.1633,0.1627,0.1622,0.1616,0.161,0.1604,0.1599,0.1594,0.1588,0.1583,0.1578,0.1573,0.1568,0.1563,0.1558,0.1554,0.1549,0.1544,0.154,0.1535,0.1531,0.1526,0.1522,0.1518,0.1514,0.1509,0.1505,0.1501,0.1497,0.1493,0.1489,0.1485,0.1481,0.1478,0.1474,0.147,0.1466,0.1463,0.1459,0.1456,0.1452,0.1448,0.1445,0.1441,0.1438,0.1435,0.1431,0.1428,0.1425,0.1421,0.1418,0.1415,0.1412,0.1408,0.1405,0.1402,0.1399,0.1396,0.1393,0.139,0.1387,0.1384,0.1381,0.1378,0.1375,0.1372,0.1369,0.1366,0.1363,0.1361,0.1358,0.1355,0.1352,0.1349,0.1347,0.1344,0.1341,0.1339,0.1336,0.1333,0.1331,0.1328,0.1326,0.1323,0.132,0.1318,0.1315,0.1313,0.131,0.1308,0.1305,0.1303,0.13,0.1298,0.1296,0.1293,0.1291,0.1289,0.1286,0.1284,0.1282,0.1279,0.1277,0.1275,0.1272,0.127,0.1268,0.1266,0.1263,0.1261,0.1259,0.1257,0.1255,0.1252,0.125,0.1248,0.1246,0.1244,0.1242,0.124,0.1238,0.1236,0.1234,0.1232,0.1229],"Mg":[6.357,5.262,4.409,3.737,3.199,2.763,2.407,2.113,1.869,1.663,1.49,1.342,1.216,1.107,1.013,0.9305,0.8587,0.7957,0.7401,0.6908,0.6471,0.608,0.5731,0.5418,0.5135,0.488,0.4649,0.444,0.4249,0.4074,0.3915,0.3769,0.3635,0.3511,0.3398,0.3292,0.3195,0.3104,0.302,0.2942,0.2869,0.2801,0.2738,0.2678,0.2622,0.257,0.2521,0.2474,0.2431,0.2389,0.235,0.2313,0.2279,0.2245,0.2214,0.2184,0.2156,0.2129,0.2103,0.2078,0.2055,0.2032,0.2011,0.199,0.197,0.1951,0.1933,0.1915,0.1899,0.1882,0.1867,0.1852,0.1837,0.1823,0.181,0.1797,0.1784,0.1772,0.176,0.1748,0.1737,0.1726,0.1716,0.1706,0.1696,0.1686,0.1677,0.1668,0.1659,0.165,0.1642,0.1633,0.1625,0.1617,0.161,0.1602,0.1595,0.1588,0.1581,0.1574,0.1567,0.1561,0.1554,0.1548,0.1542,0.1536,0.153,0.1524,0.1518,0.1513,0.1507,0.1502,0.1496,0.1491,0.1486,0.1481,0.1476,0.1471,0.1466,0.1461,0.1457,0.1452,0.1447,0.1443,0.1439,0.1434,0.143,0.1426,0.1421,0.1417,0.1413,0.1409,0.1405,0.1401,0.1397,0.1394,0.139,0.1386,0.1382,0.1379,0.1375,0.1372,0.1368,0.1365,0.1361,0.1358,0.1354,0.1351,0.1348,0.1345,0.1341,0.1338,0.1335,0.1332,0.1329,0.1326,0.1323,0.132,0.1317,0.1314,0.1311,0.1308,0.1305,0.1302,0.1299,0.1296,0.1294,0.1291,0.1288,0.1286,0.1283,0.128,0.1278,0.1275,0.1272,0.127,0.1267,0.1265,0.1262,0.126,0.1257,0.1255,0.1252,0.125,0.1247,0.1245],"Al":[7.955,6.583,5.513,4.667,3.99,3.442,2.993,2.623,2.314,2.055,1.836,1.649,1.489,1.351,1.232,1.128,1.038,0.9577,0.8873,0.825,0.7696,0.7202,0.676,0.6364,0.6006,0.5684,0.5392,0.5127,0.4886,0.4666,0.4466,0.4281,0.4112,0.3957,0.3814,0.3682,0.3559,0.3446,0.334,0.3243,0.3151,0.3066,0.2987,0.2913,0.2843,0.2778,0.2717,0.2659,0.2605,0.2554,0.2506,0.246,0.2417,0.2376,0.2338,0.2301,0.2266,0.2233,0.2202,0.2172,0.2143,0.2116,0.2089,0.2065,0.2041,0.2018,0.1996,0.1975,0.1955,0.1935,0.1917,0.1899,0.1881,0.1865,0.1849,0.1833,0.1818,0.1804,0.179,0.1777,0.1764,0.1751,0.1739,0.1727,0.1715,0.1704,0.1693,0.1683,0.1673,0.1663,0.1653,0.1644,0.1634,0.1625,0.1617,0.1608,0.16,0.1592,0.1584,0.1576,0.1569,0.1561,0.1554,0.1547,0.154,0.1533,0.1527,0.152,0.1514,0.1508,0.1502,0.1496,0.149,0.1484,0.1478,0.1473,0.1467,0.1462,0.1457,0.1451,0.1446,0.1441,0.1436,0.1431,0.1427,0.1422,0.1417,0.1413,0.1408,0.1404,0.1399,0.1395,0.1391,0.1387,0.1383,0.1378,0.1374,0.137,0.1367,0.1363,0.1359,0.1355,0.1351,0.1348,0.1344,0.134,0.1337,0.1333,0.133,0.1326,0.1323,0.132,0.1316,0.1313,0.131,0.1307,0.1303,0.13,0.1297,0.1294,0.1291,0.1288,0.1285,0.1282,0.1279,0.1276,0.1273,0.127,0.1268,0.1265,0.1262,0.1259,0.1257,0.1254,0.1251,0.1248,0.1246,0.1243,0.1241,0.1238,0.1235,0.1233,0.123,0.1228,0.1226,0.1223],"Si":[10.34,8.554,7.163,6.061,5.179,4.463,3.878,3.394,2.99,2.651,2.364,2.119,1.91,1.729,1.573,1.436,1.317,1.212,1.12,1.038,0.9652,0.9003,0.8423,0.7902,0.7433,0.701,0.6627,0.6279,0.5963,0.5675,0.5412,0.5171,0.4949,0.4746,0.4558,0.4385,0.4225,0.4077,0.3939,0.3811,0.3692,0.3582,0.3478,0.3382,0.3291,0.3206,0.3127,0.3052,0.2982,0.2916,0.2854,0.2795,0.2739,0.2687,0.2637,0.259,0.2545,0.2503,0.2462,0.2424,0.2387,0.2352,0.2319,0.2287,0.2257,0.2228,0.22,0.2173,0.2148,0.2124,0.21,0.2077,0.2056,0.2035,0.2015,0.1996,0.1977,0.1959,0.1942,0.1925,0.1909,0.1893,0.1878,0.1863,0.1849,0.1835,0.1822,0.1809,0.1797,0.1784,0.1773,0.1761,0.175,0.1739,0.1729,0.1718,0.1708,0.1699,0.1689,0.168,0.1671,0.1662,0.1653,0.1645,0.1637,0.1629,0.1621,0.1613,0.1606,0.1598,0.1591,0.1584,0.1577,0.157,0.1564,0.1557,0.1551,0.1544,0.1538,0.1532,0.1526,0.152,0.1515,0.1509,0.1504,0.1498,0.1493,0.1488,0.1482,0.1477,0.1472,0.1467,0.1463,0.1458,0.1453,0.1448,0.1444,0.1439,0.1435,0.143,0.1426,0.1422,0.1418,0.1413,0.1409,0.1405,0.1401,0.1397,0.1393,0.139,0.1386,0.1382,0.1378,0.1375,0.1371,0.1367,0.1364,0.136,0.1357,0.1353,0.135,0.1347,0.1343,0.134,0.1337,0.1334,0.133,0.1327,0.1324,0.1321,0.1318,0.1315,0.1312,0.1309,0.1306,0.1303,0.13,0.1297,0.1295,0.1292,0.1289,0.1286,0.1283,0.1281,0.1278,0.1275],"Ti":[35.87,29.91,25.19,21.41,18.35,15.85,13.79,12.07,10.63,9.409,8.371,7.482,6.717,6.054,5.476,4.972,4.529,4.138,3.792,3.485,3.212,2.967,2.748,2.551,2.373,2.213,2.067,1.935,1.815,1.705,1.605,1.513,1.429,1.351,1.279,1.213,1.152,1.096,1.044,0.9951,0.9499,0.9079,0.8687,0.8321,0.798,0.766,0.7361,0.7081,0.6818,0.6571,0.6338,0.6119,0.5913,0.5718,0.5535,0.5361,0.5197,0.5042,0.4895,0.4755,0.4623,0.4497,0.4377,0.4264,0.4156,0.4053,0.3954,0.3861,0.3771,0.3686,0.3605,0.3527,0.3452,0.3381,0.3312,0.3247,0.3184,0.3124,0.3066,0.3011,0.2958,0.2907,0.2857,0.281,0.2765,0.2721,0.2678,0.2638,0.2599,0.2561,0.2524,0.2489,0.2455,0.2422,0.239,0.236,0.233,0.2301,0.2274,0.2247,0.2221,0.2195,0.2171,0.2147,0.2124,0.2102,0.208,0.2059,0.2038,0.2019,0.1999,0.198,0.1962,0.1944,0.1927,0.191,0.1894,0.1878,0.1862,0.1847,0.1832,0.1818,0.1804,0.179,0.1777,0.1764,0.1751,0.1739,0.1727,0.1715,0.1703,0.1692,0.1681,0.167,0.1659,0.1649,0.1639,0.1629,0.1619,0.1609,0.16,0.1591,0.1582,0.1573,0.1564,0.1556,0.1548,0.1539,0.1531,0.1524,0.1516,0.1508,0.1501,0.1494,0.1487,0.1479,0.1473,0.1466,0.1459,0.1453,0.1446,0.144,0.1434,0.1427,0.1421,0.1415,0.141,0.1404,0.1398,0.1393,0.1387,0.1382,0.1376,0.1371,0.1366,0.1361,0.1356,0.1351,0.1346,0.1341,0.1337,0.1332,0.1327,0.1323,0.1318,0.1314],"V":[39.82,33.22,28.01,23.83,20.45,17.68,15.39,13.48,11.87,10.52,9.36,8.369,7.514,6.774,6.129,5.565,5.069,4.632,4.244,3.9,3.594,3.319,3.073,2.852,2.653,2.472,2.308,2.16,2.025,1.901,1.788,1.685,1.59,1.502,1.422,1.348,1.279,1.215,1.156,1.102,1.051,1.004,0.9595,0.9183,0.8798,0.8438,0.8101,0.7785,0.7488,0.7209,0.6947,0.67,0.6467,0.6248,0.6041,0.5845,0.566,0.5485,0.5319,0.5162,0.5012,0.4871,0.4736,0.4608,0.4487,0.4371,0.4261,0.4155,0.4055,0.3959,0.3868,0.378,0.3697,0.3617,0.354,0.3467,0.3396,0.3329,0.3264,0.3202,0.3143,0.3085,0.303,0.2977,0.2926,0.2877,0.283,0.2784,0.274,0.2698,0.2657,0.2618,0.258,0.2543,0.2508,0.2473,0.244,0.2408,0.2377,0.2347,0.2318,0.2289,0.2262,0.2235,0.221,0.2185,0.2161,0.2137,0.2114,0.2092,0.2071,0.205,0.2029,0.2009,0.199,0.1971,0.1953,0.1935,0.1918,0.1901,0.1885,0.1869,0.1853,0.1838,0.1823,0.1809,0.1795,0.1781,0.1768,0.1754,0.1742,0.1729,0.1717,0.1705,0.1693,0.1682,0.1671,0.166,0.1649,0.1638,0.1628,0.1618,0.1608,0.1599,0.1589,0.158,0.1571,0.1562,0.1553,0.1545,0.1536,0.1528,0.152,0.1512,0.1504,0.1497,0.1489,0.1482,0.1474,0.1467,0.146,0.1454,0.1447,0.144,0.1434,0.1427,0.1421,0.1415,0.1409,0.1403,0.1397,0.1391,0.1385,0.1379,0.1374,0.1368,0.1363,0.1358,0.1353,0.1347,0.1342,0.1337,0.1332,0.1328,0.1323,0.1318],"Cr":[45.72,38.11,32.15,27.39,23.54,20.38,17.76,15.57,13.72,12.16,10.82,9.678,8.69,7.834,7.087,6.435,5.861,5.355,4.907,4.509,4.154,3.836,3.552,3.295,3.064,2.855,2.666,2.494,2.337,2.194,2.063,1.943,1.833,1.731,1.638,1.551,1.471,1.397,1.329,1.265,1.206,1.15,1.099,1.051,1.006,0.964,0.9247,0.8879,0.8533,0.8208,0.7903,0.7615,0.7345,0.7089,0.6848,0.662,0.6405,0.6201,0.6008,0.5825,0.5651,0.5487,0.533,0.5181,0.5039,0.4905,0.4776,0.4654,0.4537,0.4425,0.4319,0.4217,0.4119,0.4026,0.3937,0.3852,0.377,0.3691,0.3616,0.3544,0.3475,0.3408,0.3344,0.3282,0.3223,0.3166,0.3111,0.3059,0.3008,0.2959,0.2911,0.2865,0.2821,0.2779,0.2738,0.2698,0.2659,0.2622,0.2586,0.2552,0.2518,0.2485,0.2454,0.2423,0.2393,0.2365,0.2337,0.231,0.2283,0.2258,0.2233,0.2209,0.2186,0.2163,0.2141,0.2119,0.2098,0.2078,0.2058,0.2039,0.202,0.2002,0.1984,0.1966,0.1949,0.1933,0.1917,0.1901,0.1886,0.1871,0.1856,0.1842,0.1828,0.1814,0.1801,0.1788,0.1775,0.1763,0.175,0.1738,0.1727,0.1715,0.1704,0.1693,0.1683,0.1672,0.1662,0.1652,0.1642,0.1632,0.1623,0.1613,0.1604,0.1595,0.1587,0.1578,0.1569,0.1561,0.1553,0.1545,0.1537,0.1529,0.1522,0.1514,0.1507,0.15,0.1493,0.1486,0.1479,0.1472,0.1466,0.1459,0.1453,0.1446,0.144,0.1434,0.1428,0.1422,0.1416,0.1411,0.1405,0.1399,0.1394,0.1388,0.1383,0.1378],"Mn":[50.27,42.05,35.53,30.28,26.02,22.53,19.63,17.21,15.18,13.46,11.99,10.72,9.634,8.688,7.864,7.142,6.508,5.947,5.45,5.008,4.614,4.261,3.944,3.659,3.402,3.169,2.958,2.766,2.591,2.431,2.285,2.151,2.028,1.915,1.81,1.714,1.625,1.542,1.466,1.395,1.329,1.267,1.21,1.157,1.107,1.06,1.016,0.9748,0.9362,0.8999,0.8658,0.8337,0.8034,0.7749,0.7479,0.7225,0.6984,0.6756,0.654,0.6335,0.6141,0.5957,0.5782,0.5615,0.5457,0.5306,0.5162,0.5026,0.4895,0.477,0.4651,0.4538,0.4429,0.4325,0.4226,0.413,0.4039,0.3952,0.3868,0.3787,0.371,0.3636,0.3564,0.3496,0.343,0.3366,0.3305,0.3246,0.319,0.3135,0.3082,0.3032,0.2983,0.2935,0.289,0.2845,0.2803,0.2761,0.2722,0.2683,0.2646,0.2609,0.2574,0.254,0.2508,0.2476,0.2445,0.2415,0.2386,0.2357,0.233,0.2303,0.2277,0.2252,0.2228,0.2204,0.2181,0.2158,0.2136,0.2115,0.2094,0.2074,0.2054,0.2035,0.2016,0.1998,0.198,0.1963,0.1946,0.193,0.1914,0.1898,0.1882,0.1867,0.1853,0.1838,0.1824,0.1811,0.1797,0.1784,0.1771,0.1759,0.1747,0.1735,0.1723,0.1711,0.17,0.1689,0.1678,0.1668,0.1657,0.1647,0.1637,0.1627,0.1618,0.1608,0.1599,0.159,0.1581,0.1572,0.1564,0.1555,0.1547,0.1539,0.1531,0.1523,0.1516,0.1508,0.1501,0.1493,0.1486,0.1479,0.1472,0.1465,0.1459,0.1452,0.1445,0.1439,0.1433,0.1427,0.142,0.1414,0.1408,0.1403,0.1397,0.1391],"Fe":[57.09,47.79,40.41,34.48,29.65,25.68,22.4,19.65,17.34,15.38,13.7,12.26,11.02,9.943,9.002,8.177,7.452,6.811,6.243,5.737,5.286,4.881,4.518,4.191,3.896,3.629,3.386,3.166,2.965,2.782,2.614,2.46,2.318,2.188,2.068,1.957,1.855,1.76,1.672,1.591,1.515,1.444,1.378,1.316,1.259,1.205,1.154,1.107,1.063,1.021,0.9816,0.9446,0.9097,0.8768,0.8457,0.8164,0.7886,0.7623,0.7374,0.7139,0.6915,0.6702,0.65,0.6309,0.6126,0.5952,0.5787,0.5629,0.5478,0.5335,0.5198,0.5067,0.4942,0.4822,0.4707,0.4597,0.4492,0.4391,0.4295,0.4202,0.4113,0.4027,0.3945,0.3866,0.379,0.3717,0.3647,0.3579,0.3514,0.3451,0.339,0.3332,0.3276,0.3221,0.3168,0.3118,0.3069,0.3021,0.2975,0.2931,0.2888,0.2846,0.2806,0.2767,0.2729,0.2693,0.2657,0.2623,0.2589,0.2557,0.2526,0.2495,0.2465,0.2437,0.2409,0.2381,0.2355,0.2329,0.2304,0.228,0.2256,0.2233,0.221,0.2188,0.2167,0.2146,0.2126,0.2106,0.2087,0.2068,0.205,0.2032,0.2014,0.1997,0.1981,0.1964,0.1949,0.1933,0.1918,0.1903,0.1888,0.1874,0.186,0.1847,0.1833,0.182,0.1808,0.1795,0.1783,0.1771,0.1759,0.1748,0.1737,0.1725,0.1715,0.1704,0.1694,0.1683,0.1673,0.1664,0.1654,0.1645,0.1635,0.1626,0.1617,0.1608,0.16,0.1591,0.1583,0.1575,0.1567,0.1559,0.1551,0.1543,0.1536,0.1528,0.1521,0.1514,0.1507,0.15,0.1493,0.1486,0.148,0.1473,0.1467,0.1461],"Co":[62.01,51.95,43.97,37.55,32.32,28.03,24.46,21.48,18.96,16.82,15.0,13.43,12.07,10.89,9.865,8.963,8.169,7.467,6.844,6.291,5.796,5.353,4.955,4.597,4.273,3.98,3.714,3.472,3.252,3.05,2.866,2.697,2.541,2.398,2.266,2.144,2.032,1.927,1.83,1.74,1.656,1.578,1.505,1.437,1.374,1.314,1.258,1.206,1.157,1.111,1.068,1.027,0.9883,0.952,0.9177,0.8853,0.8547,0.8257,0.7983,0.7722,0.7476,0.7241,0.7019,0.6807,0.6606,0.6414,0.6232,0.6058,0.5892,0.5733,0.5582,0.5437,0.5299,0.5167,0.5041,0.492,0.4804,0.4693,0.4586,0.4484,0.4386,0.4291,0.4201,0.4114,0.403,0.3949,0.3872,0.3797,0.3725,0.3656,0.3589,0.3525,0.3463,0.3403,0.3345,0.3289,0.3235,0.3183,0.3132,0.3084,0.3036,0.2991,0.2946,0.2903,0.2862,0.2822,0.2783,0.2745,0.2708,0.2673,0.2638,0.2604,0.2572,0.254,0.2509,0.248,0.2451,0.2422,0.2395,0.2368,0.2342,0.2317,0.2292,0.2268,0.2245,0.2222,0.22,0.2178,0.2157,0.2136,0.2116,0.2097,0.2078,0.2059,0.2041,0.2023,0.2006,0.1989,0.1972,0.1956,0.194,0.1924,0.1909,0.1894,0.188,0.1866,0.1852,0.1838,0.1825,0.1812,0.1799,0.1787,0.1774,0.1762,0.1751,0.1739,0.1728,0.1717,0.1706,0.1695,0.1685,0.1675,0.1664,0.1655,0.1645,0.1635,0.1626,0.1617,0.1608,0.1599,0.159,0.1582,0.1573,0.1565,0.1557,0.1549,0.1541,0.1533,0.1526,0.1518,0.1511,0.1504,0.1497,0.149,0.1483,0.1476],"Ni":[70.81,59.38,50.32,43.03,37.09,32.2,28.13,24.72,21.84,19.38,17.29,15.48,13.92,12.57,11.38,10.34,9.43,8.622,7.905,7.266,6.696,6.185,5.726,5.312,4.938,4.6,4.292,4.013,3.758,3.524,3.311,3.115,2.935,2.769,2.616,2.475,2.344,2.222,2.11,2.005,1.908,1.817,1.733,1.654,1.58,1.511,1.446,1.386,1.329,1.276,1.225,1.178,1.133,1.091,1.051,1.014,0.9783,0.9446,0.9128,0.8826,0.8539,0.8267,0.8008,0.7763,0.7529,0.7306,0.7094,0.6891,0.6698,0.6514,0.6338,0.617,0.6009,0.5856,0.5709,0.5568,0.5433,0.5303,0.5179,0.5061,0.4946,0.4837,0.4731,0.463,0.4533,0.4439,0.4349,0.4263,0.4179,0.4099,0.4021,0.3946,0.3874,0.3805,0.3737,0.3672,0.361,0.3549,0.3491,0.3434,0.3379,0.3326,0.3275,0.3225,0.3177,0.3131,0.3085,0.3042,0.2999,0.2958,0.2918,0.2879,0.2842,0.2805,0.2769,0.2735,0.2701,0.2669,0.2637,0.2606,0.2576,0.2547,0.2518,0.2491,0.2464,0.2437,0.2412,0.2387,0.2362,0.2339,0.2316,0.2293,0.2271,0.2249,0.2228,0.2208,0.2188,0.2168,0.2149,0.2131,0.2112,0.2095,0.2077,0.206,0.2044,0.2027,0.2011,0.1996,0.1981,0.1966,0.1951,0.1937,0.1923,0.1909,0.1895,0.1882,0.1869,0.1857,0.1844,0.1832,0.182,0.1808,0.1797,0.1786,0.1774,0.1764,0.1753,0.1742,0.1732,0.1722,0.1712,0.1702,0.1693,0.1683,0.1674,0.1665,0.1656,0.1647,0.1639,0.163,0.1622,0.1614,0.1606,0.1598,0.159,0.1582],"Cu":[74.05,62.11,52.67,45.08,38.9,33.8,29.55,25.99,22.97,20.4,18.2,16.31,14.67,13.25,12.01,10.91,9.953,9.102,8.347,7.675,7.074,6.535,6.05,5.614,5.219,4.861,4.536,4.241,3.971,3.724,3.498,3.291,3.1,2.925,2.763,2.613,2.474,2.346,2.227,2.116,2.013,1.917,1.828,1.744,1.666,1.593,1.524,1.46,1.399,1.342,1.289,1.239,1.191,1.146,1.104,1.064,1.026,0.9906,0.9567,0.9246,0.8941,0.8652,0.8377,0.8115,0.7867,0.763,0.7404,0.7189,0.6984,0.6789,0.6602,0.6423,0.6252,0.6089,0.5933,0.5783,0.564,0.5503,0.5371,0.5245,0.5123,0.5007,0.4895,0.4788,0.4684,0.4585,0.4489,0.4397,0.4308,0.4223,0.414,0.4061,0.3984,0.391,0.3839,0.377,0.3704,0.3639,0.3577,0.3517,0.3459,0.3402,0.3348,0.3295,0.3244,0.3195,0.3147,0.31,0.3055,0.3011,0.2969,0.2928,0.2888,0.2849,0.2811,0.2775,0.2739,0.2705,0.2671,0.2638,0.2606,0.2575,0.2545,0.2516,0.2487,0.246,0.2432,0.2406,0.238,0.2355,0.2331,0.2307,0.2284,0.2261,0.2239,0.2217,0.2196,0.2175,0.2155,0.2135,0.2116,0.2097,0.2079,0.2061,0.2044,0.2026,0.201,0.1993,0.1977,0.1961,0.1946,0.1931,0.1916,0.1902,0.1887,0.1874,0.186,0.1847,0.1834,0.1821,0.1808,0.1796,0.1784,0.1772,0.176,0.1749,0.1738,0.1727,0.1716,0.1705,0.1695,0.1685,0.1675,0.1665,0.1655,0.1646,0.1637,0.1627,0.1618,0.161,0.1601,0.1592,0.1584,0.1576,0.1567,0.1559],"Zn":[81.18,68.22,57.91,49.59,42.8,37.2,32.54,28.62,25.31,22.5,20.08,18.01,16.21,14.64,13.27,12.07,11.01,10.07,9.238,8.496,7.832,7.236,6.701,6.217,5.78,5.384,5.025,4.697,4.398,4.125,3.874,3.645,3.433,3.239,3.059,2.893,2.739,2.597,2.465,2.342,2.228,2.121,2.022,1.929,1.842,1.761,1.684,1.613,1.545,1.482,1.423,1.367,1.314,1.264,1.217,1.172,1.13,1.09,1.053,1.017,0.9828,0.9505,0.9199,0.8908,0.863,0.8367,0.8115,0.7876,0.7647,0.7429,0.7221,0.7022,0.6832,0.665,0.6476,0.6309,0.6149,0.5996,0.585,0.5709,0.5574,0.5444,0.532,0.52,0.5085,0.4974,0.4867,0.4765,0.4666,0.4571,0.4479,0.4391,0.4305,0.4223,0.4143,0.4067,0.3993,0.3921,0.3852,0.3785,0.372,0.3658,0.3597,0.3538,0.3481,0.3426,0.3373,0.3321,0.3271,0.3223,0.3176,0.313,0.3085,0.3042,0.3,0.296,0.292,0.2882,0.2845,0.2808,0.2773,0.2739,0.2705,0.2673,0.2641,0.261,0.258,0.2551,0.2522,0.2494,0.2467,0.2441,0.2415,0.239,0.2365,0.2342,0.2318,0.2295,0.2273,0.2251,0.223,0.2209,0.2189,0.2169,0.215,0.2131,0.2112,0.2094,0.2077,0.2059,0.2042,0.2026,0.2009,0.1993,0.1978,0.1962,0.1947,0.1933,0.1918,0.1904,0.1891,0.1877,0.1864,0.1851,0.1838,0.1825,0.1813,0.1801,0.1789,0.1778,0.1766,0.1755,0.1744,0.1733,0.1723,0.1712,0.1702,0.1692,0.1682,0.1672,0.1663,0.1654,0.1644,0.1635,0.1626,0.1618],"Zr":[24.62,20.65,17.52,94.68,82.52,72.38,63.84,56.58,50.38,45.05,40.45,36.45,32.97,29.91,27.23,24.86,22.76,20.89,19.22,17.73,16.38,15.18,14.09,13.1,12.2,11.39,10.64,9.964,9.342,8.771,8.247,7.764,7.319,6.907,6.527,6.174,5.847,5.544,5.261,4.998,4.752,4.523,4.308,4.108,3.92,3.744,3.578,3.423,3.277,3.139,3.009,2.887,2.771,2.662,2.559,2.461,2.369,2.281,2.198,2.119,2.044,1.973,1.905,1.841,1.78,1.721,1.665,1.612,1.562,1.513,1.467,1.423,1.38,1.34,1.301,1.264,1.228,1.194,1.161,1.13,1.1,1.071,1.043,1.016,0.9904,0.9656,0.9418,0.9189,0.8968,0.8755,0.855,0.8352,0.8161,0.7977,0.78,0.7628,0.7463,0.7302,0.7148,0.6998,0.6854,0.6714,0.6578,0.6447,0.6321,0.6198,0.6079,0.5963,0.5852,0.5743,0.5638,0.5536,0.5437,0.5341,0.5248,0.5158,0.507,0.4985,0.4902,0.4821,0.4743,0.4667,0.4593,0.4521,0.445,0.4382,0.4316,0.4251,0.4188,0.4127,0.4067,0.4009,0.3952,0.3897,0.3843,0.3791,0.3739,0.3689,0.3641,0.3593,0.3547,0.3501,0.3457,0.3414,0.3371,0.333,0.329,0.3251,0.3212,0.3175,0.3138,0.3102,0.3067,0.3032,0.2999,0.2966,0.2934,0.2902,0.2871,0.2841,0.2812,0.2783,0.2755,0.2727,0.27,0.2673,0.2647,0.2621,0.2596,0.2572,0.2548,0.2524,0.2501,0.2478,0.2456,0.2434,0.2413,0.2392,0.2371,0.2351,0.2331,0.2312,0.2292,0.2274,0.2255,0.2237],"Nb":[26.72,22.41,19.0,16.27,87.63,77.09,68.15,60.5,53.93,48.26,43.35,39.07,35.34,32.07,29.2,26.66,24.41,22.4,20.62,19.02,17.59,16.29,15.13,14.07,13.11,12.23,11.44,10.71,10.04,9.43,8.868,8.35,7.872,7.431,7.022,6.644,6.293,5.967,5.663,5.38,5.117,4.87,4.64,4.424,4.222,4.032,3.854,3.687,3.53,3.381,3.242,3.11,2.985,2.868,2.756,2.651,2.551,2.457,2.367,2.282,2.201,2.124,2.051,1.982,1.916,1.852,1.792,1.735,1.68,1.628,1.578,1.53,1.484,1.441,1.399,1.359,1.32,1.283,1.248,1.214,1.181,1.15,1.12,1.091,1.063,1.036,1.011,0.9859,0.9621,0.9391,0.9169,0.8955,0.8749,0.855,0.8358,0.8173,0.7994,0.7821,0.7653,0.7492,0.7335,0.7184,0.7038,0.6896,0.6759,0.6626,0.6498,0.6373,0.6252,0.6135,0.6021,0.5911,0.5804,0.5701,0.56,0.5502,0.5407,0.5315,0.5225,0.5138,0.5053,0.4971,0.4891,0.4813,0.4737,0.4663,0.4591,0.4522,0.4453,0.4387,0.4323,0.426,0.4198,0.4138,0.408,0.4023,0.3968,0.3914,0.3861,0.381,0.3759,0.371,0.3663,0.3616,0.357,0.3526,0.3482,0.3439,0.3398,0.3357,0.3317,0.3279,0.3241,0.3203,0.3167,0.3132,0.3097,0.3063,0.3029,0.2997,0.2965,0.2934,0.2903,0.2873,0.2844,0.2815,0.2787,0.2759,0.2732,0.2706,0.268,0.2654,0.2629,0.2605,0.2581,0.2557,0.2534,0.2511,0.2489,0.2467,0.2446,0.2425,0.2404,0.2384,0.2364,0.2344],"Mo":[28.54,23.93,20.29,17.38,15.02,13.08,70.31,62.49,55.82,50.09,45.13,40.8,37.01,33.68,30.72,28.1,25.76,23.67,21.8,20.11,18.6,17.23,16.0,14.88,13.86,12.94,12.1,11.33,10.62,9.98,9.387,8.84,8.337,7.871,7.44,7.04,6.669,6.323,6.002,5.702,5.423,5.162,4.917,4.689,4.475,4.274,4.085,3.907,3.741,3.583,3.435,3.296,3.164,3.039,2.921,2.809,2.704,2.603,2.508,2.418,2.332,2.251,2.173,2.1,2.029,1.962,1.898,1.838,1.779,1.724,1.671,1.62,1.572,1.525,1.481,1.438,1.397,1.358,1.32,1.284,1.25,1.216,1.184,1.154,1.124,1.096,1.068,1.042,1.017,0.9921,0.9685,0.9458,0.9238,0.9027,0.8822,0.8625,0.8434,0.825,0.8072,0.79,0.7734,0.7573,0.7417,0.7266,0.712,0.6979,0.6842,0.6709,0.6581,0.6456,0.6335,0.6218,0.6104,0.5993,0.5886,0.5782,0.5681,0.5583,0.5487,0.5394,0.5304,0.5216,0.5131,0.5048,0.4968,0.4889,0.4813,0.4738,0.4666,0.4595,0.4526,0.4459,0.4394,0.4331,0.4269,0.4208,0.4149,0.4092,0.4036,0.3981,0.3927,0.3875,0.3824,0.3775,0.3726,0.3679,0.3632,0.3587,0.3543,0.35,0.3457,0.3416,0.3376,0.3336,0.3297,0.326,0.3223,0.3187,0.3151,0.3117,0.3083,0.3049,0.3017,0.2985,0.2954,0.2923,0.2893,0.2864,0.2835,0.2807,0.2779,0.2752,0.2726,0.27,0.2674,0.2649,0.2625,0.2601,0.2577,0.2554,0.2531,0.2509,0.2487,0.2465,0.2444,0.2423],"Sn":[46.65,39.17,33.24,28.49,24.63,21.46,18.8,16.58,14.7,13.11,11.74,10.57,9.558,8.675,7.903,41.22,38.34,35.55,32.91,30.44,28.16,26.06,24.15,22.41,20.84,19.43,18.15,17.01,15.96,15.01,14.14,13.34,12.6,11.92,11.29,10.7,10.15,9.641,9.163,8.716,8.297,7.906,7.538,7.194,6.87,6.566,6.28,6.011,5.758,5.519,5.293,5.08,4.878,4.687,4.507,4.335,4.173,4.019,3.873,3.734,3.602,3.476,3.356,3.242,3.133,3.029,2.93,2.836,2.745,2.659,2.577,2.497,2.422,2.349,2.28,2.213,2.149,2.088,2.029,1.973,1.919,1.866,1.816,1.768,1.722,1.677,1.634,1.592,1.552,1.514,1.477,1.441,1.406,1.373,1.341,1.309,1.279,1.25,1.222,1.195,1.169,1.143,1.119,1.095,1.072,1.049,1.027,1.006,0.986,0.9662,0.9471,0.9284,0.9104,0.8929,0.8758,0.8593,0.8433,0.8277,0.8125,0.7978,0.7834,0.7695,0.756,0.7428,0.73,0.7175,0.7053,0.6935,0.682,0.6708,0.6598,0.6492,0.6388,0.6287,0.6189,0.6092,0.5999,0.5907,0.5818,0.5731,0.5646,0.5563,0.5482,0.5403,0.5326,0.5251,0.5177,0.5105,0.5035,0.4966,0.4899,0.4834,0.4769,0.4707,0.4645,0.4585,0.4527,0.4469,0.4413,0.4358,0.4304,0.4252,0.42,0.415,0.41,0.4052,0.4004,0.3958,0.3912,0.3868,0.3824,0.3781,0.3739,0.3698,0.3657,0.3618,0.3579,0.3541,0.3503,0.3467,0.3431,0.3396,0.3361,0.3327,0.3294,0.3261],"Hf":[129.0,108.9,92.97,80.09,69.57,60.87,53.51,47.33,42.1,37.64,33.82,30.51,27.64,25.13,22.93,20.98,19.24,17.69,16.3,15.07,13.96,12.96,12.06,11.24,10.5,9.826,9.207,8.641,8.123,7.647,7.21,6.807,6.436,6.092,5.774,5.479,5.203,4.947,4.708,4.485,4.277,4.083,3.901,3.73,3.57,3.42,3.278,3.145,3.019,2.901,2.789,12.05,11.59,11.16,10.75,10.36,9.986,9.633,9.298,8.978,8.674,8.384,8.108,7.844,7.592,7.351,7.121,6.9,6.689,6.487,6.294,6.108,5.93,5.76,5.595,5.438,5.286,5.141,5.0,4.865,4.735,4.61,4.489,4.373,4.261,4.152,4.048,3.947,3.85,3.755,3.664,3.576,3.491,3.409,3.329,3.252,3.177,3.105,3.035,2.967,2.902,2.838,2.776,2.716,2.658,2.602,2.547,2.494,2.443,2.393,2.344,2.297,2.251,2.206,2.163,2.121,2.08,2.04,2.001,1.964,1.927,1.891,1.856,1.822,1.789,1.757,1.726,1.695,1.666,1.637,1.608,1.581,1.554,1.528,1.502,1.477,1.453,1.429,1.406,1.383,1.361,1.339,1.318,1.298,1.278,1.258,1.239,1.22,1.201,1.183,1.166,1.149,1.132,1.115,1.099,1.083,1.068,1.053,1.038,1.024,1.01,0.9957,0.9821,0.9688,0.9557,0.9429,0.9304,0.9182,0.9061,0.8944,0.8828,0.8715,0.8604,0.8495,0.8388,0.8283,0.8181,0.808,0.7981,0.7884,0.7789,0.7695,0.7604,0.7514,0.7425,0.7338],"Ta":[134.0,113.2,96.68,83.31,72.37,63.34,55.7,49.28,43.84,39.21,35.23,31.79,28.8,26.19,23.9,21.88,20.06,18.44,17.0,15.71,14.56,13.52,12.58,11.73,10.96,10.25,9.608,9.018,8.477,7.981,7.525,7.105,6.717,6.358,6.026,5.718,5.43,5.163,4.914,4.681,4.464,4.261,4.071,3.893,3.726,3.569,3.421,3.281,3.15,3.026,2.909,2.799,2.694,11.54,11.11,10.7,10.32,9.951,9.602,9.271,8.956,8.655,8.369,8.096,7.836,7.588,7.35,7.123,6.906,6.699,6.5,6.309,6.126,5.951,5.783,5.621,5.465,5.316,5.172,5.033,4.9,4.771,4.647,4.527,4.412,4.3,4.193,4.089,3.988,3.891,3.797,3.706,3.618,3.533,3.451,3.371,3.294,3.219,3.147,3.076,3.008,2.942,2.878,2.816,2.756,2.698,2.641,2.586,2.533,2.481,2.43,2.381,2.334,2.288,2.243,2.199,2.156,2.115,2.075,2.036,1.997,1.96,1.924,1.889,1.855,1.821,1.789,1.757,1.726,1.696,1.667,1.638,1.61,1.583,1.557,1.531,1.506,1.481,1.457,1.433,1.41,1.388,1.366,1.345,1.324,1.303,1.283,1.264,1.245,1.226,1.208,1.19,1.173,1.156,1.139,1.123,1.107,1.091,1.076,1.061,1.046,1.032,1.017,1.004,0.9901,0.9769,0.9639,0.9512,0.9387,0.9265,0.9145,0.9027,0.8912,0.8799,0.8689,0.858,0.8473,0.8369,0.8266,0.8166,0.8067,0.797,0.7875,0.7781,0.769,0.76],"W":[138.9,117.4,100.2,86.4,75.08,65.72,57.8,51.15,45.51,40.71,36.58,33.01,29.91,27.21,24.83,22.73,20.84,19.17,17.67,16.34,15.14,14.06,13.08,12.2,11.4,10.67,9.996,9.383,8.82,8.304,7.83,7.393,6.989,6.616,6.271,5.95,5.651,5.372,5.113,4.871,4.645,4.433,4.236,4.05,3.876,3.713,3.558,3.413,3.276,3.147,3.025,2.91,2.802,2.698,2.601,11.04,10.63,10.25,9.893,9.55,9.223,8.912,8.616,8.334,8.065,7.809,7.565,7.331,7.108,6.895,6.691,6.495,6.308,6.128,5.956,5.79,5.631,5.477,5.33,5.188,5.051,4.919,4.792,4.669,4.551,4.437,4.326,4.219,4.116,4.016,3.92,3.826,3.736,3.648,3.563,3.481,3.402,3.325,3.25,3.178,3.107,3.039,2.973,2.909,2.847,2.787,2.728,2.672,2.616,2.563,2.511,2.46,2.411,2.363,2.317,2.272,2.228,2.185,2.143,2.103,2.064,2.025,1.988,1.952,1.916,1.882,1.848,1.815,1.783,1.752,1.722,1.692,1.664,1.635,1.608,1.581,1.555,1.53,1.505,1.48,1.457,1.434,1.411,1.389,1.367,1.346,1.326,1.305,1.286,1.266,1.248,1.229,1.211,1.193,1.176,1.159,1.143,1.127,1.111,1.095,1.08,1.065,1.051,1.036,1.022,1.009,0.9954,0.9822,0.9693,0.9567,0.9443,0.9322,0.9203,0.9086,0.8971,0.8859,0.8749,0.8641,0.8535,0.8431,0.8328,0.8228,0.813,0.8033,0.7938,0.7845],"Re":[144.0,121.8,104.1,89.76,78.04,68.35,60.13,53.22,47.36,42.37,38.08,34.37,31.15,28.33,25.86,23.68,21.72,19.97,18.42,17.03,15.78,14.65,13.64,12.72,11.88,11.12,10.42,9.785,9.199,8.661,8.167,7.711,7.29,6.901,6.541,6.207,5.894,5.603,5.333,5.08,4.844,4.624,4.417,4.224,4.042,3.872,3.711,3.559,3.416,3.282,3.155,3.035,2.921,2.813,2.712,2.615,2.523,10.61,10.23,9.875,9.536,9.214,8.907,8.614,8.336,8.07,7.817,7.575,7.345,7.124,6.913,6.711,6.517,6.331,6.153,5.982,5.818,5.659,5.507,5.361,5.22,5.084,4.952,4.826,4.704,4.586,4.472,4.361,4.255,4.152,4.052,3.956,3.862,3.772,3.684,3.6,3.518,3.438,3.361,3.286,3.214,3.144,3.076,3.01,2.945,2.883,2.823,2.764,2.707,2.652,2.598,2.546,2.495,2.446,2.398,2.351,2.306,2.261,2.218,2.177,2.136,2.096,2.058,2.02,1.984,1.948,1.913,1.879,1.846,1.814,1.783,1.752,1.722,1.693,1.665,1.637,1.61,1.584,1.558,1.533,1.508,1.484,1.461,1.438,1.416,1.394,1.373,1.352,1.331,1.311,1.292,1.273,1.254,1.236,1.218,1.2,1.183,1.167,1.15,1.134,1.118,1.103,1.088,1.073,1.059,1.044,1.031,1.017,1.004,0.9905,0.9776,0.9651,0.9527,0.9406,0.9287,0.9171,0.9057,0.8945,0.8835,0.8727,0.8621,0.8517,0.8415,0.8315,0.8216,0.812]};
+/* common engineering alloys: nominal composition (wt%, balance on the first element) and density (g/cm³) */
+const ALLOYS=[
+  {id:'al6061',name:'Al 6061',rho:2.70,comp:{Al:0,Mg:1.0,Si:0.6,Cu:0.28,Cr:0.2}},
+  {id:'al7075',name:'Al 7075',rho:2.81,comp:{Al:0,Zn:5.6,Mg:2.5,Cu:1.6,Cr:0.23}},
+  {id:'al',name:'Aluminium (pure)',rho:2.70,comp:{Al:0}},
+  {id:'az31',name:'Mg AZ31',rho:1.77,comp:{Mg:0,Al:3,Zn:1}},
+  {id:'cpti',name:'CP titanium',rho:4.51,comp:{Ti:0}},
+  {id:'ti64',name:'Ti-6Al-4V',rho:4.43,comp:{Ti:0,Al:6,V:4}},
+  {id:'fe',name:'Iron (pure)',rho:7.87,comp:{Fe:0}},
+  {id:'steel4140',name:'Low-alloy steel (4140)',rho:7.85,comp:{Fe:0,Cr:1.0,Mn:0.9,Mo:0.2,C:0.4}},
+  {id:'ss304',name:'Stainless 304',rho:8.00,comp:{Fe:0,Cr:18.5,Ni:9,Mn:2,Si:0.75}},
+  {id:'ss316',name:'Stainless 316L',rho:8.00,comp:{Fe:0,Cr:17,Ni:12,Mo:2.5,Mn:2}},
+  {id:'ni',name:'Nickel (pure)',rho:8.91,comp:{Ni:0}},
+  {id:'in625',name:'Inconel 625',rho:8.44,comp:{Ni:0,Cr:21.5,Mo:9,Nb:3.6,Fe:2.5}},
+  {id:'in718',name:'Inconel 718',rho:8.19,comp:{Ni:0,Cr:19,Fe:18.5,Nb:5.1,Mo:3,Ti:0.9,Al:0.5}},
+  {id:'cmsx4',name:'CMSX-4 (Ni superalloy)',rho:8.70,comp:{Ni:0,Co:9.6,Cr:6.5,Ta:6.5,W:6.4,Al:5.6,Re:3,Ti:1,Mo:0.6,Hf:0.1}},
+  {id:'cocrmo',name:'CoCrMo (F75)',rho:8.30,comp:{Co:0,Cr:28,Mo:6}},
+  {id:'cu',name:'Copper (pure)',rho:8.96,comp:{Cu:0}},
+  {id:'brass',name:'Brass C260 (Cu-30Zn)',rho:8.53,comp:{Cu:0,Zn:30}},
+  {id:'zry4',name:'Zircaloy-4',rho:6.56,comp:{Zr:0,Sn:1.5,Fe:0.2,Cr:0.1}},
+  {id:'w',name:'Tungsten (pure)',rho:19.25,comp:{W:0}}
+];
+const BASES=['Mg','Al','Ti','V','Cr','Fe','Co','Ni','Cu','Zn','Zr','Nb','Mo','Sn','Hf','Ta','W','Re'];
+function muRhoAt(el,E){const a=MU[el],x=(E-MU_E0)/MU_DE,i=Math.max(0,Math.min(a.length-2,Math.floor(x))),f=x-i;
+  return Math.exp(Math.log(a[i])*(1-f)+Math.log(a[i+1])*f)}            // log interpolation between 1 keV points
+function matInfo(P){const M=P.mat||{};
+  if(M.src==='preset'){const A=ALLOYS.find(a=>a.id===M.preset);if(!A)return null;
+    const base=Object.keys(A.comp)[0],tot=Object.entries(A.comp).reduce((s,[k,v])=>s+(k===base?0:v),0);
+    const w=Object.fromEntries(Object.entries(A.comp).map(([k,v])=>[k,(k===base?100-tot:v)/100]));
+    return {name:A.name,rho:A.rho,w}}
+  if(M.src==='custom'&&M.rho>0&&M.base)return {name:`${M.base}-based material`,rho:M.rho,w:{[M.base]:1}};
+  return null}
+function transAt(info,E,tmm){const mr=Object.entries(info.w).reduce((s,[el,f])=>s+f*muRhoAt(el,E),0);return Math.exp(-mr*info.rho*tmm/10)}
+const T_GOOD=0.10,T_BEST=Math.exp(-1),E_LO=15,E_HI=90;   // energies considered (keV)
+const ELINES=[['3A mono',18,88],['1A3 mono',55,90],['1A3 white beam',50,200]];
+function energyPlan(P){const info=matInfo(P),t=P.th;if(!info||!(t>0))return null;
+  const Es=[],Ts=[];for(let E=E_LO;E<=E_HI;E+=0.5){Es.push(E);Ts.push(transAt(info,E,t))}
+  const ok=E=>transAt(info,E,t)>=T_GOOD;
+  const lines=ELINES.map(([n,a,b])=>{const segs=[];let st=null;
+    for(let E=a;E<=b+1e-9;E+=0.5){if(ok(E)){if(st===null)st=E}else if(st!==null){segs.push([st,E-0.5]);st=null}}
+    if(st!==null)segs.push([st,b]);return {n,a,b,segs}});
+  const gi=Ts.findIndex((x,i)=>Ts.slice(i).every(y=>y>=T_GOOD));
+  const bi=Ts.findIndex(x=>x>=T_BEST);
+  return {info,t,Es,Ts,lines,eGood:gi>=0?Es[gi]:null,eBest:bi>=0?Es[bi]:null}}
+const HEDM=['ff','nf'];
+const isHedm=T=>HEDM.includes(T.tech==='custom'?T.custom.closest:T.tech);
+/* near-field and far-field share one beam energy, stored on the sample's plan */
+const plannedE=m=>m.plan.pE;
+const setPlannedE=(m,v)=>{m.plan.pE=v};
+const W_LO=50,W_HI=200,TW_GOOD=0.005,TW_YLO=0.005,TW_YHI=0.5;   // white beam: ≥0.5% transmission counts as good; chart shows 0.5–50% (log)
+function whitePlan(P){const info=matInfo(P),t=P.th;if(!info||!(t>0))return null;
+  const Es=[],Ts=[];for(let E=W_LO;E<=W_HI;E+=1){Es.push(E);Ts.push(transAt(info,E,t))}
+  const gi=Ts.findIndex((x,i)=>Ts.slice(i).every(y=>y>=TW_GOOD));
+  return {info,t,Es,Ts,eGood:gi>=0?Es[gi]:null,tLo:Ts[0],tHi:Ts[Ts.length-1]}}
+/* filtered white beam, flux vs energy, read approximately from the beamline's spectrum plot */
+const WSPEC=[[40,7e9],[45,3e10],[50,6e10],[55,9e10],[60,1.15e11],[65,1.3e11],[70,1.38e11],[75,1.42e11],[80,1.42e11],[90,1.3e11],[100,1.15e11],[110,9.5e10],[120,7.8e10],[130,6.2e10],[140,4.7e10],[150,3.5e10],[160,2.6e10],[170,1.9e10],[180,1.4e10],[190,1.05e10],[200,7.5e9]];
+function wFlux(E){if(E<=WSPEC[0][0])return WSPEC[0][1];for(let i=1;i<WSPEC.length;i++){const [e1,f1]=WSPEC[i-1],[e2,f2]=WSPEC[i];if(E<=e2){const t=(E-e1)/(e2-e1);return Math.exp(Math.log(f1)*(1-t)+Math.log(f2)*t)}}return WSPEC[WSPEC.length-1][1]}
+function specStats(wp){let pk=0,pi=0;const tr=wp.Es.map((E,i)=>wFlux(E)*wp.Ts[i]);tr.forEach((v,i)=>{if(v>pk){pk=v;pi=i}});
+  const tot=tr.reduce((a,b)=>a+b,0),inc=wp.Es.reduce((a,E)=>a+wFlux(E),0);
+  return {peak:wp.Es[pi],peakFlux:pk,frac:tot/inc,tr}}
+function drawSpec(fig,wp){
+  const sv=fig.querySelector('svg'),W=460,H=230,L=52,R=14,T=14,B=48,lg=Math.log10,st=specStats(wp);
+  const hi=Math.ceil(lg(Math.max(...wp.Es.map(wFlux)))),lo=Math.max(hi-6,Math.floor(lg(Math.max(st.peakFlux,1)))-3);
+  const X=E=>L+(W-L-R)*(E-W_LO)/(W_HI-W_LO),Y=f=>T+(H-T-B)*(1-(lg(Math.min(Math.max(f,10**lo),10**hi))-lo)/(hi-lo));
+  const mono='font-family="IBM Plex Mono,monospace" font-size="10.5"';let g='';
+  for(let e=lo;e<=hi;e++)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(10**e)}" y2="${Y(10**e)}" stroke="var(--line)"/><text x="${L-6}" y="${Y(10**e)+3.5}" text-anchor="end" fill="var(--muted)" ${mono}>10${String(e).split('').map(c=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[c]).join('')}</text>`;
+  [50,75,100,125,150,175,200].forEach(E=>g+=`<line x1="${X(E)}" x2="${X(E)}" y1="${H-B}" y2="${H-B+4}" stroke="var(--muted)"/><text x="${X(E)}" y="${H-B+15}" text-anchor="middle" fill="var(--muted)" ${mono}>${E}</text>`);
+  g+=`<text x="${(L+W-R)/2}" y="${H-B+29}" text-anchor="middle" fill="var(--muted)" font-size="11.5">Beam energy (keV)</text>`;
+  g+=`<text x="12" y="${(T+H-B)/2}" text-anchor="middle" fill="var(--muted)" font-size="11.5" transform="rotate(-90 12 ${(T+H-B)/2})">Flux (approx.)</text>`;
+  let a='',b='',area='';
+  let e0=null;
+  wp.Es.forEach((E,i)=>{const x=X(E).toFixed(1);a+=(i?'L':'M')+x+' '+Y(wFlux(E)).toFixed(1);
+    if(st.tr[i]>=10**lo){b+=(b?'L':'M')+x+' '+Y(st.tr[i]).toFixed(1);if(e0===null)e0=E}});   // skip the part below the axis
+  area=b?b+`L${X(W_HI).toFixed(1)} ${Y(10**lo).toFixed(1)}L${X(e0).toFixed(1)} ${Y(10**lo).toFixed(1)}Z`:'';
+  g+=`<path d="${area}" style="fill:color-mix(in srgb,var(--tech) 14%,transparent)"/>`;
+  g+=`<path d="${a}" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/><path d="${b}" fill="none" stroke="var(--tech)" stroke-width="2.5"/>`;
+  const px=X(st.peak),py=Y(st.peakFlux);
+  g+=`<line x1="${px}" x2="${px}" y1="${T}" y2="${H-B}" stroke="var(--ok)" stroke-width="1.5" stroke-dasharray="3 3"/><circle cx="${px}" cy="${py}" r="5" fill="var(--ok)" stroke="var(--panel)" stroke-width="2"/>`;
+  g+=`<text x="${px+(px>W-140?-6:6)}" y="${T+11}" text-anchor="${px>W-140?'end':'start'}" fill="var(--ok)" ${mono}>best signal ≈ ${st.peak} keV</text>`;
+  sv.innerHTML=g;return st}
+function drawWhite(fig,wp){
+  const sv=fig.querySelector('svg'),W=460,H=210,L=46,R=14,T=12,B=48,lg=Math.log10;
+  const X=E=>L+(W-L-R)*(E-W_LO)/(W_HI-W_LO),Y=t=>T+(H-T-B)*(1-(lg(Math.min(Math.max(t,TW_YLO),TW_YHI))-lg(TW_YLO))/(lg(TW_YHI)-lg(TW_YLO)));
+  const mono='font-family="IBM Plex Mono,monospace" font-size="10.5"';let g='';
+  [0.005,0.01,0.02,0.05,0.1,0.2,0.5].forEach(t=>g+=`<line x1="${L}" x2="${W-R}" y1="${Y(t)}" y2="${Y(t)}" stroke="var(--line)"/><text x="${L-6}" y="${Y(t)+3.5}" text-anchor="end" fill="var(--muted)" ${mono}>${+(t*100).toFixed(1)}%</text>`);
+  [50,75,100,125,150,175,200].forEach(E=>g+=`<line x1="${X(E)}" x2="${X(E)}" y1="${H-B}" y2="${H-B+4}" stroke="var(--muted)"/><text x="${X(E)}" y="${H-B+15}" text-anchor="middle" fill="var(--muted)" ${mono}>${E}</text>`);
+  g+=`<text x="${(L+W-R)/2}" y="${H-B+29}" text-anchor="middle" fill="var(--muted)" font-size="11.5">Beam energy (keV)</text>`;
+  if(wp.eGood!=null)g+=`<rect x="${X(wp.eGood)}" y="${T}" width="${W-R-X(wp.eGood)}" height="${H-B-T}" style="fill:color-mix(in srgb,var(--ok) 8%,transparent)"/><line x1="${X(wp.eGood)}" x2="${X(wp.eGood)}" y1="${T}" y2="${H-B}" stroke="var(--ok)" stroke-width="1.5"/><text x="${X(wp.eGood)+5}" y="${T+12}" fill="var(--ok)" ${mono}>best signal from ${wp.eGood} keV</text>`;
+  let d='';wp.Es.forEach((E,i)=>d+=(i?'L':'M')+X(E).toFixed(1)+' '+Y(wp.Ts[i]).toFixed(1));
+  g+=`<path d="${d}" fill="none" stroke="var(--tech)" stroke-width="2.5"/>`;
+  if(wp.tLo<TW_YLO)g+=`<text x="${L+6}" y="${Y(TW_YLO)-6}" fill="var(--bad)" ${mono}>below 0.5%</text>`;
+  if(wp.tHi>TW_YHI)g+=`<text x="${W-R-4}" y="${T+24}" text-anchor="end" fill="var(--muted)" ${mono}>above 50%</text>`;
+  sv.innerHTML=g}
+const beamKind=P=>P.beamKind===undefined?(P.white?'white':'mono'):P.beamKind;
+const segTxt=sg=>sg.length?sg.map(([a,b])=>a===b?`${a} keV`:`${a}–${b} keV`).join(', '):'none';
+function drawTrans(fig,ep,lo=E_LO,hi=E_HI,ticks=[20,30,40,50,60,70,80,90]){
+  const sv=fig.querySelector('svg'),W=460,H=210,L=46,R=14,T=12,B=48;
+  const X=E=>L+(W-L-R)*(E-lo)/(hi-lo),Y=t=>T+(H-T-B)*(1-t);
+  const mono='font-family="IBM Plex Mono,monospace" font-size="10.5"';
+  let g='';
+  [0,.25,.5,.75,1].forEach(t=>g+=`<line x1="${L}" x2="${W-R}" y1="${Y(t)}" y2="${Y(t)}" stroke="var(--line)"/><text x="${L-6}" y="${Y(t)+3.5}" text-anchor="end" fill="var(--muted)" ${mono}>${t*100}%</text>`);
+  ticks.forEach(E=>g+=`<line x1="${X(E)}" x2="${X(E)}" y1="${H-B}" y2="${H-B+4}" stroke="var(--muted)"/><text x="${X(E)}" y="${H-B+15}" text-anchor="middle" fill="var(--muted)" ${mono}>${E}</text>`);
+  g+=`<text x="${(L+W-R)/2}" y="${H-B+29}" text-anchor="middle" fill="var(--muted)" font-size="11.5">Beam energy (keV)</text>`;
+  g+=`<rect x="${L}" y="${Y(T_GOOD)}" width="${W-L-R}" height="${Y(0)-Y(T_GOOD)}" style="fill:color-mix(in srgb,var(--bad) 9%,transparent)"/><text x="${W-R-4}" y="${Y(0)-5}" text-anchor="end" fill="var(--bad)" ${mono}>below 10%</text>`;
+  g+=`<line x1="${L}" x2="${W-R}" y1="${Y(T_BEST)}" y2="${Y(T_BEST)}" stroke="var(--ok)" stroke-dasharray="4 4"/><text x="${W-R-4}" y="${Y(T_BEST)+13}" text-anchor="end" fill="var(--ok)" ${mono}>37%: thickness ≈ one attenuation length (best signal)</text>`;
+  let d='';ep.Es.forEach((E,i)=>d+=(i?'L':'M')+X(E).toFixed(1)+' '+Y(ep.Ts[i]).toFixed(1));
+  g+=`<path d="${d}" fill="none" stroke="var(--tech)" stroke-width="2.5"/>`;
+  if(ep.eGood!=null)g+=`<rect x="${X(ep.eGood)}" y="${T}" width="${W-R-X(ep.eGood)}" height="${H-B-T}" style="fill:color-mix(in srgb,var(--ok) 8%,transparent)"/><line x1="${X(ep.eGood)}" x2="${X(ep.eGood)}" y1="${T}" y2="${H-B}" stroke="var(--ok)" stroke-width="1.5"/><text x="${X(ep.eGood)+5}" y="${T+12}" fill="var(--ok)" ${mono}>acceptable from ${ep.eGood} keV</text>`;
+  sv.innerHTML=g;
+  fig.querySelector('figcaption').innerHTML=`Transmission through ${ep.t} mm of the sample. Shaded green: at least 10% transmission.`;
+}
+/* ---------- beam energy and detector distance ---------- */
+const LINES=[['3a','3A · 18–88 keV (multilayer / DCM)',18,88],['1a3m','1A3 · 55–90 keV monochromatic',55,90],['1a3w','1A3 · 50–200 keV white beam',50,200],['unsure','Not sure yet',18,200]];
+const lineOf=id=>LINES.find(l=>l[0]===id);
+const DET={name:'CdTe Eiger 16M',w:311.1,h:327.8},RMAX=DET.w/2;     // mm; beam assumed centred, so a full ring must fit within half the short side
+const DMIN=300,DMAX=2000,RINGS=[5,8];
+function structOf(m,key){return m.phase==='multi'?(m.phases[+key]||{}).xtal:m.xtal}
+// d-spacings (Å) of the first distinct rings, largest first
+function ringDs(xtal,a,c){
+  if(!(a>0))return null;
+  if(xtal==='FCC'||xtal==='BCC'){const out=[];
+    for(let N=1;N<=120&&out.length<16;N++){let ok=false;
+      for(let h=0;h*h<=N&&!ok;h++)for(let k=0;k<=h&&!ok;k++)for(let l=0;l<=k;l++){if(h*h+k*k+l*l!==N)continue;
+        if(xtal==='FCC'?((h%2===k%2)&&(k%2===l%2)):((h+k+l)%2===0)){ok=true;break}}
+      if(ok)out.push(a/Math.sqrt(N))}
+    return out}
+  if(xtal==='HCP'){if(!(c>0))return null;const ds=[];
+    for(let h=0;h<=6;h++)for(let k=0;k<=6;k++)for(let l=0;l<=10;l++){if(!h&&!k&&!l)continue;
+      if((h-k)%3===0&&l%2===1)continue;                                    // forbidden for hcp
+      const inv=4/3*(h*h+h*k+k*k)/(a*a)+l*l/(c*c);ds.push(1/Math.sqrt(inv))}
+    ds.sort((x,y)=>y-x);const out=[];for(const d of ds){if(!out.length||Math.abs(out[out.length-1]-d)/d>0.002)out.push(d);if(out.length>=16)break}
+    return out}
+  return null}
+// distance range (mm) giving 5–8 complete rings at energy E (keV)
+function detRange(ds,E){
+  const lam=12.398/E,D=n=>{const s=lam/(2*ds[n-1]);if(s>=1)return 0;const tt=2*Math.asin(s);return RMAX/Math.tan(tt)};
+  const hi=D(RINGS[0]),lo=D(RINGS[1]+1);         // ≤ hi keeps ring 5 fully on; > lo keeps ring 9 off
+  return {lo,hi,cl:[Math.max(lo,DMIN),Math.min(hi,DMAX)]}}
+function detPlan(m,P){
+  const E=P.energy,T=effTech(P);
+  if(T!=='ff'||!P.det.large)return {mode:'manual'};
+  if(E.unsure||!(E.emin>0&&E.emax>0))return {mode:'needE'};
+  const es=[...new Set([E.emin,E.emax])];
+  const phases=inScope(m).map(p=>{const x=structOf(m,p.key),L=P.lat[p.key]||{};const ds=['FCC','BCC','HCP'].includes(x)?ringDs(x,L.a,L.c):null;
+    return {key:p.key,label:m.phase==='multi'?p.label:m.name,xtal:x||'not given',calc:['FCC','BCC','HCP'].includes(x),ds,rows:ds?es.map(e=>({e,...detRange(ds,e)})):null}});
+  const calc=phases.filter(p=>p.rows);
+  let overall=null;
+  if(calc.length){const lo=Math.min(...calc.flatMap(p=>p.rows.map(r=>r.cl[0]))),hi=Math.max(...calc.flatMap(p=>p.rows.map(r=>r.cl[1])));overall=[lo,hi]}
+  return {mode:'calc',phases,overall,es,needsLat:phases.some(p=>p.calc&&!p.ds),other:phases.some(p=>!p.calc)}}
+const mm=v=>Math.round(v).toLocaleString('en-US')+' mm';
+
+/* ---------- far-field detector distance (large-format area detector, used for the maths only) ---------- */
+const DET_W=311.1,R_FULL=DET_W/2;        // mm; beam centred, so a complete ring must fit within half the short side
+const subsFor=T=>{const e=T.tech==='custom'?T.custom.closest:T.tech;return ['tech',...(e==='ff'||e==='powder'?['det']:[]),...(e==='edd'?['tth']:[]),'beam',...(e==='ff'||e==='nf'?['scan']:e?['dset']:[])]};
+function ringD(ds,E,n){const s=12.398/E/(2*ds[n-1]);if(!(s<1))return 0;return R_FULL/Math.tan(2*Math.asin(s))}
+// distances (mm) that keep rings rmin..rmax complete on the detector at energy E
+function ffRange(ds,E,rmin,rmax){if(!ds||ds.length<=rmax)return null;
+  const hi=ringD(ds,E,rmin),lo=ringD(ds,E,rmax+1);
+  return {lo,hi,cl:[Math.max(lo,DMIN),Math.min(hi,DMAX)]}}
+// one detector position must suit every phase at once: intersect their distance windows (and 300–2,000 mm)
+function commonAt(ph,E,rmin,rmax){let lo=DMIN,hi=DMAX;for(const p of ph){const r=ffRange(p.ds,E,rmin,rmax);if(!r)return null;lo=Math.max(lo,r.lo);hi=Math.min(hi,r.hi)}return lo<=hi?[lo,hi]:null}
+function ffPlan(m,P){
+  const D=P.det,ep=energyPlan(P);
+  if(!ep||ep.eGood==null)return {state:'noE'};
+  const full=[ep.eGood,E_HI];
+  const phases=inScope(m).map(p=>{const x=structOf(m,p.key),L=P.lat[p.key]||{},calc=['FCC','BCC','HCP'].includes(x);
+    const user=!calc?parseDs(L.dlist):[];
+    const ds=calc?ringDs(x,L.a,L.c):user.length?user:null;
+    const short=!!ds&&ds.length<=(D.rmax||0);                    // need ring rmax+1 to bound the near side
+    return {key:p.key,label:m.phase==='multi'?p.label:m.name,xtal:x||'not given',calc,fromUser:!calc&&!!ds,short,ds:short?null:ds,nUser:user.length}});
+  const calcPh=phases.filter(p=>p.ds);
+  let segs=null,overall=null;
+  if(calcPh.length&&ringsOk(D)){segs=[];let st=null,prev=null,lo=Infinity,hi=-Infinity;
+    for(let E=full[0];E<=full[1]+1e-9;E+=0.5){const c=commonAt(calcPh,E,D.rmin,D.rmax);
+      if(c){lo=Math.min(lo,c[0]);hi=Math.max(hi,c[1]);if(st===null)st=E;prev=E}else if(st!==null){segs.push([st,prev]);st=null}}
+    if(st!==null)segs.push([st,prev]);
+    overall=segs.length?[lo,hi]:null}
+  const es=segs&&segs.length?[segs[0][0],segs[segs.length-1][1]].filter((v,i,a)=>a.indexOf(v)===i):full.filter((v,i,a)=>a.indexOf(v)===i);
+  phases.forEach(p=>{p.rows=p.ds&&ringsOk(D)?es.map(e=>({e,...ffRange(p.ds,e,D.rmin,D.rmax)})):null});
+  const narrowed=segs&&!(segs.length===1&&segs[0][0]===full[0]&&segs[0][1]===full[1]);
+  return {state:'ok',es,full,segs,narrowed,phases,overall,needLat:phases.some(p=>p.calc&&!p.ds),short:phases.filter(p=>p.short),other:phases.some(p=>!p.calc&&!p.fromUser)}}
+function parseDs(t){if(!t)return [];const v=String(t).split(/[\s,;]+/).map(Number).filter(x=>x>0.2&&x<30);v.sort((a,b)=>b-a);return v.filter((x,i)=>!i||Math.abs(v[i-1]-x)/x>0.002)}
+const segStr=sg=>sg.map(([a,b])=>a===b?`${a} keV`:`${a}–${b} keV`).join(' and ');
+function intersectSegs(A,B){const out=[];for(const [a1,b1] of A)for(const [a2,b2] of B){const a=Math.max(a1,a2),b=Math.min(b1,b2);if(a<=b)out.push([a,b])}return out}
+/* the sample's acceptable energies after every far-field detector step has had its say */
+function sampleEnergy(m){const P=m.plan,ep=energyPlan(P);if(!ep||ep.eGood==null)return null;
+  let segs=[[ep.eGood,E_HI]];const by=[];
+  P.techs.forEach(T=>{if(!subsFor(T).includes('det')||T.det.kind==='other')return;const fp=ffPlan(m,ctx(P,T));
+    if(fp.state==='ok'&&fp.segs){segs=intersectSegs(segs,fp.segs);if(fp.narrowed)by.push(techName(T))}});
+  return {full:[ep.eGood,E_HI],segs,by}}
+const ringsOk=D=>D.rmin>=1&&D.rmax>=D.rmin&&D.rmax<=14;
+const manualOk=D=>D.unsure||(D.dmin>=DMIN&&D.dmax<=DMAX&&D.dmax>=D.dmin);
+
+/* ---------- imaging modalities (optional, alongside the diffraction techniques) ---------- */
+const IMODS=[
+  {id:'absr',name:'Absorption radiography',short:'2D projections from differences in absorption (density, atomic number). Fast; good for following pores, cracks or melt pools.',tomo:false,phase:false},
+  {id:'abst',name:'Absorption tomography',short:'3D volume from many projections over 180°. Pores, cracks and phases that differ in density.',tomo:true,phase:false},
+  {id:'phr',name:'Phase-contrast radiography',short:'Edge-enhanced 2D projections. Sharpens tight cracks and weak-contrast interfaces.',tomo:false,phase:true},
+  {id:'pht',name:'Phase-contrast tomography',short:'Edge-enhanced 3D volume, for features with little absorption difference.',tomo:true,phase:true}
+];
+const ITARGET=[['density','Phases of different density'],['pores','Pores, cracks, voids'],['interfaces','Interfaces']];
+const IMG_SUBS=['imod','ires'];
+const NEWIMG=()=>({id:uid(),mod:null,custom:{name:'',notes:''},target:null,f:5});
+const imodOf=I=>IMODS.find(x=>x.id===I.mod);
+const imgName=I=>I.mod==='custom'?(I.custom.name||'Custom imaging'):imodOf(I)?imodOf(I).name:'';
+const IPIX=2048,IPX=0.69;                             // camera pixels across (assumed) and the beamline's pixel size (µm)
+const iPixel=()=>IPX,iFov=()=>IPIX*IPX,iAcross=I=>I.f/IPX;
+/* absorption-contrast tomography works best around 10–40% transmission, optimum near μt ≈ 2 (≈14%) */
+const TT_LO=0.10,TT_HI=0.40;
+function imgEnergy(m){const ep=energyPlan(m.plan);if(!ep)return null;
+  const segs=[];let st=null,prev=null;
+  ep.Es.forEach((E,i)=>{const t=ep.Ts[i],ok=t>=TT_LO&&t<=TT_HI;if(ok){if(st===null)st=E;prev=E}else if(st!==null){segs.push([st,prev]);st=null}});
+  if(st!==null)segs.push([st,prev]);
+  let bi=-1,bd=Infinity;ep.Es.forEach((E,i)=>{const d=Math.abs(Math.log(ep.Ts[i])+2);if(d<bd){bd=d;bi=i}});
+  const best=bd<0.35?ep.Es[bi]:null;
+  const se=sampleEnergy(m),diff=se?se.segs:[];
+  return {ep,segs,best,tBest:best?ep.Ts[bi]:null,diff,overlap:intersectSegs(segs,diff),tLo:ep.Ts[0],tHi:ep.Ts[ep.Ts.length-1]}}
+function imgEnergyText(m){const ie=imgEnergy(m);if(!ie)return 'Finish the beam energy step for this sample to see the energy check.';
+  if(!ie.segs.length)return ie.tHi<TT_LO?`Even at ${E_HI} keV less than 10% of the beam gets through ${ie.ep.t} mm, so tomographic contrast will be noisy. A thinner sample would help.`
+    :`Transmission through ${ie.ep.t} mm stays above 40% down to ${E_LO} keV, so contrast is weak at every energy here; use the lowest energy available.`;
+  return `Best tomographic contrast for ${ie.ep.t} mm of ${esc(ie.ep.info.name)}: <b>${segStr(ie.segs)}</b> (10–40% transmission)`+(ie.best?`, ideally near <b>${ie.best} keV</b> (about ${Math.round(ie.tBest*100)}%)`:'')+'.'
+    +(ie.diff.length?(ie.overlap.length?` This overlaps the diffraction energy range at <b>${segStr(ie.overlap)}</b>.`:` This does not overlap the diffraction energy range (${segStr(ie.diff)}), so imaging and diffraction would want different energies.`):'')}
+/* acceptable energies for every modality chosen for this sample, and where they overlap */
+function energyBreakdown(m){const P=m.plan,ep=energyPlan(P);if(!ep||ep.eGood==null)return null;
+  const rows=[],base=[[ep.eGood,E_HI]];
+  rows.push({k:'Transmission through the sample',v:base,note:'at least 10% gets through'});
+  const techs=P.techs.filter(T=>T.tech&&(T.tech!=='custom'||T.custom.closest));
+  let all=base;
+  if(techs.length){const se=sampleEnergy(m);const d=se?se.segs:base;
+    const best=ep.eBest!=null&&d.some(([x,y])=>ep.eBest>=x&&ep.eBest<=y)?ep.eBest:null;
+    rows.push({k:'Diffraction',v:d,note:(se&&se.by.length?`narrowed by ${se.by.map(esc).join(', ')} detector placement; `:'')+(best?`strongest signal near ${best} keV (sample ≈ one attenuation length)`:'lower energies in this range give more signal'),cls:'d'});
+    all=intersectSegs(all,d)}
+  const imgs=(P.imgs||[]).filter(I=>I.mod);
+  if(imgs.length){const ie=imgEnergy(m);const v=ie?ie.segs:[];
+    rows.push({k:'Absorption imaging',v,note:ie&&ie.best?`best contrast near ${ie.best} keV (10–40% transmission)`:'10–40% transmission',cls:'i'});
+    all=intersectSegs(all,v)}
+  const n=rows.length-1;
+  return {rows,all,n}}
+const segOr=(sg,none)=>sg.length?segStr(sg):none;
+function imgFlags(m,I){const r=[],md=imodOf(I),t=(m.plan.th||0)*1000,F=iFov(I),W=sampleWidth(m.plan);
+  if(md&&I.target==='interfaces'&&!md.phase)r.push('Interfaces between materials of similar density give little absorption contrast.');
+  if(iAcross(I)<2)r.push(`Smaller than about two ${IPX} µm pixels, so it cannot be resolved.`);
+  else if(iAcross(I)<3)r.push(`Only ${iAcross(I).toFixed(1)} pixels across the smallest feature, so it will be barely resolved.`);
+  const across=isFinite(W)?W:null;
+  if(across&&F<across)r.push(`Field of view (~${um(F)}) is smaller than the sample width (${um(across)}): ${md&&md.tomo?'interior (local) tomography only':'you image a window, not the whole width'}.`);
+  if(md&&md.tomo&&m.plan.geom==='plate')r.push('A plate is wide in one direction, so tomography sees long paths edge-on. Consider laminography or cutting a bar.');
+  return r}
+
+/* ---------- experimental setup / sample environment (per sample) ---------- */
+const FRAMES=[['RAMSII','RAMS II'],['RAMSIV','RAMS IV'],['Bose','Bose'],['CCLF','CCLF']];
+const HEAT_FRAMES=['RAMSII','RAMSIV','RAMSII+RAMSIV'],T_MAX=800;
+const frameName=f=>f==='RAMSII+RAMSIV'?'RAMS II or RAMS IV':(FRAMES.find(x=>x[0]===f)||[,f])[1];
+function envFlags(E){const r=[];if(!E||E.mode!=='in')return r;
+  if(E.kind==='special')r.push(`Specialized in-situ setup${E.special?`: ${esc(E.special)}`:''}.`);
+  if(E.kind==='mech'&&HEAT_FRAMES.includes(E.frame)&&E.heat&&E.hot)r.push(`Temperatures above ${T_MAX} °C requested on the ${frameName(E.frame)}.`);
+  if(E.kind==='mech'&&E.frame&&E.cool)r.push(`Cryostream / cooling requested on the ${frameName(E.frame)}.`);
+  return r}
+function envText(E){if(!E||!E.mode)return '';
+  if(E.mode==='ex'){const b=[E.weight&&`sample weight ${esc(E.weight)}`,E.travel&&`total travel ${esc(E.travel)}`,E.dof&&`degrees of freedom: ${esc(E.dof)}`,E.exNote&&esc(E.exNote)].filter(Boolean);
+    return `Ex situ${b.length?' <small>· '+b.join(' · ')+'</small>':''}`}
+  if(E.kind==='special')return `In situ · specialized setup${E.special?` <small>(${esc(E.special)})</small>`:''}`;
+  let t=`In situ · mechanical testing${E.frame?` on the ${frameName(E.frame)}${E.frame==='RAMSII+RAMSIV'?' (either is fine)':''}`:''}`;
+  if(HEAT_FRAMES.includes(E.frame)&&E.heat)t+=` <small>· heating ${E.tmin??'?'}–${E.tmax??'?'} °C${E.hot?`, plus above ${T_MAX} °C`:''}</small>`;
+  if(E.frame&&E.cool)t+=` <small>· cryostream / cooling</small>`;
+  return t}
+const whiteOk=T=>(T.tech==='custom'?T.custom.closest:T.tech)==='edd'||(T.tech==='custom'&&/laue/i.test(T.custom.name||''));
+const isLaue=T=>T.tech==='custom'&&/laue/i.test(T.custom.name||'');
+// a technique that does not work with the beam chosen for this sample (e.g. after switching mono ↔ white)
+function beamClash(m,T){if(!T||!T.tech)return '';const e=effTech(T),wb=beamKind(m.plan)==='white',nm=esc(techName(T));
+  if(wb&&['ff','nf','powder'].includes(e)&&!isLaue(T))return `White beam is selected for this sample, but ${nm} needs a monochromatic beam. Change the beam choice or the technique.`;
+  if(!wb&&(e==='edd'||isLaue(T)))return `Monochromatic beam is selected for this sample, but ${nm} needs the white beam. Change the beam choice or the technique.`;
+  return ''}
+const beamClashes=m=>(m.plan.techs||[]).map((T,i)=>({i,t:beamClash(m,T)})).filter(x=>x.t);
+const clashNote=t=>t?`<br><small class="redflag">✕ Incompatible: ${t}</small>`:'';
+function whiteFlags(m){const P=m.plan;if(!P.white||beamClashes(m).length)return [];const ts=(P.techs||[]).filter(T=>T.tech);
+  return ts.length&&!ts.some(whiteOk)?['White beam is selected, but no EDXRD or Laue technique is planned for this sample. White beam is only compatible with those.']:[]}
+function envOk(E){if(!E||!E.mode)return false;
+  if(E.mode==='ex')return !!(E.weight||E.travel||E.dof||E.exNote).trim();
+  if(E.kind==='special')return !!E.special.trim();
+  if(E.kind!=='mech'||!E.frame)return false;
+  if(HEAT_FRAMES.includes(E.frame)&&E.heat)return E.tmin!=null&&E.tmax!=null&&E.tmin>=0&&E.tmax<=T_MAX&&E.tmin<=E.tmax;
+  return true}
+function envNeed(E){if(!E||!E.mode)return 'Choose in situ or ex situ.';
+  if(E.mode==='ex')return 'Describe the staging needs briefly.';
+  if(!E.kind)return 'Choose mechanical testing or a specialized setup.';
+  if(E.kind==='special')return 'Describe the specialized setup briefly.';
+  if(!E.frame)return 'Choose a load frame.';
+  return `Enter a temperature range between 0 and ${T_MAX} °C.`}
+
+/* ---------- EDXRD: reflections on the energy spectrum ---------- */
+const TTH_MIN=5,TTH_MAX=9;
+// reflections with hkl labels, largest d first
+function reflList(xtal,a,c,n=24){
+  if(!(a>0))return null;const out=[];
+  if(xtal==='FCC'||xtal==='BCC'){
+    for(let N=1;N<=200&&out.length<n;N++){let hkl=null;
+      for(let h=0;h*h<=N&&!hkl;h++)for(let k=0;k<=h&&!hkl;k++)for(let l=0;l<=k;l++){if(h*h+k*k+l*l!==N)continue;
+        if(xtal==='FCC'?((h%2===k%2)&&(k%2===l%2)):((h+k+l)%2===0)){hkl=`${h}${k}${l}`;break}}
+      if(hkl)out.push({d:a/Math.sqrt(N),hkl})}
+    return out}
+  if(xtal==='HCP'){if(!(c>0))return null;const all=[];
+    for(let h=0;h<=6;h++)for(let k=0;k<=h;k++)for(let l=0;l<=10;l++){if(!h&&!k&&!l)continue;
+      if((h-k)%3===0&&l%2===1)continue;
+      all.push({d:1/Math.sqrt(4/3*(h*h+h*k+k*k)/(a*a)+l*l/(c*c)),hkl:`${h}${k}${l}`})}
+    all.sort((x,y)=>y.d-x.d);for(const r of all){if(!out.length||Math.abs(out[out.length-1].d-r.d)/r.d>0.002)out.push(r);if(out.length>=n)break}
+    return out}
+  return null}
+const eOf=(d,tthDeg)=>12.398/(2*d*Math.sin(tthDeg*Math.PI/360));    // keV for a reflection at take-off angle 2θ
+function tthPhases(m){const P=m.plan;return inScope(m).map(p=>{const x=structOf(m,p.key),L=P.lat[p.key]||(P.lat[p.key]={}),calc=['FCC','BCC','HCP'].includes(x);
+  return {key:p.key,label:m.phase==='multi'?p.label:m.name,xtal:x||'not given',calc,L,refl:calc?reflList(x,L.a,L.c):null}})}
+function drawPeaks(fig,m,tth){
+  const sv=fig.querySelector('svg'),W=460,H=230,L=46,R=14,T=34,B=48;
+  const X=E=>L+(W-L-R)*(E-W_LO)/(W_HI-W_LO);
+  const mono='font-family="IBM Plex Mono,monospace" font-size="10"';let g='';
+  const wp=whitePlan(m.plan);
+  // transmitted filtered white beam as a relative background (linear, normalised)
+  let tr=null,mx=1;if(wp){tr=wp.Es.map((E,i)=>wFlux(E)*wp.Ts[i]);mx=Math.max(...tr)||1}
+  const Y=v=>T+(H-T-B)*(1-v);
+  [0,.5,1].forEach(v=>g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/>`);
+  [50,75,100,125,150,175,200].forEach(E=>g+=`<line x1="${X(E)}" x2="${X(E)}" y1="${H-B}" y2="${H-B+4}" stroke="var(--muted)"/><text x="${X(E)}" y="${H-B+15}" text-anchor="middle" fill="var(--muted)" ${mono}>${E}</text>`);
+  g+=`<text x="${(L+W-R)/2}" y="${H-B+29}" text-anchor="middle" fill="var(--muted)" font-size="11.5">Energy (keV) at 2θ = ${tth}°</text>`;
+  g+=`<text x="12" y="${(T+H-B)/2}" text-anchor="middle" fill="var(--muted)" font-size="11.5" transform="rotate(-90 12 ${(T+H-B)/2})">Relative</text>`;
+  if(tr){let a='';wp.Es.forEach((E,i)=>a+=(i?'L':'M')+X(E).toFixed(1)+' '+Y(tr[i]/mx).toFixed(1));
+    g+=`<path d="${a}L${X(W_HI)} ${Y(0)}L${X(W_LO)} ${Y(0)}Z" style="fill:color-mix(in srgb,var(--muted) 12%,transparent)"/><path d="${a}" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 3"/>`}
+  const cols=['var(--tech)','var(--sample)','var(--ser3)','var(--imag)'];const rows=[];
+  tthPhases(m).filter(p=>p.refl).forEach((p,pi)=>{const col=cols[pi%cols.length];const inR=[];
+    p.refl.forEach(r=>{const E=eOf(r.d,tth);if(E<W_LO||E>W_HI)return;inR.push({...r,E});
+      const h=tr?Math.max(0.12,wFlux(E)*wp.Ts[Math.round(E-W_LO)]/mx):0.8;
+      g+=`<line x1="${X(E)}" x2="${X(E)}" y1="${Y(0)}" y2="${Y(h)}" stroke="${col}" stroke-width="2"/>`;
+      if(inR.length<=10)g+=`<text x="${X(E)}" y="${Y(h)-3-(inR.length%2)*9}" text-anchor="middle" fill="${col}" ${mono}>${r.hkl}</text>`});
+    rows.push({p,col,inR})});
+  sv.innerHTML=g;return rows}
+function tthOk(m,T){const ph=tthPhases(m),anyCalc=ph.some(p=>p.calc),okA=T.tth>=TTH_MIN&&T.tth<=TTH_MAX;
+  if(anyCalc)return okA&&ph.filter(p=>p.calc).every(p=>p.refl);
+  return okA||!!T.tthUnsure}
+function tthNeed(m,T){const ph=tthPhases(m),anyCalc=ph.some(p=>p.calc),okA=T.tth>=TTH_MIN&&T.tth<=TTH_MAX;
+  if(!okA)return anyCalc?`Enter a take-off angle between ${TTH_MIN}° and ${TTH_MAX}°.`:`Enter a take-off angle between ${TTH_MIN}° and ${TTH_MAX}°, or choose “I don’t know”.`;
+  return 'Enter the nominal lattice parameters.'}
+/* ---------- rules: one material's plan (P) against that material (m) ---------- */
+function effTech(P){return P.tech==='custom'?P.custom.closest:P.tech}
+function phasesOf(m){return m.phase==='multi'?m.phases.map((p,i)=>({...p,label:p.name||`phase ${i+1}`})).filter(p=>p.interest):[]}
+function defFlags(m,id){if(id!=='ff'&&id!=='nf')return [];const P=m.plan,r=[];
+  inScope(m).forEach(p=>{const M=(P.micro||{})[p.key];if(!M||!M.def||M.def==='none')return;
+    const who=m.phase==='multi'?`${esc(p.label)} is`:'The sample is';
+    r.push(`${who} ${M.def==='high'?'highly':'somewhat'} deformed. ${M.def==='high'?'Smeared, overlapping':'Broadened'} spots may impact your ability to successfully do ${id==='ff'?'far-field':'near-field'} HEDM on it.`)});
+  return r}
+function check(m,P){
+  const id=effTech(P);const r=[];const add=(l,t)=>r.push([l,t]);
+  if(!id||id==='none')return finish(r);
+  defFlags(m,id).forEach(t=>add('caution',t));
+  {const bc=beamClash(m,P);if(bc)add('blocked',bc)}     // deformation smears HEDM spots
+  const s=P,sized=GRAIN_FLAGS&&!!s.dist,z=sizes(s),uni=isUni(s),N=diffVol(s)*invD3(s);
+  if(id==='ff'){
+    if(sized){
+      if(z.hi<5)add('blocked','Grains under ~5 µm: spots merge into rings and cannot be indexed.');
+      else if(z.lo<5)add('caution',`The fine ${popWord(s)} (~${um(z.lo)}) will merge into rings under the spots of the larger grains.`);
+      else if(z.lo<15)add('caution',uni?'Small grains (<15 µm): weak, crowded spots.':`The fine ${popWord(s)} (~${um(z.lo)}) gives weak, crowded spots.`);
+      if(N>30000)add('blocked',`~${sci(N)} grains in the beam: far too much spot overlap (aim for < ~5,000). A smaller box beam or thinner sample helps.`);
+      else if(N>5000)add('caution',`~${sci(N)} grains in the beam: heavy spot overlap. Consider a smaller box beam.`);
+    }
+    if(m.phase==='multi'){const minor=phasesOf(m).filter(p=>p.frac>0&&p.frac<10);
+      if(minor.length)add('caution',`Minor phase${minor.length>1?'s':''} ${minor.map(p=>`${esc(p.label)} (${p.frac}%)`).join(', ')}: few grains to index; check there are enough in the beam.`);
+      else if(phasesOf(m).some(p=>p.frac==null))add('caution','If a phase of interest is a minor phase, it may have few grains to index. Adding phase fractions sharpens this check.');}
+    if(GEOM_FLAGS&&s.geom==='plate')add('caution','A plate’s path length changes strongly as it rotates, so only a limited rotation range is usable.');
+    if(GEOM_FLAGS&&s.geom==='dense')add('caution','Dense part: check clearance for a full rotation.');
+  }
+  if(id==='nf'){
+    if(sized){
+      if(z.hi<10)add('blocked','Grains under ~10 µm are close to the near-field resolution.');
+      else if(z.lo<10)add('caution',`The fine ${popWord(s)} (~${um(z.lo)}) is below near-field resolution and will be missed.`);
+      else if(z.lo<30)add('caution',uni?'Grains under ~30 µm: only a few voxels per grain.':`The fine ${popWord(s)} (~${um(z.lo)}) gets only a few voxels per grain.`);
+      if(N>20000)add('blocked',`~${sci(N)} grains in the beam: too many to reconstruct.`);
+    }
+    if(GEOM_FLAGS&&s.geom==='plate')add('caution','A plate’s path length changes strongly as it rotates, so only a limited rotation range is usable.');
+    if(GEOM_FLAGS&&s.geom==='dense')add('caution','Dense part: check that the part can rotate with the detector a few mm away.');
+  }
+  if(id==='powder'){
+    if(P.beam&&P.th>0){const c=beamChoice(m,P);if(c.w>0&&c.h>0){const mc=beamModel(m,P,c.w);
+      mc.ph.forEach(x=>{const N=x.perH*c.h;if(N<LIM.powder.lo)add('caution',`${mc.ph.length>1?esc(x.label)+': the':'The'} total diffraction volume (${dvol(mc,c.h)}) holds about ${fmtN(N)} grains; it should have at least ${fmtN(LIM.powder.lo)} for smooth powder rings.`)})}}
+    if(sized){
+      if(N<500)add('blocked',`Only ~${sci(N)} grains in the beam: rings will be spotty, not continuous.`);
+      else if(N<5000)add('caution',`~${sci(N)} grains in the beam: rings may be spotty. Rocking the sample helps.`);
+      else if(!uni){const Nc=coarseCount(s,diffVol(s));if(Nc<5000)add('caution',`Only ~${sci(Nc)} grains from the coarse ${popWord(s)} (~${um(z.hi)}): expect spots on top of the rings.`)}
+    }
+    const trace=phasesOf(m).filter(p=>p.frac>0&&p.frac<2);
+    if(trace.length)add('caution',`${trace.map(p=>`${esc(p.label)} (${p.frac}%)`).join(', ')}: close to the powder detection limit; long exposures needed.`);
+    if(GEOM_FLAGS&&s.geom==='dense')add('caution','Dense part: transmission averages over a long path. EDXRD gives a local gauge volume.');
+  }
+  if(id==='edd'&&sized){
+    const G=gaugeVol(s)*invD3(s);
+    if(G<200)add('caution',`Only ~${sci(G)} grains in the gauge volume: poor grain statistics. Oscillate the sample or enlarge the gauge volume.`);
+    else if(G<2000)add('caution',`~${sci(G)} grains in the gauge volume: borderline statistics.`);
+  }
+  return finish(r);
+}
+function finish(r){let l='ok';for(const [x] of r)if(LV[x]>LV[l])l=x;r.sort((a,b)=>LV[b[0]]-LV[a[0]]);return {level:l,reasons:r}}
+
+/* ---------- step definitions ---------- */
+function matAnswer(x){
+  let a=esc(x.name)+(x.comp?` <small>(${esc(x.comp)})</small>`:'');
+  if(x.phase==='single')a+=` <small>· single phase${x.xtal?', '+x.xtal:''}</small>`;
+  if(x.phase==='multi'){const fmt=(p,i)=>esc(p.name||'phase '+(i+1))+(p.xtal?' '+p.xtal:'')+(p.frac?' '+p.frac+'%':'');
+    const ps=x.phases.map((p,i)=>({p,i}));
+    const yes=ps.filter(o=>o.p.interest),also=ps.filter(o=>!o.p.interest&&(o.p.name||o.p.xtal||o.p.frac));
+    a+=` <small>· multiphase · of interest: ${yes.map(o=>fmt(o.p,o.i)).join(', ')||'none yet'}${also.length?'; also present: '+also.map(o=>fmt(o.p,o.i)).join(', '):''}</small>`}
+  return a;
+}
+const MATSTEP={title:'Materials of interest',answer:()=>named().map(matAnswer).join('; '),
+  ok:()=>named().length&&named().every(m=>m.phase&&(m.phase!=='multi'||m.phases.some(p=>p.interest))),
+  need:()=>!named().length?'Name at least one material.':named().some(m=>!m.phase)?'Say whether each material is single phase or multiphase.':'Tick at least one phase of interest in each multiphase material.'};
+const SUB={
+  tech:{title:'Diffraction technique',
+    answer:P=>P.tech==='custom'?`${esc(P.custom.name)} <small>· custom, closest to ${P.custom.closest==='none'?'none of the four':TN[P.custom.closest]}</small>`:esc(TN[P.tech]),
+    ok:P=>P.tech&&(P.tech!=='custom'||(P.custom.name.trim()&&P.custom.closest)),
+    need:P=>P.tech==='custom'?'Name the technique and pick the closest standard one.':'Pick a technique.'},
+  micro:{title:'Microstructure',
+    answer:(P,m)=>{const S=inScope(m),multi=m.phase==='multi';
+      return S.map(p=>{const M=microOf(P,p.key);
+        return (multi?`<b>${esc(p.label)}</b>: `:'')+distName(M)+' <small>· '+statLine(M)+(M.tex?' · '+texText(M):'')+(M.def?' · '+defText(M):'')+'</small>'}).join('<br>')},
+    ok:(P,m)=>inScope(m).length&&inScope(m).every(p=>{const M=microOf(P,p.key);return M.dist&&M.tex&&M.def}),
+    need:(P,m)=>!inScope(m).length?'Tick a phase of interest in step 1.':m.phase==='multi'?'Choose a grain size distribution, expected texture and deformation level for each phase of interest.':'Choose a grain size distribution, expected texture and deformation level.'},
+  energy:{title:'Beam energy',
+    answer:(P,m)=>{const ep=energyPlan(P);if(!ep)return '';
+      if(beamKind(P)==='white'){const wp=whitePlan(P);return `${esc(ep.info.name)} <small>(${ep.info.rho} g/cm³)</small> · <b>Filtered white beam</b> (${W_LO}–${W_HI} keV) · through ${wp.t} mm: best signal ≈ <b>${specStats(wp).peak} keV</b>, ≈ ${(f=>f<0.01?(f*100).toFixed(2):Math.round(f*100))(specStats(wp).frac)}% transmitted<br><small>Only compatible with EDXRD and Laue techniques</small>`+(whiteFlags(m).length?`<br><small class="flagd">Flagged for discussion: ${whiteFlags(m)[0]}</small>`:'')}
+      const se=sampleEnergy(m),nar=se&&se.by.length?`<br><small>Narrowed by ${se.by.map(esc).join(', ')} detector placement: <b>${se.segs.length?segStr(se.segs):'no energy works for every technique'}</b></small>`:'';
+      const eb=energyBreakdown(m);
+      const brk=eb&&eb.n?'<br>'+eb.rows.slice(1).map(r=>`<small>${r.k}: <b>${segOr(r.v,'none')}</b></small>`).join('<br>')+(eb.n>1?`<br><small>All selected modalities: <b>${segOr(eb.all,'no common energy')}</b></small>`:''):'';
+      return `${esc(ep.info.name)} <small>(${ep.info.rho} g/cm³)</small> · Monochromatic beam · ${ep.eGood!=null?`acceptable energies <b>${ep.eGood}–${E_HI} keV</b> <small>(≥ 10% transmission through ${ep.t} mm)</small>`:`below 10% transmission up to ${E_HI} keV`}`+brk},
+    ok:(P,m)=>!!energyPlan(P)&&!!beamKind(P),
+    need:P=>!(P.th>0)?'Enter the sample thickness in the geometry step first.':!matInfo(P)?(P.mat.src==='custom'?'Enter the density and main element.':'Pick a common alloy or enter a density.'):'Choose a monochromatic or white beam.'},
+  det:{title:'Detector',
+    answer:(P,m)=>{const D=P.det;
+      if(D.kind==='other')return `Other detector${D.otherNote?`: ${esc(D.otherNote)}`:''}`;
+      const fp=ffPlan(m,P);let t=`Large-format area detector · ${D.rmin}–${D.rmax} complete hkl rings`;
+      if(fp.state==='ok'&&fp.segs)t+=`<br><small>${fp.overall?`about ${mm(fp.overall[0])} – ${mm(fp.overall[1])} behind the sample`:'no distance within 300–2,000 mm gives that many rings'}${fp.narrowed?` · energies narrowed to ${fp.segs.length?segStr(fp.segs):'none'}`:''}</small>`;
+      if(fp.other)t+=`<br><small>Other phases: ${D.unsure?'distance not known yet':D.dmin?`${mm(D.dmin)} – ${mm(D.dmax)}`:''}</small>`;
+      return t},
+    ok:(P,m)=>{const D=P.det;if(D.kind==='other')return !!(D.otherNote||'').trim();
+      const fp=ffPlan(m,P);return ringsOk(D)&&fp.state==='ok'&&!fp.needLat&&!fp.short.length&&(!fp.other||manualOk(D))},
+    need:(P,m)=>{const D=P.det;if(D.kind==='other')return !(D.otherNote||'').trim()?'Describe the alternative detector you have in mind.':'Enter the anticipated detector distance range (300–2,000 mm), or click “I don’t know”.';
+      const fp=ffPlan(m,P);if(fp.state==='noE')return 'Finish the beam energy step for this sample first.';
+      if(!ringsOk(D))return 'Enter how many rings you want on the detector.';
+      if(fp.needLat)return 'Enter the lattice parameters for each phase.';
+      if(fp.short.length)return `Enter at least ${D.rmax+1} d-spacings for ${fp.short.map(p=>p.label).join(', ')}, or clear them and give a range.`;
+      return 'Enter the anticipated detector distance range for the other phases, or click “I don’t know”.'}},
+  imod:{title:'Imaging modality',
+    answer:I=>`${esc(imgName(I))}${I.mod==='custom'&&I.custom.notes?` <small>(${esc(I.custom.notes)})</small>`:''} · <small>${(ITARGET.find(x=>x[0]===I.target)||[,''])[1].toLowerCase()}</small>`,
+    ok:I=>I.mod&&(I.mod!=='custom'||I.custom.name.trim())&&I.target,
+    need:I=>!I.mod?'Pick an imaging modality.':I.mod==='custom'&&!I.custom.name.trim()?'Name the imaging modality.':'Say what you need to see.'},
+  ires:{title:'Resolution, field of view & energy',
+    answer:(I,m)=>{const ie=m?imgEnergy(m):null;return `Features down to ${um(I.f)} <small>· ${IPX} µm pixels (~${iAcross(I).toFixed(iAcross(I)<10?1:0)} across) · field of view ≈ ${um(iFov(I))}</small>`+(ie&&ie.segs.length?`<br><small>Best contrast at ${segStr(ie.segs)}${ie.best?`, ideally ~${ie.best} keV`:''}${ie.diff.length?(ie.overlap.length?` · overlaps diffraction at ${segStr(ie.overlap)}`:' · no overlap with the diffraction range'):''}</small>`:'')},
+    ok:()=>true,need:()=>''},
+  tth:{title:'Take-off angle (2θ)',
+    answer:(P,m)=>{if(P.tthUnsure&&!(P.tth>0))return 'Take-off angle not known yet';if(!(P.tth>0))return '';
+      const pk=m?tthPhases(m).filter(p=>p.refl).map(p=>{const r=p.refl.map(x=>({...x,E:eOf(x.d,P.tth)})).filter(x=>x.E>=W_LO&&x.E<=W_HI).slice(0,4);return r.length?`<small>${esc(p.label)}: ${r.map(x=>`${x.hkl} ${x.E.toFixed(1)} keV`).join(', ')}${p.refl.length>4?'…':''}</small>`:''}).filter(Boolean):[];
+      return `2θ = <b>${P.tth}°</b>`+(pk.length?'<br>'+pk.join('<br>'):'')},
+    ok:()=>true,need:()=>''},
+  env:{title:'Experimental setup',
+    answer:(P)=>{const f=envFlags(P.env);return envText(P.env)+(f.length?`<br><small class="flagd">Flagged for discussion: ${f.join(' ')}</small>`:'')},
+    ok:P=>envOk(P.env),need:P=>envNeed(P.env)},
+  dset:{title:'Dataset',
+    answer:P=>{const D=P.ds;if(!D.map)return '';const n=dsPoints(D);
+      const rot=D.rot?`fly-scanned rotation series at each point: ${D.rotN||'?'} steps over ${D.rotR||'?'}°${D.rotN>0&&D.rotR>0?` (${+(D.rotR/D.rotN).toFixed(3)}° per step)`:''}`:'';
+      const how=[rot,flyT(D)?'fly-scanning the translation':'',!flyT(D)&&!D.rot?'stepped translation, no rotation':''].filter(Boolean).join(' · ');
+      const frames=D.rot&&D.rotN>0&&n?` · ${(n*D.rotN).toLocaleString('en-US')} frames per volume`:'';
+      const av=D.avg&&avgOk(D)?` · unit of interrogation ${D.ax} × ${D.ay} × ${D.az} mm (fly-scanned)`:'';
+      return `${{point:'Single point',map1:'1D map (line scan)',map2:'2D map',map3:'3D map'}[D.map]}${n?` · <b>${n.toLocaleString('en-US')}</b> data points per volume${D.map!=='point'?` <small>(${dsGrid(D)})</small>`:''}`:''}<br><small>${how}${frames}${av}</small>`},
+    ok:P=>{const D=P.ds;return !!D.map&&dsPoints(D)>0&&(!D.rot||(D.rotN>0&&D.rotR>0))&&!flyClash(D)&&!avgClash(D)&&avgOk(D)},
+    need:P=>!P.ds.map?'Choose the type of map.':P.ds.avg&&!avgOk(P.ds)?'Enter the size of your unit of interrogation.':!(dsPoints(P.ds)>0)?'Enter the number of data points.':avgClash(P.ds)?'Choose between fly-scanning the unit of interrogation or the rotation series.':flyClash(P.ds)?'Choose between fly-scanning the translation or the rotation series.':'Enter how many rotation steps and over what angular range.'},
+  beam:{title:'Beam size per rotation series',
+    answer:(P,m)=>{const c=beamChoice(m,P);if(!c.h)return '';const mc=beamModel(m,P,c.w);return `${um(c.w)} × ${um(c.h)} box`+(effTech(P)==='powder'||effTech(P)==='edd'?'':` <small>(${P.beam.mode==='rec'?'suggested':'custom'})</small>`)+`<br><small>${effTech(P)==='edd'?(g=>`Gauge length FWHM ≈ ${um(g.fwhm)}, tip to tip ≈ ${um(g.tip)} · Gauge volume`)(gaugeLens(mc.wl,P.tth>0?P.tth:7,(P.th||0)*1000)):'Total diffraction volume'} ${dvol(mc,c.h)} · ≈ ${fmtN(mc.ph.reduce((a,x)=>a+x.perH*c.h,0))} grains</small>`},
+    ok:(P,m)=>{const c=beamChoice(m,P),mx=(LIM[effTech(P)]||{}).maxH;return c.w>0&&c.h>0&&!(mx&&c.h>mx)},
+    need:(P,m)=>!(P.th>0)?'Enter the sample thickness in the geometry step first.':(LIM[effTech(P)]||{}).maxH&&beamChoice(m,P).h>LIM[effTech(P)].maxH?`Near-field beam height is limited to ${LIM[effTech(P)].maxH} µm by the beamstop.`:P.beam.mode==='custom'?'Enter a beam width and height.':'No suggestion for this technique; enter a custom beam size.'},
+  scan:{title:'Volumes per state',
+    answer:(P,m)=>{const B=P.beam,n=B.nz*nyEff(P),sc=scanSummary(m,P);
+      return `<b>${n}</b> rotation series per state <small>(${B.nz} high${showWide(P)?` × ${B.ny} wide`:''})</small>`+(sc?`<br><small>Volume ${sc.vol} · ≈ ${sc.grains} grains per state</small>`:'')},
+    ok:P=>P.beam.nz>=1,need:()=>'Enter how many volumes high.'},
+  geom:{title:'Sample geometry & size',answer:P=>geomText(P),
+    ok:P=>!!P.geom&&P.th>0&&(P.geom!=='custom'||P.custom2.trim()),
+    need:P=>!P.geom?'Choose a sample geometry.':P.geom==='custom'&&!P.custom2.trim()?'Describe the custom geometry.':'Enter the sample thickness.'}
+};
+function order(){return ['mat',...(W.done.mat?named().flatMap(m=>[...SAMPLE_SUBS.map(s=>`${m.id}:${s}`),...m.plan.techs.flatMap(T=>subsFor(T).map(s=>`${m.id}:${T.id}:${s}`)),...(m.plan.imgs||[]).flatMap(I=>IMG_SUBS.map(s=>`${m.id}:${I.id}:${s}`))]):[])]}
+function parseKey(k){const p=(k||'').split(':');const m=matById(p[0]);if(!m)return {};return p.length===3?{m,T:m.plan.techs.find(t=>t.id===p[1]),sub:p[2]}:{m,sub:p[1]}}
+const techName=T=>T.tech==='custom'?(T.custom.name||'Custom technique'):T.tech?TN[T.tech]:'';
+function complete(key){W.done[key]=true;W.open=order().find(k=>!W.done[k])||null;save();renderAll();focusOpen()}
+
+/* ---------- rendering ---------- */
+const steps=$('#steps');
+let refreshers=[];
+function refresh(){refreshers.forEach(f=>f());renderFit()}
+function stepShell(key,title,num,state,answerHTML,extraClass,hue){
+  const li=document.createElement('li');li.className='step'+(extraClass?' '+extraClass:'');li.dataset.state=state;if(hue)li.dataset.sec=hue;
+  li.innerHTML=`<div class="shead"><span class="num" aria-hidden="true">${state==='done'?'✓':num}</span><div class="htext"><span class="stitle">${title}</span>${state==='done'?`<span class="answer">${answerHTML}</span>`:''}</div>${state==='done'?`<button class="edit" type="button" aria-label="Edit ${title}">Edit</button>`:''}</div>`;
+  if(state==='done')li.querySelector('.edit').addEventListener('click',()=>{W.open=key;save();renderAll();focusOpen()});
+  if(state==='todo'&&key!=='mat'){const b=document.createElement('button');b.type='button';b.className='edit';b.textContent='Fill in';b.setAttribute('aria-label',`Fill in ${title}`);
+    b.addEventListener('click',()=>{W.open=key;save();renderAll();focusOpen()});li.querySelector('.shead').appendChild(b)}
+  return li;
+}
+function renderSteps(){
+  steps.innerHTML='';
+  // step 1: materials
+  {const open=W.open==='mat',done=W.done.mat&&!open;const st=open?'open':done?'done':'todo';
+   const li=stepShell('mat',MATSTEP.title,1,st,done?MATSTEP.answer():'');
+   if(open){const b=document.createElement('div');b.className='sbody';li.appendChild(b);buildMat(b)}
+   steps.appendChild(li);}
+  if(!W.done.mat){
+    const g=document.createElement('li');g.className='group';g.innerHTML=`<span class="gk">Then, for each material</span><h2 style="color:var(--muted)">Diffraction plan</h2><span class="gp">sample first, then one or more techniques</span>`;steps.appendChild(g);
+    return;
+  }
+  named().forEach((m,mi)=>{
+    const P=m.plan,keys=order().filter(k=>k.startsWith(m.id+':'));const n=keys.filter(k=>W.done[k]).length;
+    const g=document.createElement('li');g.className='group';
+    g.innerHTML=`<span class="gk">Plan ${mi+1} of ${named().length}</span><h2>${esc(m.name)}</h2><span class="gp">${n} of ${keys.length} steps done</span>`;
+    steps.appendChild(g);
+    let letter=0;const L=()=>String.fromCharCode(97+letter++);
+    const stepLi=(key,def,ans,hue,builder)=>{
+      const open=W.open===key,done=W.done[key]&&!open;const st=open?'open':done?'done':'todo';
+      const li=stepShell(key,def.title,L(),st,done?ans():'','sub'+(hue?' tstep':''),hue);
+      if(open){const b=document.createElement('div');b.className='sbody';li.appendChild(b);try{builder(b)}catch(err){b.innerHTML=`<p class="hint" style="color:var(--bad)">This step could not be drawn (${esc(err.message)}). Reload the page; if it persists, use Start over.</p>`;console.error(err)}}
+      steps.appendChild(li);
+    };
+    const sg=document.createElement('li');sg.className='subg';sg.innerHTML='<span>Sample</span>';steps.appendChild(sg);
+    SAMPLE_SUBS.forEach(sub=>{const key=`${m.id}:${sub}`;stepLi(key,SUB[sub],()=>SUB[sub].answer(P,m)+(sub==='energy'?beamClashes(m).map(x=>clashNote(`Technique ${x.i+1}: ${x.t}`)).join(''):''),'',b=>BUILD[sub](b,m,P,key))});
+    P.techs.forEach((T,ti)=>{
+      const tg=document.createElement('li');tg.className='subg t';
+      tg.innerHTML=`<span>Technique ${ti+1}${T.tech?' · '+esc(techName(T)):''}</span>`+(beamClash(m,T)?`<span class="redtag">✕ Incompatible with the ${beamKind(P)==='white'?'white':'monochromatic'} beam</span>`:'');
+      if(P.techs.length>1){const rb=document.createElement('button');rb.type='button';rb.className='edit';rb.textContent='Remove';rb.setAttribute('aria-label',`Remove technique ${ti+1}`);
+        rb.addEventListener('click',()=>{P.techs.splice(ti,1);['tech','det','beam','scan','dset'].forEach(x=>delete W.done[`${m.id}:${T.id}:${x}`]);if((W.open||'').includes(T.id))W.open=null;save();renderAll()});tg.appendChild(rb)}
+      steps.appendChild(tg);
+      const C=ctx(P,T);
+      subsFor(T).forEach(sub=>{const key=`${m.id}:${T.id}:${sub}`;
+        stepLi(key,defFor(sub,T),()=>sub==='tech'?SUB.tech.answer(T)+clashNote(beamClash(m,T))+(f=>f.length?`<br><small class="flagd">Flagged for discussion: ${f.join(' ')}</small>`:'')(defFlags(m,effTech(T))):SUB[sub].answer(C,m),'tech',b=>BUILD[sub](b,m,sub==='tech'?T:C,key))});
+    });
+    (P.imgs||[]).forEach((I,ii)=>{
+      const ig=document.createElement('li');ig.className='subg im';
+      ig.innerHTML=`<span>Imaging ${ii+1}${I.mod?' · '+esc(imgName(I)):''}</span>`;
+      const rb=document.createElement('button');rb.type='button';rb.className='edit';rb.textContent='Remove';rb.setAttribute('aria-label',`Remove imaging ${ii+1}`);
+      rb.addEventListener('click',()=>{P.imgs.splice(ii,1);IMG_SUBS.forEach(x=>delete W.done[`${m.id}:${I.id}:${x}`]);if((W.open||'').includes(I.id))W.open=null;save();renderAll()});ig.appendChild(rb);
+      steps.appendChild(ig);
+      IMG_SUBS.forEach(sub=>{const key=`${m.id}:${I.id}:${sub}`;stepLi(key,SUB[sub],()=>SUB[sub].answer(I,m),'img',b=>BUILD[sub](b,m,I,key))});
+    });
+    const add=document.createElement('li');add.className='addtech';
+    add.innerHTML=`<button type="button" class="add">+ Add another technique for ${esc(m.name)}</button><button type="button" class="add addimg">+ Add an imaging modality</button>`;
+    const [bt,bi]=add.querySelectorAll('button');
+    bt.addEventListener('click',()=>{const T=NEWTECH();P.techs.push(T);W.open=`${m.id}:${T.id}:tech`;save();renderAll();focusOpen()});
+    bi.addEventListener('click',()=>{const I=NEWIMG();(P.imgs=P.imgs||[]).push(I);W.open=`${m.id}:${I.id}:imod`;save();renderAll();focusOpen()});
+    steps.appendChild(add);
+  });
+}
+function footer(body,okFn,needFn,key){
+  const f=document.createElement('div');f.className='foot';
+  f.innerHTML=`<button class="done" type="button">Done, next step</button><span class="need"></span>`;
+  const btn=f.querySelector('.done'),need=f.querySelector('.need');
+  const upd=()=>{const ok=!!okFn();btn.disabled=!ok;need.textContent=ok?'':needFn()};
+  btn.addEventListener('click',()=>complete(key));
+  body.appendChild(f);upd();return upd;
+}
+function focusOpen(){const o=steps.querySelector('[data-state="open"]');if(o){o.scrollIntoView({block:'nearest',behavior:'smooth'});const f=o.querySelector('button:not(.edit),input,select');f&&f.focus({preventScroll:true})}else if(!$('#summary').hidden){$('#summary').scrollIntoView({block:'start',behavior:'smooth'})}}
+function q(body,label,hint){const d=document.createElement('div');d.className='q';d.innerHTML=`<div class="qlabel">${label}</div>${hint?`<p class="hint">${hint}</p>`:''}`;body.appendChild(d);return d}
+function chips(container,list,obj,key,{onPick,statusFor}={}){
+  const box=document.createElement('div');box.className='opts';
+  const draw=()=>{box.innerHTML='';list.forEach(([v,lab])=>{
+    const b=document.createElement('button');b.type='button';b.className='opt';
+    const sel=obj[key]===v;const st=statusFor?statusFor(v):{level:'ok',reasons:[]};
+    b.setAttribute('aria-pressed',sel);
+    if(st.level==='caution')b.classList.add('caution');
+    if(st.level==='blocked')b.classList.add(sel?'conflict':'blocked');
+    b.title=st.reasons.map(x=>x[1]).join(' ');
+    b.innerHTML=`<i class="tri" aria-hidden="true">!</i><i class="x" aria-hidden="true">✕</i><span class="lab">${lab}</span>`;
+    b.addEventListener('click',()=>{if(st.level==='blocked'&&!sel)return;obj[key]=sel?null:v;save();draw();onPick&&onPick()});
+    box.appendChild(b)})};
+  draw();container.appendChild(box);return draw;
+}
+function slider(container,m,P,k,label,fmt){
+  const el=document.createElement('div');el.className='slider';
+  el.innerHTML=`<div class="qlabel"><span class="sl">${label}</span><span class="sval"></span></div><input type="range" id="ws-${m.id}-${k}" min="0" max="1000" step="1" aria-label="${label}"><div class="ends"><span>${fmt(SL[k].min)}</span><span>${fmt(SL[k].max)}</span></div>`;
+  const inp=el.querySelector('input'),val=el.querySelector('.sval');
+  const paint=()=>{inp.value=toPos(k,P[k]);val.textContent=fmt(P[k]);
+    const id=effTech(P);if(!GRAIN_FLAGS||!id||id==='none'){inp.style.background='var(--line)';return}
+    const cols={ok:'var(--ok)',caution:'var(--warn)',blocked:'var(--block)'};const st=[];
+    for(let i=0;i<=50;i++)st.push(`${cols[check(m,{...P,[k]:fromPos(k,i*20)}).level]} ${i*2}%`);
+    inp.style.background=`linear-gradient(90deg,${st.join(',')})`};
+  inp.addEventListener('input',()=>{P[k]=fromPos(k,+inp.value);save();refresh()});
+  container.appendChild(el);return {el,paint,setLabel:t=>el.querySelector('.sl').textContent=t};
+}
+
+/* ---------- step 1: materials ---------- */
+function buildMat(body){
+  const m=q(body,'Material(s)','List every material you are studying. Each one gets its own diffraction plan next. For alloys, give the nominal composition.');
+  const list=document.createElement('div');list.className='mlist';m.appendChild(list);
+  const add=document.createElement('button');add.type='button';add.className='add';add.textContent='+ Add material';m.appendChild(add);
+  const xsel=(id,val,label)=>`<select id="${id}" aria-label="${label}"><option value="">Structure…</option>${XTAL.map(o=>`<option${val===o?' selected':''}>${o}</option>`).join('')}</select>`;
+  const draw=()=>{list.innerHTML='';
+    W.materials.forEach((x,i)=>{
+      const card=document.createElement('div');card.className='mcard';
+      card.innerHTML=`<div class="mtop"><input type="text" id="mn-${x.id}" aria-label="Material ${i+1} name" placeholder="${i?'e.g. 316L steel':'e.g. Ti-6Al-4V'}" value="${esc(x.name)}"><input type="text" id="mc-${x.id}" aria-label="Material ${i+1} composition" placeholder="Composition, e.g. Ti-6Al-4V (wt%)" value="${esc(x.comp)}"><button type="button" class="del" aria-label="Remove material ${i+1}">✕</button></div>
+        <div class="msub"><span class="sublab">Phases in this material</span><div class="opts"></div></div><div class="mdet"></div>`;
+      const [n,c]=card.querySelectorAll('.mtop input');
+      n.addEventListener('input',()=>{x.name=n.value;save();upd()});c.addEventListener('input',()=>{x.comp=c.value;save()});
+      card.querySelector('.mtop .del').addEventListener('click',()=>{W.materials.splice(i,1);if(!W.materials.length)W.materials.push(NEWMAT());save();draw();upd()});
+      const opts=card.querySelector('.opts');
+      LATT.forEach(([v,lab])=>{const sel=x.phase===v;const b=document.createElement('button');b.type='button';b.className='opt';b.setAttribute('aria-pressed',sel);
+        b.innerHTML=`<span class="lab">${lab}</span>`;b.addEventListener('click',()=>{x.phase=sel?null:v;save();draw();upd()});opts.appendChild(b)});
+      const det=card.querySelector('.mdet');
+      if(x.phase==='single'){
+        det.innerHTML=`<label class="inl">Crystal structure ${xsel(`mx-${x.id}`,x.xtal,`Material ${i+1} crystal structure`)}</label>`;
+        const s=det.querySelector('select');s.addEventListener('change',()=>{x.xtal=s.value;save()});
+      }
+      if(x.phase==='multi'){
+        det.innerHTML=`<p class="hint">Tick the phase(s) you want to study. Only those are asked about in the plan; the rest are noted as also present.</p><div class="prow phead"><span style="text-align:center">Study</span><span>Phase</span><span>Structure</span><span>Fraction % <em>optional</em></span><span></span></div>`;
+        x.phases.forEach((p,k)=>{const r=document.createElement('div');r.className='prow'+(p.interest?'':' off');
+          r.innerHTML=`<label class="ck"><input type="checkbox" id="pi-${x.id}-${k}" aria-label="Study phase ${k+1}"${p.interest?' checked':''}></label><input type="text" id="pn-${x.id}-${k}" aria-label="Phase ${k+1} name" placeholder="${k?'e.g. β':'e.g. α'}" value="${esc(p.name)}">${xsel(`px-${x.id}-${k}`,p.xtal,`Phase ${k+1} crystal structure`)}<input type="number" id="pf-${x.id}-${k}" min="0" max="100" step="0.1" aria-label="Phase ${k+1} fraction percent (optional)" placeholder="–" value="${p.frac??''}"><button type="button" class="del" aria-label="Remove phase ${k+1}">✕</button>`;
+          const ci=r.querySelector('input[type=checkbox]');ci.addEventListener('change',()=>{p.interest=ci.checked;r.classList.toggle('off',!ci.checked);save();upd()});
+          const pn=r.querySelector('input[type=text]'),pf=r.querySelector('input[type=number]'),ps=r.querySelector('select');
+          pn.addEventListener('input',()=>{p.name=pn.value;save()});ps.addEventListener('change',()=>{p.xtal=ps.value;save()});
+          pf.addEventListener('input',()=>{p.frac=pf.value===''?null:+pf.value;save();sum()});
+          r.querySelector('.del').addEventListener('click',()=>{x.phases.splice(k,1);while(x.phases.length<2)x.phases.push(NEWPHASE());save();draw();upd()});
+          det.appendChild(r)});
+        const foot=document.createElement('div');foot.className='pfoot';foot.innerHTML=`<button type="button" class="add">+ Add phase</button><span class="psum"></span>`;det.appendChild(foot);
+        foot.querySelector('.add').addEventListener('click',()=>{x.phases.push(NEWPHASE());save();draw();document.getElementById(`pn-${x.id}-${x.phases.length-1}`).focus()});
+        const sum=()=>{const f=x.phases.map(p=>p.frac).filter(v=>v!=null);const t=f.reduce((a,b)=>a+b,0);
+          foot.querySelector('.psum').textContent=f.length?`Total ${+t.toFixed(1)}%${Math.abs(t-100)>0.5&&f.length===x.phases.length?' (does not add to 100%)':''}`:''};
+        sum();
+      }
+      list.appendChild(card);
+    })};
+  add.addEventListener('click',()=>{W.materials.push(NEWMAT());save();draw();upd();document.getElementById(`mn-${W.materials[W.materials.length-1].id}`).focus()});
+  draw();
+  const upd=footer(body,MATSTEP.ok,MATSTEP.need,'mat');
+}
+
+/* ---------- per-material plan steps ---------- */
+const BUILD={
+  tech(body,m,P,key){
+    const white=beamKind(m.plan)==='white';
+    if(white)body.insertAdjacentHTML('beforeend','<p class="hint wonly">White beam is selected for this sample, so only energy dispersive (EDXRD) is available. Use a custom technique for Laue.</p>');
+    const grid=document.createElement('div');grid.className='tcards';body.appendChild(grid);
+    TECHS.concat([{id:'custom',name:'Custom / other technique',short:'Something else, or a variant. You’ll map it to the closest standard technique.'}]).forEach(t=>{
+      const off=white&&t.id!=='edd'&&t.id!=='custom';
+      const b=document.createElement('button');b.type='button';b.className='tc'+(t.id==='custom'?' custom':'')+(off?' off':'');
+      b.setAttribute('aria-pressed',P.tech===t.id);if(off){b.setAttribute('aria-disabled','true');b.title='Not available with white beam'}
+      const df=off?[]:defFlags(m,t.id);
+      b.innerHTML=`<b>${t.name}</b><span>${off?'Not available with white beam. ':''}${t.short}</span>`+(df.length?`<span class="tflag">Flagged for discussion: ${df.join(' ')}</span>`:'');
+      b.addEventListener('click',()=>{if(off)return;P.tech=t.id;save();if(t.id!=='custom')complete(key);else{renderAll();focusOpen()}});
+      grid.appendChild(b);
+    });
+    if(P.tech==='custom'){
+      const form=document.createElement('div');form.className='customform';body.appendChild(form);
+      const n=q(form,'Technique name');const ni=document.createElement('input');ni.type='text';ni.id=`cn-${m.id}`;ni.placeholder='e.g. Dark-field X-ray microscopy, scanning 3DXRD';ni.value=P.custom.name;n.appendChild(ni);
+      const c=q(form,'Closest standard technique','Its rules are used to flag your choices for this material. Pick the nearest one if you can.');
+      const box=document.createElement('div');box.className='opts';c.appendChild(box);
+      const drawC=()=>{box.innerHTML='';TECHS.filter(t=>!white||t.id==='edd').map(t=>[t.id,t.name]).concat([['none','None of these']]).forEach(([v,lab])=>{
+        const b=document.createElement('button');b.type='button';b.className='opt';b.setAttribute('aria-pressed',P.custom.closest===v);
+        b.innerHTML=`<span class="lab">${lab}</span>`;b.addEventListener('click',()=>{P.custom.closest=P.custom.closest===v?null:v;save();drawC();upd();renderFit()});box.appendChild(b)})};
+      drawC();
+      const nt=q(form,'Notes (optional)');const ta=document.createElement('textarea');ta.id=`cnotes-${m.id}`;ta.placeholder='What makes it different from the closest technique?';ta.value=P.custom.notes;nt.appendChild(ta);
+      ni.addEventListener('input',()=>{P.custom.name=ni.value;save();upd();renderFit()});
+      ta.addEventListener('input',()=>{P.custom.notes=ta.value;save()});
+      const upd=footer(body,()=>SUB.tech.ok(P),()=>SUB.tech.need(P),key);
+    }
+  },
+  micro(body,m,P,key){
+    const multi=m.phase==='multi',S=inScope(m);
+    if(multi){const others=m.phases.filter(p=>!p.interest).length;
+      body.insertAdjacentHTML('beforeend',`<p class="hint">Grain size for the phase${S.length>1?'s':''} of interest in ${esc(m.name)}${others?`. The ${others} other phase${others>1?'s are':' is'} not needed here`:''}. Change which phases you study in step 1.</p>`)}
+    S.forEach(p=>{
+      const M=microOf(P,p.key);
+      const blk=document.createElement('div');blk.className=multi?'phblock':'phplain';body.appendChild(blk);
+      if(multi){
+        const h=document.createElement('div');h.className='phhead';
+        h.innerHTML=`<span class="phname">${esc(p.label)}</span>${p.meta?`<span class="phmeta">${esc(p.meta)}</span>`:''}`;
+        blk.appendChild(h);
+      }
+      buildMicroBlock(blk,{id:`${m.id}-p${p.key}`},M,multi?`For ${esc(p.label)}.`:`For ${esc(m.name)}.`,()=>upd());
+    });
+    const upd=footer(body,()=>SUB.micro.ok(P,m),()=>SUB.micro.need(P,m),key);
+  },
+  geom(body,m,P,key){
+    const gq=q(body,'Sample geometry',`For the ${esc(m.name)} sample.`);
+    const cq=document.createElement('div');cq.className='q';
+    cq.innerHTML=`<div class="qlabel">Describe the geometry</div>`;
+    const ci=document.createElement('input');ci.type='text';ci.id=`cg-${m.id}`;ci.placeholder='e.g. hollow tube, wedge, section cut from a turbine blade';ci.value=P.custom2||'';cq.appendChild(ci);
+    chips(gq,GEOM,P,'geom',{onPick:()=>{cq.hidden=P.geom!=='custom';upd()}});
+    cq.hidden=P.geom!=='custom';body.appendChild(cq);
+    ci.addEventListener('input',()=>{P.custom2=ci.value;save();upd()});
+    const tq=q(body,'Thickness','Along the beam, in mm. For a round bar this is the diameter.');
+    const row=document.createElement('div');row.className='unit';
+    row.innerHTML=`<input type="number" id="th-${m.id}" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 1.0" value="${P.th??''}"><span>mm</span>`;
+    tq.appendChild(row);
+    const ti=row.querySelector('input');ti.addEventListener('input',()=>{P.th=ti.value===''?null:+ti.value;if(P.th>0)P.t=P.th*1000;save();upd()});
+    const upd=footer(body,()=>SUB.geom.ok(P),()=>SUB.geom.need(P),key);
+  },
+  beam(body,m,P,key){
+    const B=P.beam;
+    if(!(P.th>0)){body.insertAdjacentHTML('beforeend','<p class="hint">Enter the sample thickness in the geometry step to size the beam.</p>');footer(body,()=>false,()=>SUB.beam.need(P,m),key);return}
+    const rec=document.createElement('p');rec.className='headline';body.appendChild(rec);
+    const fig=document.createElement('figure');fig.className='gfig';fig.innerHTML='<svg viewBox="0 0 460 230" role="img" aria-label="Grains illuminated against beam height"></svg><figcaption></figcaption>';body.appendChild(fig);
+    const notes=document.createElement('div');notes.className='rnotes';body.appendChild(notes);
+    const noSug=effTech(P)==='powder'||effTech(P)==='edd';
+    const isE=effTech(P)==='edd';                 // no suggested size for angular-dispersive (powder) diffraction
+    if(noSug){B.mode='custom';if(!B.w)B.w=DEFAULT_W}
+    const cq=q(body,'Beam size');
+    const cust=document.createElement('div');cust.className='bgrid';
+    cust.innerHTML=`<label>Width (µm)<input type="number" id="bw-${m.id}" min="1" step="10" value="${B.w??''}"></label><label>Height (µm)<input type="number" id="bh-${m.id}" min="1" step="1" value="${B.h??''}"></label>`;
+    chips(cq,[['rec','Use suggested size'],['custom','Custom beam size']],B,'mode',{onPick:()=>{cust.hidden=B.mode!=='custom';if(B.mode==='custom'&&!B.h){const c=beamChoice(m,{...P,beam:{...B,mode:'rec'}});B.w=c.w;B.h=c.h;cust.querySelectorAll('input')[0].value=B.w;cust.querySelectorAll('input')[1].value=B.h??''}save();paint();upd()}});
+    cq.appendChild(cust);cust.hidden=B.mode!=='custom';
+    if(noSug){const ch=cq.querySelector('.opts');if(ch)ch.hidden=true}
+    const [iw,ih]=cust.querySelectorAll('input');
+    iw.addEventListener('input',()=>{B.w=iw.value===''?null:+iw.value;save();paint();upd();renderFit()});
+    ih.addEventListener('input',()=>{B.h=ih.value===''?null:+ih.value;save();paint();upd();renderFit()});
+    const out=document.createElement('div');out.className='readout';body.appendChild(out);
+    const paint=()=>{
+      const md=beamModel(m,P,DEFAULT_W),T=md.id&&md.id!=='none'?(TN[md.id]):null;
+      const wTxt=md.wl<DEFAULT_W?`${um(md.wl)} (the full width of the sample)`:um(DEFAULT_W);
+      const split=md.lim&&md.hi!==Infinity&&md.lo>md.hi;
+      if(isE)rec.innerHTML=`Enter the incident beam width and height below. The diagram shows the gauge volume they make with the detector at <b>2θ = ${P.tth>0?P.tth+'°':'7° (assumed)'}</b>: gauge length ≈ width ÷ sin 2θ, capped at the sample thickness.`;
+      else if(noSug)rec.innerHTML=`Enter the beam size you plan to use. For smooth powder rings, the total diffraction volume (width × height × thickness) should hold at least <b>${fmtN(LIM.powder.lo)} grains</b>; the graph shows how many your beam lights up.`;
+      else if(!md.lim)rec.innerHTML='No grain targets for this technique, so no suggested size. Enter a custom beam below.';
+      else if(md.hi===Infinity)rec.innerHTML=`Based on your grain size and sample size, the smallest probe that still gives ${md.id==='powder'?'smooth powder rings':'good grain statistics in the gauge'} is about <b>${wTxt} × ${um(niceUp(md.lo))}</b>.`;
+      else{const want=md.lim.sug??(md.lim.lo+md.lim.hi)/2,got=Math.max(...md.ph.map(x=>x.perH*md.mid)),capped=md.maxH&&md.mid>=md.maxH&&got<want*0.95;
+        rec.innerHTML=capped
+          ?`Based on your grain size and sample size, the beamstop sets the probe: <b>${wTxt} × ${um(md.maxH)}</b>, the ${md.maxH} µm height limit for ${T}. That puts only about ${fmtN(got)} grains in the beam, ${got<md.lim.lo?'below':'within'} the ${fmtN(md.lim.lo)}–${fmtN(md.lim.hi)} target${got<md.lim.lo?'; scanning several volumes high will add more grains':''}.`
+          :`Based on your grain size and sample size, a probe of about <b>${wTxt} × ${um(nice(md.mid))}</b> puts roughly ${want.toLocaleString('en-US')} grains in the beam, within the ${fmtN(md.lim.lo)}–${fmtN(md.lim.hi)} target for ${T}.`}
+      const nt=[];
+      if(split)nt.push(`<span class="rnote warn">Your phases pull in different directions: the least common phase would need about ${um(niceUp(md.lo))} of height for enough grains, but above ${um(niceDn(md.hi))} the most common phase overlaps. Consider several volumes, or a separate scan for the minor phase.</span>`);
+      if(md.ph.some(x=>!x.fKnown))nt.push('<span class="rnote">Phase fraction not given for some phases, so they are counted as filling the whole volume.</span>');
+      notes.innerHTML=nt.join('<br>');notes.hidden=!nt.length;
+      const c=beamChoice(m,P);
+      if(!(c.w>0&&c.h>0)){if(isE){fig.hidden=true;out.innerHTML='Enter the incident beam width and height to see the gauge volume.';return}drawGrains(fig,beamModel(m,P,c.w>0?c.w:DEFAULT_W),{w:c.w>0?c.w:DEFAULT_W,h:null});out.innerHTML='Enter a beam width and height to see grains per volume.';return}
+      const mc=beamModel(m,P,c.w);
+      fig.hidden=false;if(isE)drawGauge(fig,mc,c,P);else drawGrains(fig,mc,c);
+      const rows=mc.ph.map(x=>{const N=x.perH*c.h;let tag='';
+        if(mc.lim){tag=N<mc.lim.lo?'<span class="rtag lo">below target</span>':N>mc.lim.hi?'<span class="rtag hi">above target</span>':'<span class="rtag ok">in target</span>'}
+        return `${esc(x.label)} ≈ <b>${fmtN(N)}</b> grains ${tag}`}).join('<br>');
+      const GLr=isE?gaugeLens(mc.wl,P.tth>0?P.tth:7,(P.th||0)*1000):null;
+      out.innerHTML=`${isE?'Gauge volume':'Total diffraction volume'}: <b>${dvol(mc,c.h)}</b> <span class="rnote">(width × height × ${mc.id==='edd'?'FWHM gauge length':'thickness'}; beam ${um(c.w)} × ${um(c.h)})</span>`+(isE?`<br>Gauge length along the beam: FWHM ≈ <b>${um(GLr.fwhm)}</b> · tip to tip ≈ <b>${um(GLr.tip)}</b>${GLr.fCap||GLr.tCap?' (capped at the sample thickness)':''}`:'')+`<br>Grains in the ${isE?'gauge':'diffraction'} volume: ${rows}`+(!isE&&noSug&&mc.ph.some(x=>x.perH*c.h<LIM.powder.lo)?`<br><span class="rnote warn">Warning: the diffraction volume should have at least ${fmtN(LIM.powder.lo)} grains for smooth powder rings. A taller or wider beam, or a thicker sample, adds grains.</span>`:'')+(mc.maxH&&c.h>mc.maxH?`<br><span class="rnote warn">Too tall: the near-field beamstop limits beam height to ${mc.maxH} µm.</span>`:'');
+    };
+    refreshers.push(paint);paint();
+    const upd=footer(body,()=>SUB.beam.ok(P,m),()=>SUB.beam.need(P,m),key);
+  },
+  env(body,m,P,key){
+    const E=P.env;
+    const mq=q(body,`How will ${esc(m.name)} be measured?`);
+    chips(mq,[['ex','Ex situ'],['in','In situ']],E,'mode',{onPick:()=>{paint();upd()}});
+    // ex situ
+    const ex=document.createElement('div');ex.className='q';body.appendChild(ex);
+    ex.innerHTML=`<div class="qlabel">Staging needs</div><p class="hint">Brief description of what the stage has to carry and move.</p>
+      <div class="bgrid g3"><label>Sample weight<input type="text" id="ew-${key}" placeholder="e.g. 20 g" value="${esc(E.weight)}"></label><label>Total travel<input type="text" id="et-${key}" placeholder="e.g. 10 mm in x, 5 mm in z" value="${esc(E.travel)}"></label><label>Degrees of freedom<input type="text" id="ed-${key}" placeholder="e.g. x, y, z, ω" value="${esc(E.dof)}"></label></div>
+      <textarea id="en-${key}" placeholder="Anything else about the staging (optional)">${esc(E.exNote)}</textarea>`;
+    const exIn=[...ex.querySelectorAll('input'),ex.querySelector('textarea')];
+    ['weight','travel','dof','exNote'].forEach((k,i)=>exIn[i].addEventListener('input',e=>{E[k]=e.target.value;save();upd()}));
+    // in situ
+    const ins=document.createElement('div');ins.className='q';body.appendChild(ins);
+    const kq=document.createElement('div');kq.className='q';kq.innerHTML='<div class="qlabel">Type of in-situ experiment</div>';ins.appendChild(kq);
+    chips(kq,[['mech','Mechanical testing'],['special','Specialized setup']],E,'kind',{onPick:()=>{paint();upd()}});
+    const mech=document.createElement('div');mech.className='q';mech.innerHTML='<div class="qlabel">Load frame</div>';ins.appendChild(mech);
+    const fbox=document.createElement('div');fbox.className='opts';mech.appendChild(fbox);
+    const either=document.createElement('p');either.className='hint either';either.textContent='Either RAMS II or RAMS IV is fine.';mech.appendChild(either);
+    const rams=['RAMSII','RAMSIV'];
+    const selSet=()=>new Set((E.frame||'').split('+').filter(Boolean));
+    const drawFrames=()=>{fbox.innerHTML='';const sel=selSet();
+      FRAMES.forEach(([v,lab])=>{const b=document.createElement('button');b.type='button';b.className='opt';b.setAttribute('aria-pressed',sel.has(v));b.innerHTML=`<span class="lab">${lab}</span>`;
+        b.addEventListener('click',()=>{let n=selSet();
+          if(rams.includes(v)){[...n].forEach(x=>{if(!rams.includes(x))n.delete(x)});n.has(v)?n.delete(v):n.add(v)}   // RAMS II and IV can be picked together
+          else n=n.has(v)?new Set():new Set([v]);
+          E.frame=rams.filter(x=>n.has(x)).join('+')||[...n][0]||null;
+          if(!HEAT_FRAMES.includes(E.frame)){E.heat=false;E.hot=false;ih.checked=false;io.checked=false}
+          save();drawFrames();paint();upd()});
+        fbox.appendChild(b)});
+      either.hidden=E.frame!=='RAMSII+RAMSIV'};
+    mech.querySelector('.qlabel').insertAdjacentHTML('afterend','<p class="hint">RAMS II and RAMS IV can both be selected if either would work.</p>');
+    const heat=document.createElement('div');heat.className='q';mech.appendChild(heat);
+    heat.innerHTML=`<label class="check"><input type="checkbox" id="eh-${key}"${E.heat?' checked':''}> Heating</label>
+      <div class="hrow"><div class="bgrid"><label>From (°C)<input type="number" id="t1-${key}" min="0" max="${T_MAX}" step="10" value="${E.tmin??''}"></label><label>To (°C)<input type="number" id="t2-${key}" min="0" max="${T_MAX}" step="10" value="${E.tmax??''}"></label></div>
+      <p class="hint twarn"></p>
+      <label class="check"><input type="checkbox" id="eo-${key}"${E.hot?' checked':''}> Higher temperatures required (above ${T_MAX} °C)</label></div>`;
+    const [ih,it1,it2,io]=heat.querySelectorAll('input');
+    ih.addEventListener('change',e=>{E.heat=e.target.checked;if(!E.heat)E.hot=false;save();paint();upd()});
+    it1.addEventListener('input',()=>{E.tmin=it1.value===''?null:+it1.value;save();paint();upd()});
+    it2.addEventListener('input',()=>{E.tmax=it2.value===''?null:+it2.value;save();paint();upd()});
+    io.addEventListener('change',e=>{E.hot=e.target.checked;save();paint();upd()});
+    const cool=document.createElement('div');cool.className='q';mech.appendChild(cool);
+    cool.innerHTML=`<label class="check"><input type="checkbox" id="ec-${key}"${E.cool?' checked':''}> Cryostream / cooling</label>`;
+    cool.querySelector('input').addEventListener('change',e=>{E.cool=e.target.checked;save();paint();upd()});
+    drawFrames();
+    const sp=document.createElement('div');sp.className='q';ins.appendChild(sp);
+    sp.innerHTML=`<div class="qlabel">Describe the specialized setup briefly</div><textarea id="es-${key}" placeholder="e.g. custom furnace with gas flow, electrochemical cell, cryostat">${esc(E.special)}</textarea>`;
+    sp.querySelector('textarea').addEventListener('input',e=>{E.special=e.target.value;save();paint();upd()});
+    const fl=document.createElement('div');fl.className='flagbox';body.appendChild(fl);
+    const paint=()=>{
+      ex.hidden=E.mode!=='ex';ins.hidden=E.mode!=='in';
+      mech.hidden=E.kind!=='mech';sp.hidden=E.kind!=='special';
+      const canHeat=HEAT_FRAMES.includes(E.frame);heat.hidden=!canHeat;cool.hidden=!E.frame;
+      heat.querySelector('.hrow').hidden=!E.heat;
+      const bad=E.heat&&((E.tmin!=null&&(E.tmin<0||E.tmin>T_MAX))||(E.tmax!=null&&(E.tmax<0||E.tmax>T_MAX))||(E.tmin!=null&&E.tmax!=null&&E.tmin>E.tmax));
+      heat.querySelector('.twarn').textContent=bad?`Keep the range within 0–${T_MAX} °C, with "from" no larger than "to". Tick the box below if you need more.`:`${E.frame==='RAMSII+RAMSIV'?'Both frames heat':`The ${frameName(E.frame)} heats`} from 0 to ${T_MAX} °C.`;
+      heat.querySelector('.twarn').style.color=bad?'var(--warn)':'';
+      const f=envFlags(E);fl.hidden=!f.length;fl.innerHTML=`<b>Flagged for discussion</b><ul>${f.map(x=>`<li>${x}</li>`).join('')}</ul>`};
+    paint();
+    const upd=footer(body,()=>envOk(E),()=>envNeed(E),key);
+  },
+  tth(body,m,P,key){
+    const T=m.plan.techs.find(x=>key.endsWith(x.id+':tth'));
+    const ph=tthPhases(m),anyCalc=ph.some(p=>p.calc);
+    const tq=q(body,'Take-off angle (2θ)',`The fixed scattering angle of the energy-dispersive detector, between ${TTH_MIN}° and ${TTH_MAX}°. It sets where the peaks fall on the energy spectrum and the length of the gauge volume along the beam.`);
+    if(T.tth==null&&!T.tthUnsure)T.tth=7;
+    const row=document.createElement('div');row.className='slider';
+    row.innerHTML=`<div class="qlabel"><span>Drag to try different angles</span><span class="sval tthv"></span></div><input type="range" id="tt-${key}" min="${TTH_MIN}" max="${TTH_MAX}" step="0.1" value="${T.tth??7}" aria-label="Take-off angle in degrees"><div class="ends"><span>${TTH_MIN}°</span><span>${TTH_MAX}°</span></div>`;tq.appendChild(row);
+    const warn=document.createElement('p');warn.className='hint';tq.appendChild(warn);
+    let un=null;
+    if(!anyCalc){un=document.createElement('div');un.className='opts';tq.appendChild(un);
+      chips(un,[[true,'I don’t know']],T,'tthUnsure',{onPick:()=>{T.tthUnsure=!!T.tthUnsure;if(T.tthUnsure)T.tth=null;else T.tth=7;row.querySelector('input').value=T.tth??7;save();paint();upd()}})}
+    // lattice parameters for FCC / BCC / HCP phases
+    const lat=document.createElement('div');lat.className='latbox';body.appendChild(lat);
+    if(ph.length){lat.insertAdjacentHTML('beforeend','<div class="qlabel">Nominal lattice parameters</div><p class="hint">Used to place the peaks on the energy spectrum.</p>');
+      ph.forEach(p=>{const r=document.createElement('div');r.className='latrow';
+        if(!p.calc){r.innerHTML=`<span class="latn">${esc(p.label)} <small>${esc(p.xtal)}</small></span><span class="hint">Structure not FCC, BCC or HCP, so peaks are not shown. Enter the take-off angle you want, or choose “I don’t know”.</span>`;lat.appendChild(r);return}
+        r.innerHTML=`<span class="latn">${esc(p.label)} <small>${p.xtal}</small></span><label>a (Å)<input type="number" id="ea-${key}-${p.key}" min="0.5" step="0.0001" placeholder="${p.xtal==='HCP'?'2.95':p.xtal==='FCC'?'3.59':'2.87'}" value="${p.L.a??''}"></label>`+(p.xtal==='HCP'?`<label>c (Å)<input type="number" id="ec-${key}-${p.key}" min="0.5" step="0.0001" placeholder="4.68" value="${p.L.c??''}"></label>`:'');
+        r.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',()=>{p.L[inp.id.startsWith('ea')?'a':'c']=inp.value===''?null:+inp.value;save();paint();upd()}));
+        lat.appendChild(r)})}
+    const fig=document.createElement('figure');fig.className='gfig';fig.innerHTML='<svg viewBox="0 0 460 230" role="img" aria-label="Reflection positions on the energy spectrum"></svg><figcaption></figcaption>';body.appendChild(fig);
+    const ro=document.createElement('div');ro.className='readout';body.appendChild(ro);
+    const paint=()=>{
+      const v=T.tth,okA=v>=TTH_MIN&&v<=TTH_MAX;
+      warn.textContent=v!=null&&!okA?`Choose an angle between ${TTH_MIN}° and ${TTH_MAX}°.`:'';warn.style.color=v!=null&&!okA?'var(--warn)':'';
+      if(un){row.querySelector('input').disabled=!!T.tthUnsure}
+      row.querySelector('.tthv').textContent=T.tthUnsure&&!anyCalc?'not known':`${(T.tth??7).toFixed(1)}°`;
+      const cur=tthPhases(m),ready=okA&&cur.some(p=>p.refl);
+      fig.hidden=!ready;
+      if(ready){const rows=drawPeaks(fig,m,v);
+        fig.querySelector('figcaption').innerHTML=rows.map(r=>`<span class="key"><i style="background:${r.col}"></i>${esc(r.p.label)} (${r.p.xtal})</span>`).join('')+(whitePlan(m.plan)?'<span class="key"><i style="background:var(--muted)"></i>filtered white beam after the sample</span>':'');
+        ro.innerHTML=rows.map(r=>`<b>${esc(r.p.label)}</b>: ${r.inR.length?r.inR.slice(0,12).map(x=>`${x.hkl} ${x.E.toFixed(1)} keV`).join(' · ')+(r.inR.length>12?` · and ${r.inR.length-12} more`:''):'no peaks between 50 and 200 keV at this angle'}`).join('<br>')
+          +`<br><span class="rnote">Peak heights follow the filtered white beam after the sample, not structure factors.</span>`}
+      else if(okA&&cur.some(p=>p.calc))ro.innerHTML='Enter the nominal lattice parameters to see the peaks.';
+      else if(!okA&&cur.some(p=>p.calc))ro.innerHTML=`Enter a take-off angle between ${TTH_MIN}° and ${TTH_MAX}° to see the peaks.`;
+      else ro.innerHTML=T.tthUnsure?'Take-off angle not known yet.':'Enter the take-off angle you would like.';
+    };
+    row.querySelector('input').addEventListener('input',e=>{T.tth=+e.target.value;if(T.tthUnsure){T.tthUnsure=false;if(un)un.querySelectorAll('.opt').forEach(b=>b.setAttribute('aria-pressed','false'))}save();paint();upd()});
+    paint();
+    const upd=footer(body,()=>tthOk(m,T),()=>tthNeed(m,T),key);
+  },
+  energy(body,m,P,key){
+    const M=P.mat;
+    if(!(P.th>0)){body.insertAdjacentHTML('beforeend','<p class="hint">Enter the sample thickness in the geometry step first.</p>');footer(body,()=>false,()=>SUB.energy.need(P,m),key);return}
+    const dq=q(body,`Density of ${esc(m.name)}`,'Pick a common engineering alloy, or enter your own density.');
+    const pick=document.createElement('div');pick.className='q';
+    pick.innerHTML=`<select id="al-${key}" aria-label="Common alloy"><option value="">Choose an alloy…</option>${ALLOYS.map(a=>`<option value="${a.id}"${M.preset===a.id?' selected':''}>${a.name} · ${a.rho} g/cm³</option>`).join('')}</select>`;
+    const cust=document.createElement('div');cust.className='bgrid';
+    cust.innerHTML=`<label>Density (g/cm³)<input type="number" id="rh-${key}" min="0.1" step="0.01" value="${M.rho??''}"></label><label>Main element<select id="be-${key}"><option value="">Choose…</option>${BASES.map(b=>`<option${M.base===b?' selected':''}>${b}</option>`).join('')}</select></label>`;
+    chips(dq,[['preset','Common alloy'],['custom','Enter density']],M,'src',{onPick:()=>{pick.hidden=M.src!=='preset';cust.hidden=M.src!=='custom';save();paint();upd()}});
+    dq.appendChild(pick);dq.appendChild(cust);pick.hidden=M.src!=='preset';cust.hidden=M.src!=='custom';
+    const cnote=document.createElement('p');cnote.className='hint';cnote.textContent='Absorption is estimated as if the material were its main element at your density. Alloys from the list use their full nominal composition.';dq.appendChild(cnote);
+    pick.querySelector('select').addEventListener('change',e=>{M.preset=e.target.value;save();paint();upd()});
+    cust.querySelector('input').addEventListener('input',e=>{M.rho=e.target.value===''?null:+e.target.value;save();paint();upd()});
+    cust.querySelector('select').addEventListener('change',e=>{M.base=e.target.value;save();paint();upd()});
+    if(!P.beamKind)P.beamKind=P.white?'white':'mono';
+    const setKind=k=>{P.beamKind=k;P.white=k==='white';save();im.checked=k==='mono';iw.checked=k==='white';paint();upd()};
+    const mq=q(body,'Monochromatic beam');
+    mq.insertAdjacentHTML('beforeend',`<label class="check"><input type="checkbox" id="mb-${key}"${P.beamKind==='mono'?' checked':''}> Monochromatic beam</label>`);
+    const im=mq.querySelector('input');
+    const monoBox=document.createElement('div');monoBox.className='q';body.appendChild(monoBox);
+    const rec=document.createElement('p');rec.className='headline';monoBox.appendChild(rec);
+    const fig=document.createElement('figure');fig.className='gfig';fig.innerHTML='<svg viewBox="0 0 460 210" role="img" aria-label="Transmission through the sample against beam energy"></svg><figcaption></figcaption>';monoBox.appendChild(fig);
+    const tbl=document.createElement('div');tbl.className='readout';monoBox.appendChild(tbl);
+    monoBox.insertAdjacentHTML('beforeend','<p class="hint enote">This range will be narrowed in the technique sections that follow, based on the diffraction techniques you select and both geometry (where the rings land on the detector) and intensity considerations.</p>');
+    const wq=q(body,'White beam');
+    wq.insertAdjacentHTML('beforeend',`<label class="check"><input type="checkbox" id="wb-${key}"${P.beamKind==='white'?' checked':''}> White beam (polychromatic)</label><p class="hint wnote">White beam is only compatible with EDXRD (energy-dispersive) and Laue techniques.</p>`);
+    const iw=wq.querySelector('input');
+    const bclash=document.createElement('div');bclash.className='flagbox redbox';wq.after(bclash);
+    const whiteBox=document.createElement('div');whiteBox.className='q';body.appendChild(whiteBox);
+    const wrec=document.createElement('p');wrec.className='headline';whiteBox.appendChild(wrec);
+    const sfig=document.createElement('figure');sfig.className='gfig';sfig.innerHTML='<svg viewBox="0 0 460 230" role="img" aria-label="Filtered white beam before and after the sample"></svg><figcaption></figcaption>';whiteBox.appendChild(sfig);
+    const snote=document.createElement('p');snote.className='readout';whiteBox.appendChild(snote);
+    im.addEventListener('change',e=>setKind(e.target.checked?'mono':(iw.checked?'white':null)));
+    iw.addEventListener('change',e=>setKind(e.target.checked?'white':(im.checked?'mono':null)));
+    const paint=()=>{
+      {const bc=beamClashes(m);bclash.hidden=!bc.length;bclash.innerHTML=`<b>✕ Incompatible with a planned technique</b><ul>${bc.map(x=>`<li>Technique ${x.i+1}: ${x.t}</li>`).join('')}</ul><p class="hint">This stays flagged until the beam choice and the technique match.</p>`}
+      cnote.hidden=M.src!=='custom';
+      const kind=P.beamKind;monoBox.hidden=kind!=='mono';whiteBox.hidden=kind!=='white';
+      if(kind==='white'){const wp=whitePlan(P);sfig.hidden=snote.hidden=!wp;
+        if(wp){const st=drawSpec(sfig,wp);
+          wrec.innerHTML=`Through ${wp.t} mm of ${esc(wp.info.name)}, the filtered white beam gives its <b>best signal near ${st.peak} keV</b>, and about <b>${st.frac<0.01?(st.frac*100).toFixed(2):Math.round(st.frac*100)}%</b> of the beam gets through in total.`;
+          sfig.querySelector('figcaption').innerHTML=`<span class="key"><i style="background:var(--muted)"></i>filtered white beam</span><span class="key"><i style="background:var(--tech)"></i>transmitted through ${wp.t} mm of sample</span><span class="key"><i style="background:var(--ok)"></i>best signal</span>`;
+          snote.innerHTML=`Total transmitted beam ≈ <b>${st.frac<0.01?(st.frac*100).toFixed(2):Math.round(st.frac*100)}%</b> of the filtered white beam (50–200 keV) · best signal ≈ <b>${st.peak} keV</b>`+(wp.eGood!=null?` · transmission ≥ 0.5% from ${wp.eGood} keV`:' · transmission stays below 0.5%; a thinner sample would help')+`<br><span class="rnote">White beam flux approximated from the 1A3 filtered wiggler spectrum.</span>`}
+        else wrec.textContent='';
+        return}
+
+      const ep=energyPlan(P);fig.hidden=tbl.hidden=!ep;
+      if(!ep){rec.textContent='';return}
+      rec.innerHTML=ep.eGood!=null
+        ?`For ${ep.t} mm of ${esc(ep.info.name)}, energies above about <b>${ep.eGood} keV</b> give at least 10% transmission.`+(ep.eBest!=null&&ep.eBest>E_LO?` Near <b>${ep.eBest} keV</b>, ${ep.t} mm is about one attenuation length (37% transmission), the thickness that gives the strongest diffracted signal.`:ep.eBest==null?` Transmission stays below 37% up to ${E_HI} keV, so the sample is thicker than one attenuation length at every energy here; the highest energies give the most signal.`:' Transmission is high even at low energy, so lower energies give more diffracted signal.')
+        :`${ep.t} mm of ${esc(ep.info.name)} transmits less than 10% even at ${E_HI} keV. A thinner sample would help.`;
+      const eb=energyBreakdown(m);
+      tbl.innerHTML=`Acceptable energies (≥ 10% transmission): <b>${ep.eGood!=null?`${ep.eGood}–${E_HI} keV`:`none up to ${E_HI} keV`}</b>`
+        +(eb?`<table class="dtab ebreak"><thead><tr><th>Modality</th><th>Acceptable energies</th><th>Ideal</th></tr></thead><tbody>`
+          +eb.rows.map(r=>`<tr class="${r.cls||''}"><td>${r.k}</td><td><b>${segOr(r.v,'none')}</b></td><td>${r.note}</td></tr>`).join('')
+          +(eb.n>1?`<tr class="all"><td>All selected modalities</td><td><b>${segOr(eb.all,'no common energy')}</b></td><td>${eb.all.length?'one energy here suits everything':'consider separate energies for diffraction and imaging'}</td></tr>`:'')
+          +`</tbody></table>`+(eb.n?'':'<span class="rnote">Add diffraction techniques and imaging modalities below; their ideal ranges will appear here.</span>'):'');
+      drawTrans(fig,ep);
+    };
+    refreshers.push(paint);paint();
+    const upd=footer(body,()=>SUB.energy.ok(P,m),()=>SUB.energy.need(P,m),key);
+  },
+  det(body,m,P,key){
+    const D=P.det;
+    body.insertAdjacentHTML('beforeend',`<p class="hint">This is just to get a general idea of whether the ranges are reasonable. The detector can sit between ${DMIN} and ${DMAX.toLocaleString('en-US')} mm behind the sample.</p>`);
+    const kq=q(body,'Detector');
+    const isFF=effTech(P)==='ff';
+    chips(kq,[['large','Large-format area detector'],['other','Other detector']],D,'kind',{onPick:()=>{if(!D.kind)D.kind='large';save();paint();upd()}});
+    const oth=document.createElement('div');oth.className='q';body.appendChild(oth);
+    oth.innerHTML=(isFF?`<p class="hint othmsg">It’s standard to use a large-format area detector for far-field HEDM. Please state the alternative detector you have in mind, with a brief explanation.</p>`:`<p class="hint othmsg">Other detector: one from the beamline detector pool, or your own. Please describe it.</p>`)+`<textarea id="od-${key}" placeholder="${isFF?'e.g. smaller, faster detector to follow a rapid load step; we only need the first few rings':'e.g. detector model (pool or your own), pixel size, active area, frame rate, planned distance'}">${esc(D.otherNote||'')}</textarea>`;
+    oth.querySelector('textarea').addEventListener('input',e=>{D.otherNote=e.target.value;save();upd()});
+    const big=document.createElement('div');big.className='q';body.appendChild(big);
+    big.innerHTML=`<div class="qlabel">Acceptable range of complete hkl rings you want on the detector</div><div class="bgrid"><label>From<input type="number" id="r1-${key}" min="1" max="14" step="1" value="${D.rmin??''}"></label><label>To<input type="number" id="r2-${key}" min="1" max="14" step="1" value="${D.rmax??''}"></label></div>`;
+    const [r1,r2]=big.querySelectorAll('input');
+    const rSet=()=>{D.rmin=r1.value===''?null:Math.round(+r1.value);D.rmax=r2.value===''?null:Math.round(+r2.value);save();paint();upd()};
+    r1.addEventListener('input',rSet);r2.addEventListener('input',rSet);
+    const latBox=document.createElement('div');latBox.className='latbox';body.appendChild(latBox);
+    const res=document.createElement('div');res.className='readout';body.appendChild(res);
+    const man=document.createElement('div');man.className='q';body.appendChild(man);
+    man.innerHTML=`<div class="qlabel man-msg"></div><div class="bgrid"><label>From (mm)<input type="number" id="d1-${key}" min="${DMIN}" max="${DMAX}" step="10" value="${D.dmin??''}"></label><label>To (mm)<input type="number" id="d2-${key}" min="${DMIN}" max="${DMAX}" step="10" value="${D.dmax??''}"></label></div><p class="hint man-warn"></p>`;
+    const [d1,d2]=man.querySelectorAll('input');
+    const dSet=()=>{D.dmin=d1.value===''?null:+d1.value;D.dmax=d2.value===''?null:+d2.value;save();paint();upd()};
+    d1.addEventListener('input',dSet);d2.addEventListener('input',dSet);
+    const un=document.createElement('div');un.className='opts';man.appendChild(un);
+    chips(un,[[true,'I don’t know']],D,'unsure',{onPick:()=>{D.unsure=!!D.unsure;save();paint();upd()}});
+    let latSig='';
+    const drawLat=fp=>{latBox.innerHTML='';
+      latBox.insertAdjacentHTML('beforeend','<div class="qlabel">Lattice parameters</div><p class="hint">Used to place the rings for each phase of interest.</p>');
+      fp.phases.forEach(p=>{const L=(P.lat[p.key]=P.lat[p.key]||{});const row=document.createElement('div');row.className='latrow';
+        if(!p.calc){row.className='latrow wide';
+          row.innerHTML=`<span class="latn">${esc(p.label)} <small>${esc(p.xtal)}</small></span><label class="dsp">d-spacings (Å), optional<input type="text" id="ds-${key}-${p.key}" inputmode="decimal" placeholder="e.g. 2.39, 2.07, 1.46, 1.25, 1.20, 1.03, 0.95, 0.92, 0.85" value="${esc(L.dlist||'')}"></label><span class="hint dsn"></span>`;
+          const inp=row.querySelector('input');inp.addEventListener('input',()=>{L.dlist=inp.value;save();paint();upd()});
+          latBox.appendChild(row);return}
+        row.innerHTML=`<span class="latn">${esc(p.label)} <small>${p.xtal}</small></span><label>a (Å)<input type="number" id="la-${key}-${p.key}" min="0.5" step="0.0001" placeholder="${p.xtal==='HCP'?'2.95':p.xtal==='FCC'?'3.59':'2.87'}" value="${L.a??''}"></label>`+(p.xtal==='HCP'?`<label>c (Å)<input type="number" id="lc-${key}-${p.key}" min="0.5" step="0.0001" placeholder="4.68" value="${L.c??''}"></label>`:'');
+        row.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',()=>{L[inp.id.startsWith('la')?'a':'c']=inp.value===''?null:+inp.value;save();paint();upd()}));
+        latBox.appendChild(row)})};
+    const paint=()=>{
+      const large=D.kind!=='other';big.hidden=!large;oth.hidden=large;
+      const fp=large?ffPlan(m,P):null;
+      if(!large||fp.state!=='ok'){latBox.hidden=true;latSig=''}
+      else{latBox.hidden=false;const sig=fp.phases.map(p=>p.key+p.xtal).join(',');if(sig!==latSig){drawLat(fp);latSig=sig}}
+      latBox.querySelectorAll('.latrow.wide').forEach((row,i)=>{const p=fp&&fp.phases?fp.phases.filter(x=>!x.calc)[i]:null;const h=row.querySelector('.dsn');if(!p||!h)return;
+        h.textContent=p.nUser?(p.short?`${p.nUser} d-spacings entered; ${D.rmax+1} needed for ${D.rmin}–${D.rmax} rings.`:`${p.nUser} d-spacings: this phase is calculated like the others.`):'Structure not FCC, BCC or HCP. Enter the first few d-spacings from known peaks to include it, or give a range below.';
+        h.style.color=p.short?'var(--warn)':''});
+      res.hidden=!large;
+      if(large){
+        if(fp.state==='noE')res.innerHTML='Finish the beam energy step for this sample to see detector distances.';
+        else if(!ringsOk(D))res.innerHTML='Enter how many complete rings you want (for example 5 to 8).';
+        else if(fp.needLat)res.innerHTML='Enter the lattice parameters above to see detector distances.';
+        else if(fp.short.length&&!fp.phases.some(p=>p.rows))res.innerHTML=`Enter at least ${D.rmax+1} d-spacings to see detector distances.`;
+        else if(!fp.phases.some(p=>p.rows))res.innerHTML='No phase here can be calculated; give the anticipated range below, or enter d-spacings above.';
+        else res.innerHTML=`<b>Detector distance for ${D.rmin}–${D.rmax} complete rings</b>, at the ends of the usable energy range<table class="dtab"><thead><tr><th>Phase</th>${fp.es.map(e=>`<th>${e} keV</th>`).join('')}</tr></thead><tbody>`
+          +fp.phases.filter(p=>p.rows).map(p=>`<tr><td>${esc(p.label)}${p.fromUser?' <small>(your d-spacings)</small>':''}</td>${p.rows.map(r=>`<td>${r.lo==null?'—':r.cl[0]<=r.cl[1]?`${mm(r.cl[0])} – ${mm(r.cl[1])}`:r.hi<DMIN?`fewer than ${D.rmin} rings even at ${DMIN} mm`:`more than ${D.rmax} rings even at ${DMAX.toLocaleString('en-US')} mm`}</td>`).join('')}</tr>`).join('')
+          +`</tbody></table>`+(fp.overall?`Overall: about <b>${mm(fp.overall[0])} – ${mm(fp.overall[1])}</b> behind the sample. Higher energy pulls the rings in, so the detector moves back.`:'')
+          +`<div class="echeck ${fp.narrowed?'warn':''}">${!fp.segs.length?`<b>No energy</b> in ${fp.full[0]}–${fp.full[1]} keV gives ${D.rmin}–${D.rmax} complete rings with the detector 300–2,000 mm away. Try fewer rings.`:fp.narrowed?`<b>Energy range narrowed:</b> this ring target only works at ${segStr(fp.segs)}, down from ${fp.full[0]}–${fp.full[1]} keV. The final summary uses the narrower range.`:`Every acceptable energy (${fp.full[0]}–${fp.full[1]} keV) works for this ring target.`}</div>`}
+      const showMan=large&&fp.state==='ok'&&fp.other;
+      man.hidden=!showMan;
+      man.querySelector('.man-msg').textContent=large?'Please put the anticipated acceptable detector range here for the phases without a structure or d-spacings (mm)':'Please put the anticipated acceptable detector range here (mm)';
+      [d1,d2].forEach(i=>i.disabled=!!D.unsure);
+      man.querySelector('.man-warn').textContent=!D.unsure&&(D.dmin||D.dmax)&&!manualOk(D)?`Keep the range within ${DMIN}–${DMAX.toLocaleString('en-US')} mm, with "from" no larger than "to".`:'';
+    };
+    refreshers.push(paint);paint();
+    const upd=footer(body,()=>SUB.det.ok(P,m),()=>SUB.det.need(P,m),key);
+  },
+  imod(body,m,I,key){
+    const grid=document.createElement('div');grid.className='tcards';body.appendChild(grid);
+    const form=document.createElement('div');form.className='customform';
+    IMODS.concat([{id:'custom',name:'Custom imaging',short:'Another imaging approach. Describe it briefly.'}]).forEach(t=>{
+      const b=document.createElement('button');b.type='button';b.className='tc'+(t.id==='custom'?' custom':'');b.setAttribute('aria-pressed',I.mod===t.id);
+      b.innerHTML=`<b>${t.name}</b><span>${t.short}</span>`;
+      b.addEventListener('click',()=>{I.mod=t.id;save();renderAll();focusOpen()});grid.appendChild(b)});
+    if(I.mod==='custom'){body.appendChild(form);
+      form.innerHTML=`<div class="q"><div class="qlabel">Modality name</div><input type="text" id="in-${key}" placeholder="e.g. dark-field imaging, laminography" value="${esc(I.custom.name)}"></div><div class="q"><div class="qlabel">Brief description (optional)</div><textarea id="it-${key}">${esc(I.custom.notes)}</textarea></div>`;
+      form.querySelector('input').addEventListener('input',e=>{I.custom.name=e.target.value;save();upd()});
+      form.querySelector('textarea').addEventListener('input',e=>{I.custom.notes=e.target.value;save()})}
+    const tq=q(body,'What do you need to see?');
+    const fl=document.createElement('ul');fl.className='iflags';
+    chips(tq,ITARGET,I,'target',{onPick:()=>{paint();upd()}});tq.appendChild(fl);
+    const paint=()=>{const f=imgFlags(m,I).filter(x=>!/field of view|pixels|resolution|plate/i.test(x));fl.innerHTML=f.map(x=>`<li>${x}</li>`).join('');fl.hidden=!f.length};
+    paint();
+    const upd=footer(body,()=>SUB.imod.ok(I),()=>SUB.imod.need(I),key);
+  },
+  ires(body,m,I,key){
+    const el=document.createElement('div');el.className='slider';
+    const L=Math.log(1000);
+    el.innerHTML=`<div class="qlabel"><span>Smallest feature you need to resolve</span><span class="sval"></span></div><input type="range" id="if-${key}" min="0" max="1000" aria-label="Smallest feature you need to resolve"><div class="ends"><span>1 µm</span><span>1 mm</span></div>`;
+    body.appendChild(el);
+    const inp=el.querySelector('input'),val=el.querySelector('.sval');
+    const ro=document.createElement('div');ro.className='readout';body.appendChild(ro);
+    const fl=document.createElement('ul');fl.className='iflags';body.appendChild(fl);
+    const eq=document.createElement('div');eq.className='q';eq.innerHTML='<div class="qlabel">Energy check for contrast</div><p class="headline ie"></p><p class="hint">Absorption contrast is best when roughly 10–40% of the beam gets through the sample. Higher energies wash out the contrast; lower energies leave too few photons.</p>';body.appendChild(eq);
+    const paint=()=>{eq.querySelector('.ie').innerHTML=imgEnergyText(m);inp.value=Math.round(1000*Math.log(I.f)/L);val.textContent=um(I.f);
+      const W=sampleWidth(m.plan);
+      ro.innerHTML=`Pixel size <b>${IPX} µm</b> · about <b>${iAcross(I).toFixed(iAcross(I)<10?1:0)}</b> pixels across the smallest feature · field of view ≈ <b>${um(iFov(I))}</b>`+(isFinite(W)?` · sample width <b>${um(W)}</b>`:'');
+      const f=imgFlags(m,I);fl.innerHTML=f.map(x=>`<li>${x}</li>`).join('');fl.hidden=!f.length};
+    inp.addEventListener('input',()=>{I.f=Math.exp(L*inp.value/1000);save();paint()});
+    paint();
+    footer(body,()=>true,()=>'',key);
+  },
+  dset(body,m,P,key){
+    const D=P.ds,isE=effTech(P)==='edd';
+    // fly-scan to average over a larger effective volume
+    let avClash={hidden:true},avlab=null;
+    if(isE){                                        // unit of interrogation: EDXRD only
+    const aq=q(body,'Unit of interrogation','The volume you want each data point to represent. Fly-scan during each measurement to average over a larger volume than the gauge or beam alone.');
+    aq.insertAdjacentHTML('beforeend',`<label class="check"><input type="checkbox" id="av-${key}"${D.avg?' checked':''}> Fly-scan to average over a larger unit of interrogation at each point</label>
+      <div class="avbox"><div class="bgrid g3"><label>Width (mm)<input type="number" id="ax-${key}" min="0.01" step="0.01" placeholder="e.g. 1" value="${D.ax??''}"></label><label>Height (mm)<input type="number" id="ay-${key}" min="0.01" step="0.01" placeholder="e.g. 1" value="${D.ay??''}"></label><label>Depth along beam (mm)<input type="number" id="az-${key}" min="0.01" step="0.01" placeholder="e.g. 1" value="${D.az??''}"></label></div><p class="readout avn"></p></div>`);
+    avClash=document.createElement('p');avClash.className='clash';avClash.textContent='You need to choose between fly-scanning the unit of interrogation or the rotation series. A rotation series is always fly-scanned, and the controls cannot fly both at the same time.';aq.querySelector('.avbox').before(avClash);
+    avlab=aq.querySelector('label.check');
+    const iav=aq.querySelector('input[type=checkbox]'),avb=aq.querySelector('.avbox'),[iax,iay,iaz]=avb.querySelectorAll('input');
+    const paintAv=()=>{avb.hidden=!D.avg;if(!D.avg)return;
+      const n=avgOk(D)?avgGrains(m,P,D):null;
+      avb.querySelector('.avn').innerHTML=n?`Unit of interrogation <b>${D.ax} × ${D.ay} × ${D.az} mm</b> = ${+(D.ax*D.ay*D.az).toPrecision(3)} mm³ · ≈ ${n.map(x=>`${n.length>1?esc(x.label)+' ':''}<b>${fmtN(x.N)}</b> grains`).join(' · ')} sampled per point`:'Enter the width, height and depth of your unit of interrogation.'};
+    iav.addEventListener('change',e=>{D.avg=e.target.checked;save();paintAv();drawFly();upd()});
+    [[iax,'ax'],[iay,'ay'],[iaz,'az']].forEach(([el,k])=>el.addEventListener('input',()=>{D[k]=el.value===''?null:+el.value;save();paintAv();upd()}));
+    paintAv();
+    }
+    const mq=q(body,'Are you planning a map?');
+    chips(mq,[['point','Single point'],['map1','1D map (line scan)'],['map2','2D map'],...(isE?[['map3','3D map']]:[])],D,'map',{onPick:()=>{paint();upd()}});
+    const g=document.createElement('div');g.className='q';body.appendChild(g);
+    g.innerHTML=`<div class="qlabel">Data points in the mapped volume</div><p class="hint">If your mapped region is complex and not a rectangle, use this to approximate how many data points would be taken.</p><div class="bgrid"><label><span class="lx">Across</span><input type="number" id="nx-${key}" min="1" step="1" value="${D.nx??''}"></label><label class="y">High<input type="number" id="ny-${key}" min="1" step="1" value="${D.ny??''}"></label><label class="z">Deep<input type="number" id="nz-${key}" min="1" step="1" value="${D.nz??''}"></label></div><p class="readout dsn"></p>`;
+    const [ix,iy,iz]=g.querySelectorAll('input');
+    [[ix,'nx'],[iy,'ny'],[iz,'nz']].forEach(([el,k])=>el.addEventListener('input',()=>{D[k]=el.value===''?null:Math.max(1,Math.round(+el.value));save();paint();upd()}));
+    const cq=q(body,'Rotation series',`A rotation series can be added at each point of a single point, 1D or 2D map. It is always fly-scanned, so it cannot be combined with a fly-scanned translation${isE?' or with fly-scanning over a unit of interrogation':''}.`);
+    const cb=document.createElement('div');cb.className='checks';
+    cb.innerHTML=`<label class="check"><input type="checkbox" id="ro-${key}"${D.rot?' checked':''}> Rotation series at each point</label>`;
+    cq.appendChild(cb);
+    const cr=cb.querySelector('input');
+    const rq=document.createElement('div');rq.className='q rotq';cq.appendChild(rq);
+    rq.innerHTML=`<p class="hint">Rotating at each point: how many rotation steps, over what range?</p><div class="bgrid"><label>Rotation steps<input type="number" id="rn-${key}" min="1" step="1" placeholder="e.g. 360" value="${D.rotN??''}"></label><label>Over range (°)<input type="number" id="rr-${key}" min="0.1" max="360" step="0.1" placeholder="e.g. 180" value="${D.rotR??''}"></label></div><p class="readout rotn"></p><p class="hint">A rotation series is always fly-scanned.</p>`;
+    const [rn,rr]=rq.querySelectorAll('input[type=number]');
+    rn.addEventListener('input',()=>{D.rotN=rn.value===''?null:Math.max(1,Math.round(+rn.value));save();paint();upd()});
+    rr.addEventListener('input',()=>{D.rotR=rr.value===''?null:+rr.value;save();paint();upd()});
+    const fq=q(body,'Fly-scanning translation','If selected, one of the map directions is flown instead of stepped in the mapped volume.');
+    const ft=document.createElement('label');ft.className='check flyt';ft.innerHTML=`<input type="checkbox" id="ft-${key}"> Fly-scan the translation`;fq.appendChild(ft);
+    const ift=ft.querySelector('input');ift.checked=flyT(D);
+    const clash=document.createElement('p');clash.className='clash';clash.textContent='You need to choose between fly-scanning the translation or the rotation series. A rotation series is always fly-scanned, and the controls cannot fly both at the same time.';fq.appendChild(clash);
+    const rlab=cb.querySelector('label');const rnote=document.createElement('p');rnote.className='hint';cb.after(rnote);
+    const drawFly=()=>{const c=flyClash(D),a=avgClash(D);clash.hidden=!c;ft.classList.toggle('bad',c);avClash.hidden=!a;avlab&&avlab.classList.toggle('bad',a);rlab.classList.toggle('bad',c||a);
+      const lock=flyLock(D);cr.disabled=lock;rlab.classList.toggle('off',lock);rnote.hidden=!lock;
+      if(lock)rnote.textContent=flyT(D)&&D.avg?'Not available while fly-scanning the translation or the unit of interrogation. Untick those to add a rotation series.':D.avg?'Not available while fly-scanning over a unit of interrogation. Untick it above to add a rotation series.':'Not available while fly-scanning the translation. Untick it below to add a rotation series.'};
+    ift.addEventListener('change',e=>{D.flyT=e.target.checked;save();drawFly();upd()});
+    cr.addEventListener('change',e=>{if(e.target.checked&&flyLock(D)){e.target.checked=false;return}D.rot=e.target.checked;save();paint();drawFly();upd()});
+    drawFly();
+    const paint=()=>{if(D.map==='map3'&&!isE)D.map='map2';g.hidden=!D.map||D.map==='point';g.querySelector('.y').hidden=D.map!=='map2'&&D.map!=='map3';g.querySelector('.z').hidden=D.map!=='map3';g.querySelector('.lx').textContent=D.map==='map1'?'Points along the line':'Across';
+      const n=dsPoints(D);g.querySelector('.dsn').innerHTML=n?`<b>${n.toLocaleString('en-US')}</b> data points per volume`:'Enter the grid size.';
+      rq.hidden=!D.rot;
+      rq.querySelector('.rotn').innerHTML=D.rotN>0&&D.rotR>0?`${+(D.rotR/D.rotN).toFixed(3)}° per step`+(n?` · <b>${(n*D.rotN).toLocaleString('en-US')}</b> frames per volume (${n.toLocaleString('en-US')} point${n>1?'s':''} × ${D.rotN} steps)`:''):'Enter the steps and range.'};
+    paint();
+    const upd=footer(body,()=>SUB.dset.ok(P),()=>SUB.dset.need(P),key);
+  },
+  scan(body,m,P,key){
+    const B=P.beam,c=beamChoice(m,P);
+    if(!(c.w>0&&c.h>0)){body.insertAdjacentHTML('beforeend','<p class="hint">Choose a beam size first.</p>');footer(body,()=>false,()=>'Choose a beam size first.',key);return}
+    const wide=showWide(P);
+    const sq=q(body,'Volumes collected at each state',wide?'How many beam volumes you step through vertically and horizontally, at every ω step or as separate rotation series.':'How many beam volumes you step through vertically, at every ω step or as separate rotation series. The beam covers the full sample width, so one volume wide.');
+    const sc=document.createElement('div');sc.className='bgrid';
+    sc.innerHTML=`<label>Volumes high<input type="number" id="nz-${m.id}" min="1" step="1" value="${B.nz}"></label>`+(wide?`<label>Volumes wide<input type="number" id="ny-${m.id}" min="1" step="1" value="${B.ny}"></label>`:'');
+    sq.appendChild(sc);
+    const iz=sc.querySelector(`#nz-${m.id}`),iy=sc.querySelector(`#ny-${m.id}`);
+    iz.addEventListener('input',()=>{B.nz=Math.max(1,Math.round(+iz.value||1));save();paint();upd()});
+    iy&&iy.addEventListener('input',()=>{B.ny=Math.max(1,Math.round(+iy.value||1));save();paint();upd()});
+    const out=document.createElement('div');body.appendChild(out);
+    const paint=()=>{
+      const sc=scanSummary(m,P);if(!sc){out.innerHTML='';return}
+      const multi=sc.per.length>1;
+      out.innerHTML=`<div class="tiles">
+        <div class="tile"><span class="k">Rotation series per state</span><span class="v">${sc.n}</span><span class="s">${B.nz} high${showWide(P)?` × ${sc.ny} wide`:''}${sc.n>1?' (or equivalent)':''}</span></div>
+        <div class="tile"><span class="k">Characterized volume per state</span><span class="v sm">${sc.vol}</span><span class="s">wide × high × through thickness</span></div>
+        <div class="tile"><span class="k">Grains probed per state</span><span class="v">≈ ${sc.grains}</span><span class="s">${multi?sc.per.map(x=>`${esc(x.label)} ≈ ${fmtN(x.N)}`).join(' · '):'approximate'}</span></div>
+      </div>`;
+    };
+    refreshers.push(paint);paint();
+    const upd=footer(body,()=>SUB.scan.ok(P),SUB.scan.need,key);
+  }
+};
+/* one grain-size block, bound to a phase's microstructure object M */
+function buildMicroBlock(body,mref,P,hint,onChange){
+    const dq=q(body,'Grain size distribution',hint);
+    const redraw=chips(dq,DIST,P,'dist',{onPick:()=>{onChange();refresh()}});
+    const sD=slider(body,mref,P,'d','Grain / feature size',um);
+    const sU=slider(body,mref,P,'uspan','Size range spans',v=>v.toFixed(1)+' orders of magnitude (×'+(+(10**v).toPrecision(2))+')');
+    const sS=slider(body,mref,P,'span','Gradient spans',v=>v.toFixed(1)+' orders of magnitude (×'+(+(10**v).toPrecision(2))+')');
+    const s2=slider(body,mref,P,'d2','Fine population mean',um);
+    const ro=document.createElement('div');ro.className='readout';body.appendChild(ro);
+    const paint=()=>{redraw();
+      sD.setLabel(P.dist==='gradient'?'Grain size (middle of gradient)':P.dist==='bimodal'?'Coarse population mean':'Grain / feature size');
+      sS.el.hidden=P.dist!=='gradient';s2.el.hidden=P.dist!=='bimodal';sU.el.hidden=true;
+      sD.paint();if(!sS.el.hidden)sS.paint();if(!s2.el.hidden)s2.paint();if(!sU.el.hidden)sU.paint();
+      if(P.dist==='equiaxed')sD.setLabel('Grain size (average)');
+      const s=stats(P);
+      ro.hidden=!P.dist;
+      ro.innerHTML=`Average ≈ <b>${um(s.avg)}</b>`+(s.lo!=null?` · range ≈ <b>${um(s.lo)} – ${um(s.hi)}</b>`:'')+(s.note?`<br><span style="font-family:var(--f-body)">${s.note[0].toUpperCase()+s.note.slice(1)}.</span>`:'')};
+    refreshers.push(paint);paint();
+    const tq=q(body,'Expected texture','Do you expect a preferred orientation, e.g. from rolling, extrusion, drawing or additive build direction?');
+    const note=document.createElement('input');note.type='text';note.id=`tx-${mref.id}`;note.placeholder='Optional: describe it, e.g. rolling texture, ⟨111⟩ fibre along the build direction';note.value=P.texNote||'';
+    note.addEventListener('input',()=>{P.texNote=note.value;save()});
+    chips(tq,TEX,P,'tex',{onPick:()=>{note.hidden=P.tex!=='strong';onChange()}});
+    note.hidden=P.tex!=='strong';tq.appendChild(note);
+    const fq=q(body,'Defects / deformation in the crystal','How much plastic deformation or defect content (dislocations, twins, residual strain) do you expect? It broadens and smears the diffraction spots.');
+    chips(fq,DEF,P,'def',{onPick:()=>onChange()});
+}
+const UNUSED_GEOM={
+  geom(body,m,P,key){
+    const gq=q(body,'Sample geometry',`For the ${esc(m.name)} sample.`);
+    const redraw=chips(gq,GEOM,P,'geom',{statusFor:v=>check(m,{...P,geom:v}),onPick:()=>{upd();refresh()}});
+    const sT=slider(body,m,P,'t','Sample thickness',um);
+    const ro=document.createElement('div');ro.className='readout';body.appendChild(ro);
+    const paint=()=>{redraw();sT.paint();
+      ro.innerHTML=`Diffracting volume ≈ <b>${um(litW(P))} × 200 µm × ${um(P.t)}</b> = <b>${vol(diffVol(P))}</b>`+(P.dist?` · ≈ <b>${sci(diffVol(P)*invD3(P))}</b> grains`:'')
+        +(effTech(P)==='edd'?`<br>EDXRD gauge (2θ ≈ 6°) ≈ <b>${vol(gaugeVol(P))}</b>`+(P.dist?` · ≈ <b>${sci(gaugeVol(P)*invD3(P))}</b> grains`:''):'')
+        +`<br><span style="font-family:var(--f-body)">Box beam fixed at 1 × 0.2 mm for now; beam size comes in a later step.</span>`};
+    refreshers.push(paint);paint();
+    const upd=footer(body,()=>SUB.geom.ok(P),SUB.geom.need,key);
+  }
+};
+
+function renderFit(){
+  const f=$('#fit');const {m,T}=parseKey(W.open);
+  if(!m||!T||!T.tech||(T.tech==='custom'&&!T.custom.closest)){f.hidden=true;return}
+  const P=ctx(m.plan,T),id=effTech(P);f.hidden=false;
+  const head=`<span class="mn">${esc(m.name)}</span><span class="tn">${esc(techName(T))}</span>`;
+  if(id==='none'){f.style.borderLeftColor='var(--tech)';f.innerHTML=`<div class="top">${head}<span class="need">No standard technique chosen, so no automatic flags.</span></div>`;return}
+  const r=check(m,P);
+  const word={ok:'Nothing flagged for discussion yet',caution:`${r.reasons.length} flagged for discussion`,blocked:'Conflict flagged for discussion'}[r.level];
+  const col={ok:'var(--ok)',caution:'var(--warn)',blocked:'var(--bad)'}[r.level];
+  f.style.borderLeftColor=col;
+  f.innerHTML=`<div class="top">${head}${T.tech==='custom'?`<span class="need">rules from ${TN[id]}</span>`:''}<span style="font:500 12px var(--f-mono);color:${col}">${r.level==='caution'?'<i class="tri">!</i> ':''}${word}</span></div>`
+    +(r.reasons.length?`<ul>${r.reasons.map(([l,t])=>`<li class="${l==='blocked'?'b':'c'}">${t}</li>`).join('')}</ul>`:'');
+}
+function renderSummary(){
+  const s=$('#summary');const all=W.done.mat&&order().every(k=>W.done[k])&&!W.open;
+  s.hidden=!all;if(!all)return;
+  const tmp=document.createElement('div');const plain=h=>{tmp.innerHTML=h;return tmp.textContent};
+  const blocks=named().map(m=>{const P=m.plan;
+    const ef=[...beamClashes(m).map(x=>`Technique ${x.i+1}: ${x.t}`),...envFlags(P.env),...whiteFlags(m)];
+    return {m,rows:[['Material',matAnswer(m)],...SAMPLE_SUBS.map(sub=>[SUB[sub].title,SUB[sub].answer(P,m)]),...(ef.length?[['Flagged for discussion',ef.join('<br>')]]:[])],
+      imgs:(P.imgs||[]).map((I,i)=>({i,rows:[['Modality',SUB.imod.answer(I)],[SUB.ires.title,SUB.ires.answer(I,m)],['Notes',imgFlags(m,I).join('<br>')||'None.']]})),
+      techs:P.techs.map((T,i)=>{const C=ctx(P,T),r=check(m,C);
+        return {i,r,rows:[['Technique',SUB.tech.answer(T)],...(T.tech==='custom'&&T.custom.notes?[['Technique notes',esc(T.custom.notes)]]:[]),...(subsFor(T).includes('det')?[[SUB.det.title,SUB.det.answer(C,m)]]:[]),...(subsFor(T).includes('tth')?[[SUB.tth.title,SUB.tth.answer(C,m)]]:[]),[beamTitle(T),SUB.beam.answer(C,m)],...subsFor(T).filter(x=>x==='scan'||x==='dset').map(x=>[SUB[x].title,SUB[x].answer(C,m)]),['Flagged for discussion',r.reasons.length?r.reasons.map(x=>x[1]).join('<br>'):'Nothing flagged.']]}})}});
+  const dl=rows=>`<dl>${rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>`;
+  s.innerHTML=`<h2>Worksheet so far</h2>`+blocks.map(b=>`<h3>${esc(b.m.name)}</h3>${dl(b.rows)}`+b.techs.map(t=>`<h4>Technique ${t.i+1}</h4>${dl(t.rows)}`).join('')+b.imgs.map(t=>`<h4 class="im">Imaging ${t.i+1}</h4>${dl(t.rows)}`).join('')).join('')
+    +`<div class="foot"><button class="done" id="copy" type="button" style="--hue:var(--ok)">Copy as text</button><span class="toast" id="toast"></span></div>`;
+  $('#copy').addEventListener('click',()=>{
+    const line=([k,v])=>`${k}: ${plain(v.replace(/<br>/g,'; '))}`;
+    const txt='DIFFRACTION WORKSHEET\n'+blocks.map(b=>`\n== ${b.m.name} ==\n`+b.rows.map(line).join('\n')
+      +b.techs.map(t=>`\n-- Technique ${t.i+1} --\n`+t.rows.filter(r=>r[0]!=='Flagged for discussion').map(line).join('\n')+'\nFlagged for discussion:\n'+(t.r.reasons.length?t.r.reasons.map(x=>' - '+plain(x[1])).join('\n'):' - none')).join('\n')+b.imgs.map(t=>`\n-- Imaging ${t.i+1} --\n`+t.rows.map(line).join('\n')).join('\n')).join('\n');
+    const ok=()=>{$('#toast').textContent='Copied'};
+    const fall=()=>{let ta=s.querySelector('.copyfall');               // reuse one box rather than adding a new one each click
+      if(!ta){ta=document.createElement('textarea');ta.className='copyfall';ta.readOnly=true;s.appendChild(ta)}
+      ta.value=txt;ta.focus();ta.select();
+      let ok2=false;try{ok2=document.execCommand('copy')}catch(e){}
+      $('#toast').textContent=ok2?'Copied':'Select and copy the text below'};
+    try{navigator.clipboard.writeText(txt).then(ok,fall)}catch(e){fall()}
+  });
+}
+function normalise(){W.materials.forEach(m=>{const P=m.plan;P.env={...NEWENV(),...(P.env||{})};P.mat=P.mat||{src:null,preset:'',rho:null,base:''};P.lat=P.lat||{};P.micro=P.micro||{};P.imgs=P.imgs||[];
+  (P.techs||[]).forEach(T=>{const N=NEWTECH();T.ds=T.ds||N.ds;T.det={...N.det,...(T.det||{})};T.beam={...N.beam,...(T.beam||{})};T.energy=T.energy||N.energy;T.custom=T.custom||N.custom;if(effTech(T)!=='edd'&&T.ds.avg)T.ds.avg=false})})}   // unit of interrogation is EDXRD only
+function renderAll(){refreshers=[];normalise();
+  // a step added after someone finished (or a new material) reopens at the first unfinished step
+  if(!W.open||(W.open!=='mat'&&!order().includes(W.open))){const n=order().find(k=>!W.done[k]);W.open=n||null;save()}
+  renderSteps();renderFit();renderSummary()}
+$('#restart').addEventListener('click',()=>{W=BLANK();save();renderAll();focusOpen()});
+$('#reseed').addEventListener('click',()=>{W=JSON.parse(JSON.stringify(SEED));save();renderAll();window.scrollTo(0,0)});
+renderAll();
+</script>
+</body>
+</html>

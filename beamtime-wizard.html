@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.45 system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Beamtime Wizard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: track switch (diffraction | imaging) over a 3-column board: shared sample space, track-specific experiment space + shared timescales, track-specific methods */
+:root{
+  --bg:#f3f5f8; --panel:#ffffff; --ink:#18202b; --muted:#5d6878; --line:#d9dfe7; --chip:#f7f9fb;
+  --sample:#d9661f; --exp:#2a64c5; --time:#178a63; --tech:#7a45c2; --imag:#b8336f;
+  --ok:#2f9a5f; --warn:#c98a0b; --block:#b9c0ca; --bad:#c6362f;
+  --off-ink:#9aa3af;
+  --f-display:"Archivo",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11151b; --panel:#181d25; --ink:#e7ebf1; --muted:#97a2b2; --line:#2a313c; --chip:#1d232d;
+  --sample:#f08a48; --exp:#6c9bf0; --time:#45c194; --tech:#a985e6; --imag:#e9709f;
+  --ok:#4cc184; --warn:#e7ad35; --block:#3a424f; --bad:#ef6b62; --off-ink:#5e6876; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11151b; --panel:#181d25; --ink:#e7ebf1; --muted:#97a2b2; --line:#2a313c; --chip:#1d232d;
+  --sample:#f08a48; --exp:#6c9bf0; --time:#45c194; --tech:#a985e6; --imag:#e9709f;
+  --ok:#4cc184; --warn:#e7ad35; --block:#3a424f; --bad:#ef6b62; --off-ink:#5e6876; color-scheme:dark}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45}
+.wrap{max-width:1240px;margin:0 auto;padding-block:28px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+header{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 24px}
+h1{font-family:var(--f-display);font-stretch:118%;font-weight:800;font-size:clamp(28px,4vw,40px);letter-spacing:-.01em;margin:0;line-height:1;text-wrap:balance}
+.sub{margin:6px 0 0;color:var(--muted);max-width:62ch}
+.reset{font:500 13px var(--f-mono);background:none;border:1px solid var(--line);color:var(--ink);padding:8px 12px;border-radius:5px;cursor:pointer}
+.reset:hover{border-color:var(--ink)}
+
+.tracks{display:flex;gap:0;border:1.5px solid var(--line);border-radius:7px;overflow:hidden;width:max-content;max-width:100%;background:var(--panel)}
+.tracks button{all:unset;cursor:pointer;padding:10px 20px;font-family:var(--f-display);font-stretch:115%;font-weight:700;font-size:15px;color:var(--muted);display:flex;flex-direction:column;gap:1px}
+.tracks button small{font:400 11.5px var(--f-mono);color:var(--muted)}
+.tracks button+button{border-left:1.5px solid var(--line)}
+.tracks button[aria-pressed="true"]{background:color-mix(in srgb,var(--th) 14%,var(--panel));color:var(--th);box-shadow:inset 0 -3px 0 var(--th)}
+.tracks button:focus-visible{outline:2px solid var(--th);outline-offset:-3px}
+
+.verdict{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 16px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 18px;align-items:center;box-shadow:0 6px 18px -14px rgba(0,0,0,.4)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.vcount{font-family:var(--f-display);font-stretch:110%;font-weight:700;font-size:15px;white-space:nowrap}
+.vchips{display:flex;flex-wrap:wrap;gap:6px}
+.vchip{font:500 12px var(--f-mono);padding:3px 8px;border-radius:99px;border:1px solid var(--line);display:inline-flex;align-items:center;gap:6px}
+.vchip i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.inspect{grid-column:1/-1;font-size:13.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px;min-height:1.4em}
+.inspect b{color:var(--ink)}
+
+.board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+@media (max-width:980px){.board{grid-template-columns:repeat(2,minmax(0,1fr))}.col.c3{grid-column:1/-1}}
+@media (max-width:640px){.board{grid-template-columns:minmax(0,1fr)}.verdict{grid-template-columns:minmax(0,1fr)}.vcount{white-space:normal}}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--hue);border-radius:6px;padding:14px 16px 16px;display:flex;flex-direction:column;gap:14px}
+.panel h2{margin:0;font-family:var(--f-display);font-stretch:122%;font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--hue)}
+.grp{display:flex;flex-direction:column;gap:7px}
+.glabel{font-weight:700;font-size:13.5px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+
+.opt{font:inherit;font-size:13.5px;color:var(--ink);background:var(--chip);border:1.5px solid var(--line);border-radius:5px;padding:6px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .15s,border-color .15s,color .15s}
+.opt:hover{border-color:var(--hue)}
+.opt:focus-visible,.tcard button:focus-visible,input[type=range]:focus-visible,.reset:focus-visible{outline:2px solid var(--hue,var(--exp));outline-offset:2px}
+.opt[aria-pressed="true"]{background:color-mix(in srgb,var(--hue) 16%,var(--panel));border-color:var(--hue);font-weight:700}
+.tri{display:inline-flex;width:13px;height:11px;flex:none;background:var(--warn);clip-path:polygon(50% 0,100% 100%,0 100%);color:var(--panel);font:700 8.5px/1 var(--f-body);font-style:normal;justify-content:center;align-items:flex-end;padding-bottom:1px;box-sizing:border-box}
+.opt .tri{display:none}
+.opt.caution .tri{display:inline-flex}
+.opt .x{display:none;font-style:normal;font-size:11px;line-height:1}
+.opt.blocked .x{display:inline}
+.opt.blocked .lab{text-decoration:line-through;text-decoration-thickness:1px}
+.opt.blocked{color:var(--off-ink);background:transparent;border-style:dashed;border-color:var(--block);cursor:not-allowed;opacity:.6}
+@keyframes flash{0%{box-shadow:0 0 0 4px color-mix(in srgb,var(--hue,var(--exp)) 55%,transparent)}100%{box-shadow:0 0 0 0 transparent}}
+.flash{animation:flash 1s ease-out}
+.opt.blocked:hover{border-color:var(--block)}
+.opt.conflict{border-color:var(--bad);border-style:solid;color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--panel))}
+
+.slider{display:flex;flex-direction:column;gap:6px}
+.sval{font:500 13px var(--f-mono);color:var(--ink);font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:10px;border-radius:5px;margin:4px 0;background:var(--line);cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--panel);border:3px solid var(--hue);box-shadow:0 1px 3px rgba(0,0,0,.35)}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--panel);border:3px solid var(--hue)}
+input[type=range]:disabled{opacity:.35;cursor:not-allowed}
+.ends{display:flex;justify-content:space-between;font:400 11.5px var(--f-mono);color:var(--muted)}
+.readout{font:400 12.5px var(--f-mono);color:var(--muted);background:var(--chip);border-radius:4px;padding:8px 10px;font-variant-numeric:tabular-nums}
+.readout b{color:var(--ink);font-weight:500}
+
+.tcards{display:flex;flex-direction:column;gap:8px}
+.tcard{border:1.5px solid var(--line);border-radius:6px;background:var(--chip);transition:border-color .15s,opacity .15s}
+.tcard button{all:unset;box-sizing:border-box;width:100%;padding:10px 12px 8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tname{font-family:var(--f-display);font-stretch:108%;font-weight:700;font-size:15px}
+.pill{font:500 11px var(--f-mono);text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:99px;white-space:nowrap}
+.pill.ok{color:var(--ok);border:1px solid var(--ok)}
+.pill.caution{color:var(--warn);border:1px solid var(--warn);display:inline-flex;align-items:center;gap:4px}
+.pill.blocked{color:var(--off-ink);border:1px dashed var(--off-ink)}
+.tcard.sel{border-color:var(--hue);background:color-mix(in srgb,var(--hue) 12%,var(--panel))}
+.tcard.blocked{opacity:.6}
+.tcard.blocked button{cursor:not-allowed}
+.tcard.blocked .tname{color:var(--off-ink)}
+.tcard.sel.blocked{opacity:1;border-color:var(--bad)}
+.tcard ul{margin:0;padding:0 12px 8px 28px;font-size:12.5px;color:var(--muted)}
+.tcard ul:empty{display:none}
+.tcard li.b{color:var(--bad)}
+.tcard li.c{color:var(--ink)}
+.tcard details{padding:0 12px 10px;font-size:12.5px;color:var(--muted)}
+.tcard summary{cursor:pointer;font:500 11.5px var(--f-mono);color:var(--hue);width:max-content}
+.tcard details p{margin:6px 0 0}
+
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:22px;height:12px;border-radius:3px;border:1.5px solid var(--line);display:inline-block}
+.disclaimer{margin:0;font-size:13.5px;color:var(--ink);background:color-mix(in srgb,var(--warn) 12%,var(--panel));border:1px solid color-mix(in srgb,var(--warn) 45%,var(--line));border-radius:6px;padding:9px 14px;max-width:100%}
+.disclaimer b{color:var(--warn)}
+.disclaimer .enote{display:inline-block;margin-top:5px;font-variant-numeric:tabular-nums}
+.disclaimer .enote b{color:var(--ink)}
+.foot{font-size:12.5px;color:var(--muted);max-width:90ch;margin:0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Beamtime Wizard</h1>
+      <p class="sub">Pick what you know about your sample and what you need to measure. Options that no method can deliver with your other choices grey out. Tap a greyed option to see why.</p>
+    </div>
+    <button class="reset" id="reset" type="button">Clear all</button>
+  </header>
+  <p class="disclaimer"><b>Planning aid only.</b> This widget does not calculate absorption or attenuation and does not select beam energy. Check transmission through your sample and choose the energy with your beamline scientist.<br><span class="enote"><b>Nominal energy ranges:</b> 3A: 18–88 keV (multilayer and double-crystal monochromators) · 1A3: 55–90 keV monochromatic, 50–200 keV white beam (continuous spectrum).</span></p>
+
+  <div class="tracks" role="group" aria-label="Measurement track">
+    <button type="button" id="tr-diff" style="--th:var(--tech)">Diffraction<small>orientation · strain · phase</small></button>
+    <button type="button" id="tr-img" style="--th:var(--imag)">Imaging<small>pores · cracks · phases</small></button>
+  </div>
+
+  <div class="verdict" aria-live="polite">
+    <div class="vcount" id="vcount"></div>
+    <div class="vchips" id="vchips"></div>
+    <div class="inspect" id="inspect">Hover or tap any option to see why it is available, flagged, or greyed out.</div>
+  </div>
+
+  <div class="board">
+    <div class="col c1">
+      <section class="panel" style="--hue:var(--sample)">
+        <h2>Sample space</h2>
+        <div class="grp" data-g="lattice"></div>
+        <div class="grp" data-g="dist"></div>
+        <div class="slider" data-s="d"></div>
+        <div class="slider" data-s="span"></div>
+        <div class="slider" data-s="d2"></div>
+        <div class="readout" id="distro"></div>
+        <div class="grp" data-g="geom"></div>
+        <div class="slider" data-s="t"></div>
+        <div class="readout" id="grains"></div>
+      </section>
+    </div>
+    <div class="col c2">
+      <section class="panel" id="beam-diff" style="--hue:var(--exp)">
+        <h2>Beam source</h2>
+        <div class="grp" data-g="beam"></div>
+        <div class="readout">Monochromatic: far-field HEDM, near-field HEDM and angular dispersive (ADXRD).<br>White beam: energy dispersive (EDXRD).</div>
+      </section>
+      <section class="panel" id="exp-diff" style="--hue:var(--exp)">
+        <h2>Diffraction experiment</h2>
+        <div class="grp" data-g="orient"></div>
+        <div class="grp" data-g="strain"></div>
+        <div class="grp" data-g="stress"></div>
+        <div class="grp" data-g="map"></div>
+        <div class="glabel">Beam size</div>
+        <div class="slider" data-s="bw"></div>
+        <div class="slider" data-s="bh"></div>
+        <div class="readout" id="dvol"></div>
+      </section>
+      <section class="panel" id="exp-img" style="--hue:var(--exp)">
+        <h2>Imaging experiment</h2>
+        <div class="grp" data-g="target"></div>
+        <div class="grp" data-g="dim"></div>
+        <div class="slider" data-s="f"></div>
+        <div class="readout" id="optics"></div>
+      </section>
+      <section class="panel" style="--hue:var(--time)">
+        <h2>Timescales</h2>
+        <div class="grp" data-g="mode"></div>
+        <div class="slider" data-s="tau"></div>
+      </section>
+    </div>
+    <div class="col c3">
+      <section class="panel" id="methods">
+        <h2 id="mtitle"></h2>
+        <div class="tcards" id="tcards"></div>
+      </section>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><i class="sw" style="background:color-mix(in srgb,var(--exp) 16%,var(--panel));border-color:var(--exp)"></i>Selected</span>
+    <span><i class="sw" style="background:var(--chip)"></i>Compatible</span>
+    <span><i class="tri">!</i>Works, with a caution</span>
+    <span><i class="sw" style="border-style:dashed;border-color:var(--block);opacity:.6"></i><s>✕ Ruled out</s></span>
+    <span><i class="sw" style="box-shadow:0 0 0 3px color-mix(in srgb,var(--exp) 55%,transparent)"></i>Brief flash: just changed</span>
+    <span><i class="sw" style="border-color:var(--bad)"></i>Selected but now in conflict</span>
+    <span><i class="sw" style="background:linear-gradient(90deg,var(--ok),var(--warn),var(--block))"></i>Slider track: green works, amber caution, grey ruled out</span>
+  </div>
+  <p class="foot" id="foot"></p>
+</div>
+
+<script>
+const LV={ok:0,caution:1,blocked:2};
+const TECHS=[
+  {id:'ff',name:'Far-field HEDM',desc:'Area detector about 0.5–1.5 m downstream. Diffraction spots from each grain are indexed while the sample rotates, giving centroid, average orientation and the full elastic strain tensor for hundreds to a few thousand grains.'},
+  {id:'nf',name:'Near-field HEDM',desc:'High-resolution detector a few mm behind the sample. Reconstructs a spatially resolved orientation map (µm-scale voxels), resolving grain shapes and orientation gradients inside grains. It does not measure elastic strain.'},
+  {id:'powder',name:'Angular dispersive (ADXRD)',desc:'Also known as powder diffraction. Many grains in the beam form continuous Debye–Scherrer rings on the area detector. Gives phase fractions, lattice strain at every azimuth and texture, averaged over the illuminated volume. Can run at high frame rates.'},
+  {id:'edd',name:'Energy dispersive (EDXRD)',desc:'White beam and energy-resolving detectors at a fixed angle define a small gauge volume deep inside thick samples. The 23-element detector measures the full strain tensor (and stress) point by point; maps come from scanning the sample. Well suited to plates and dense parts.'}
+];
+const IMETHODS=[
+  {id:'absr',name:'Absorption radiography',desc:'2D projection images from differences in X-ray absorption (density and atomic number). With fast cameras, frames reach µs timescales; good for watching pores, cracks or melt pools evolve.'},
+  {id:'abst',name:'Absorption tomography',desc:'Hundreds to thousands of projections over 180° reconstruct a 3D volume. Shows pores, cracks and phases that differ in density or atomic number.'},
+  {id:'phr',name:'Phase-contrast radiography',desc:'Free-space propagation between sample and camera turns refraction at interfaces into bright and dark fringes, sharpening tight cracks and weak-contrast interfaces in 2D.'},
+  {id:'pht',name:'Phase-contrast tomography',desc:'3D reconstruction with edge enhancement. Best for features with little absorption difference, at some cost to quantitative density values.'}
+];
+const TRACKS={
+  diff:{methods:TECHS,key:'tech',noun:'diffraction techniques',title:'Diffraction technique',hue:'var(--tech)',check:(id,s)=>techCheck(id,s),
+    foot:'Thresholds are rough starting points for planning, not beamline specs. Grain counts use your beam size through the full sample thickness. Bars and dense parts are treated as about as wide as they are thick; a plate takes the full beam width. The EDXRD gauge length assumes 2θ ≈ 6°. Rules assume a box beam at high energy. Confirm final settings with your beamline scientist.'},
+  img:{methods:IMETHODS,key:'imeth',noun:'imaging methods',title:'Imaging method',hue:'var(--imag)',check:(id,s)=>imCheck(id,s),
+    foot:'Thresholds are rough starting points for planning, not beamline specs. Optics assume a 2048-pixel camera with the pixel size set to resolve the smallest feature across ~2.5 pixels, and a sample about as wide as it is thick. Confirm final settings with your beamline scientist.'}
+};
+const ALLM=[...TECHS,...IMETHODS];const NAME=Object.fromEntries(ALLM.map(t=>[t.id,t.name]));
+const GROUPS={
+  beam:{track:'diff',label:'',opts:[['mono','Monochromatic'],['white','White beam (polychromatic)']]},
+  lattice:{track:'diff',label:'Crystal lattice',opts:[['single','Single phase'],['multi','Multiphase']]},
+  dist:{track:'diff',label:'Grain size distribution',opts:[['equiaxed','Unimodal / equiaxed'],['gradient','Size gradient'],['bimodal','Bimodal']]},
+  geom:{label:'Sample geometry',opts:[['square','Square cross section'],['round','Round bar cross section'],['plate','Plate'],['dense','Dense part']]},
+  orient:{track:'diff',label:'Orientation',opts:[['none','Not priority'],['grain','Grain scale'],['subgrain','Subgrain scale']]},
+  strain:{track:'diff',label:'Elastic strain',opts:[['none','Not priority'],['single','Single component'],['tensor','Full strain tensor']]},
+  stress:{track:'diff',label:'',opts:[['yes','I need stress, not just strain']]},
+  map:{track:'diff',label:'Spatial map',opts:[['none','Not priority'],['2d','2D map'],['3d','3D map']]},
+  target:{track:'img',label:'What do you need to see?',opts:[['density','Phases of different density'],['pores','Pores, cracks, voids'],['interfaces','Interfaces']]},
+  dim:{track:'img',label:'Dimensionality',opts:[['2d','2D projection'],['3d','3D volume']]},
+  mode:{label:'Measurement',opts:[['insitu','In situ'],['exsitu','Ex situ']]}
+};
+const SLIDERS={
+  d:{track:'diff',label:'Grain / feature size',labelFn:s=>s.dist==='gradient'?'Grain size (middle of gradient)':s.dist==='bimodal'?'Coarse population mean':'Grain / feature size',min:1,max:1000,fmt:um},
+  span:{track:'diff',when:s=>s.dist==='gradient',label:'Gradient spans',min:0.5,max:3,lin:true,fmt:v=>v.toFixed(1)+' orders of magnitude (×'+Math.round(10**v)+')'},
+  d2:{track:'diff',when:s=>s.dist==='bimodal',label:'Fine population mean',min:1,max:1000,fmt:um},
+  t:{label:'Sample thickness',min:10,max:25000,fmt:um},
+  bw:{track:'diff',label:'Horizontal width',min:5,max:2000,fmt:um},
+  bh:{track:'diff',label:'Vertical height',min:1,max:2000,fmt:um},
+  f:{track:'img',label:'Smallest feature to resolve',min:1,max:1000,fmt:um},
+  tau:{label:'Time per measured state (in situ)',min:1e-9,max:86400,fmt:sec}
+};
+const EXAMPLE={track:'diff',beam:null,lattice:null,dist:null,geom:null,orient:null,strain:null,stress:false,map:null,target:null,dim:null,mode:null,tech:null,imeth:null,d:50,t:1000,tau:600,f:5,bw:1000,bh:625,span:1,d2:25};
+let S={...EXAMPLE};
+
+function um(v){return v>=1000?(v/1000).toPrecision(v>=10000?3:2).replace(/\.0+$/,'')+' mm':(v<10?v.toFixed(1):Math.round(v))+' µm'}
+function sec(v){
+  const u=[[86400,'day'],[3600,'h'],[60,'min'],[1,'s'],[1e-3,'ms'],[1e-6,'µs'],[1e-9,'ns']];
+  for(const [k,n] of u){if(v>=k*.999){const x=v/k;return (x<10?x.toFixed(1).replace(/\.0$/,''):Math.round(x))+' '+n}}
+  return v+' s';
+}
+function sci(n){if(n<1000)return n<10?n.toFixed(1):Math.round(n).toString();const e=Math.floor(Math.log10(n));return (n/10**e).toFixed(1)+'×10'+String(e).split('').map(c=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[c]).join('')}
+const toPos=(k,v)=>{const s=SLIDERS[k];return s.lin?Math.round(1000*(v-s.min)/(s.max-s.min)):Math.round(1000*Math.log(v/s.min)/Math.log(s.max/s.min))};
+const fromPos=(k,p)=>{const s=SLIDERS[k];return s.lin?s.min+(s.max-s.min)*p/1000:s.min*Math.pow(s.max/s.min,p/1000)};
+
+/* grain size distribution: smallest and largest representative sizes */
+function sizes(s){
+  if(s.dist==='gradient'){const h=10**(s.span/2);return {lo:s.d/h,hi:s.d*h}}
+  if(s.dist==='bimodal')return {lo:Math.min(s.d,s.d2),hi:Math.max(s.d,s.d2)};
+  return {lo:s.d,hi:s.d};
+}
+const isUni=s=>s.dist!=='gradient'&&s.dist!=='bimodal';
+const popWord=s=>s.dist==='gradient'?'end of the gradient':'population';
+// mean of 1/d³: gradient = log-uniform between lo and hi; bimodal = 50/50 by volume
+function invD3(s){const z=sizes(s);
+  if(s.dist==='gradient')return (z.lo**-3-z.hi**-3)/(3*Math.log(z.hi/z.lo));
+  if(s.dist==='bimodal')return 0.5/z.lo**3+0.5/z.hi**3;
+  return 1/s.d**3}
+function coarseCount(s,V){const z=sizes(s);
+  if(s.dist==='gradient')return V*(s.d**-3-z.hi**-3)/(3*Math.log(z.hi/z.lo));
+  if(s.dist==='bimodal')return V*0.5/z.hi**3;
+  return V/s.d**3}
+
+// Bars and dense parts are about as wide as they are thick, so the lit width is capped at the thickness; a plate is wide, so the whole beam width hits it
+const litW=s=>s.geom==='plate'?s.bw:Math.min(s.bw,s.t);
+const diffVol=s=>litW(s)*s.bh*s.t;                       // µm³, transmission through full thickness
+const grainsInBeam=s=>diffVol(s)*invD3(s);
+const EDD_2TH=6*Math.PI/180;                               // typical EDXRD scattering angle
+const gaugeLen=s=>Math.min(s.t,litW(s)/Math.sin(EDD_2TH));  // µm along the beam
+const gaugeVol=s=>litW(s)*s.bh*gaugeLen(s);
+const grainsInGauge=s=>gaugeVol(s)*invD3(s);
+function vol(v){const mm=v/1e9;return mm>=1e-3?sci2(mm)+' mm³':sci2(v)+' µm³'}
+function sci2(n){return n>=0.01&&n<1e4?(+n.toPrecision(2)).toString():sci(n)}
+const pixel=s=>s.f/2.5;            // µm
+const fov=s=>2048*pixel(s);        // µm
+function finish(r){let lvl='ok';for(const [l] of r)if(LV[l]>LV[lvl])lvl=l;r.sort((a,b)=>LV[b[0]]-LV[a[0]]);return {level:lvl,reasons:r}}
+
+/* ---- diffraction rules ---- */
+function techCheck(id,s){
+  const r=[];const add=(l,m)=>r.push([l,m]);
+  const N=grainsInBeam(s), insitu=s.mode==='insitu', tau=s.tau;
+  const tensor=s.strain==='tensor'||s.stress;
+  const z=sizes(s),uni=isUni(s);
+  if(s.beam==='white'&&id!=='edd')add('blocked','Needs a monochromatic beam; white beam is selected.');
+  if(s.beam==='mono'&&id==='edd')add('blocked','Needs the white beam; monochromatic is selected.');
+  if(id==='ff'){
+    if(z.hi<5)add('blocked','Grains under ~5 µm: spots merge into rings and cannot be indexed.');
+    else if(z.lo<5)add('caution',`The fine ${popWord(s)} (~${um(z.lo)}) will merge into rings under the spots of the larger grains.`);
+    else if(z.lo<15)add('caution',uni?'Small grains (<15 µm): weak, crowded spots.':`The fine ${popWord(s)} (~${um(z.lo)}) gives weak, crowded spots.`);
+    if(N>30000)add('blocked',`~${sci(N)} grains in the beam: far too much spot overlap (aim for < ~5,000).`);
+    else if(N>5000)add('caution',`~${sci(N)} grains in the beam: heavy spot overlap. Use a shorter beam or thinner sample.`);
+    if(s.orient==='subgrain')add('blocked','Far-field gives grain-averaged orientation, not maps inside grains.');
+    if(insitu&&tau<60)add('blocked','Each state needs a full rotation scan (minutes).');
+    else if(insitu&&tau<300)add('caution','Rotation scan barely fits in this time per state.');
+    if(s.lattice==='multi')add('caution','Minor phases with few grains are hard to index. Check phase fractions.');
+    if(s.geom==='plate')add('caution','A plate’s path length changes strongly as it rotates, so only a limited rotation range is usable.');
+    if(s.geom==='dense')add('caution','Dense part: check clearance for a full rotation.');
+  }
+  if(id==='nf'){
+    if((s.strain&&s.strain!=='none')||s.stress)add('blocked','Near-field HEDM does not measure elastic strain.');
+    if(z.hi<10)add('blocked','Grains under ~10 µm are close to the near-field resolution.');
+    else if(z.lo<10)add('caution',`The fine ${popWord(s)} (~${um(z.lo)}) is below near-field resolution and will be missed.`);
+    else if(z.lo<30)add('caution',uni?'Grains under ~30 µm: only a few voxels per grain.':`The fine ${popWord(s)} (~${um(z.lo)}) gets only a few voxels per grain.`);
+    if(N>20000)add('blocked',`~${sci(N)} grains in the beam: too many to reconstruct.`);
+    if(insitu&&tau<900)add('blocked','A near-field volume takes tens of minutes to hours per state.');
+    else if(insitu&&tau<3600)add('caution','Allow ~1 h or more per state for a near-field volume.');
+    if(insitu)add('caution','Detector sits ~6 mm from the sample. Check that your in-situ rig leaves that clearance.');
+    if(s.geom==='plate')add('caution','A plate’s path length changes strongly as it rotates, so only a limited rotation range is usable.');
+    if(s.geom==='dense')add('caution','Dense part: check that the part can rotate with the detector a few mm away.');
+  }
+  if(id==='powder'){
+    if(s.orient==='grain'||s.orient==='subgrain')add('blocked','Powder averages over many grains; no per-grain information.');
+    if(N<500)add('blocked',`Only ~${sci(N)} grains in the beam: rings will be spotty, not continuous.`);
+    else if(N<5000)add('caution',`~${sci(N)} grains in the beam: rings may be spotty. Rocking the sample helps.`);
+    else if(!uni){const Nc=coarseCount(s,diffVol(s));if(Nc<5000)add('caution',`Only ~${sci(Nc)} grains from the coarse ${popWord(s)} (~${um(z.hi)}): expect spots on top of the rings.`)}
+    if(tensor)add('caution','One exposure gives in-plane strain components. Out-of-plane terms need sample tilts or rotation.');
+    if(s.map==='3d')add('caution','Transmission averages through thickness. 3D needs tomographic reconstruction or a conical slit.');
+    if(insitu&&tau<1e-6)add('blocked','Sub-µs frames need single-bunch, pink-beam setups beyond a standard mono configuration.');
+    else if(insitu&&tau<1e-3)add('caution','Sub-ms frames: needs the fastest detector and enough flux. Check with staff.');
+    if(s.geom==='dense')add('caution','Dense part: transmission averages over a long path. Consider EDXRD for a local gauge volume.');
+    if(insitu&&s.map!=='none'&&tau<60)add('caution','Rastering a map takes longer than a single exposure.');
+  }
+  if(id==='edd'){
+    if(s.orient==='grain'||s.orient==='subgrain')add('blocked','EDXRD averages over the gauge volume; no per-grain orientation.');
+    const G=grainsInGauge(s);
+    if(G<200)add('caution',`Only ~${sci(G)} grains in the gauge volume: poor grain statistics. Oscillate the sample or enlarge the gauge volume.`);
+    else if(G<2000)add('caution',`~${sci(G)} grains in the gauge volume: borderline statistics.`);
+    if(insitu&&tau<1)add('blocked','Each point needs seconds to minutes of counting.');
+    else if(insitu&&tau<30)add('caution','Very short counting per point. Expect noisy peaks.');
+    if(insitu&&s.map!=='none'&&tau<3600)add('caution','A map is many points. Allow hours per state.');
+  }
+  return finish(r);
+}
+
+/* ---- imaging rules ---- */
+function imCheck(id,s){
+  const r=[];const add=(l,m)=>r.push([l,m]);
+  const tomo=id==='abst'||id==='pht', phase=id==='phr'||id==='pht';
+  const insitu=s.mode==='insitu', tau=s.tau, F=fov(s);
+  if(s.dim==='3d'&&!tomo)add('blocked','A radiograph projects through the whole thickness, so it cannot give a 3D volume.');
+  if(s.dim==='2d'&&tomo)add('caution','Tomography also works but is far slower than a single projection.');
+  if(s.target==='density'&&phase)add('caution','Edge fringes can mask small density differences. Absorption contrast is more quantitative.');
+  if(s.target==='pores'&&!phase&&s.f<10)add('caution','Tight cracks under ~10 µm show up better with phase contrast.');
+  if(s.target==='interfaces'&&!phase)add('caution','Interfaces between materials of similar density give little absorption contrast. Phase contrast highlights them.');
+  if(F<s.t/5&&tomo)add('blocked',`Field of view (~${um(F)}) is far smaller than the sample (${um(s.t)}). Local tomography this far off-centre will not reconstruct cleanly.`);
+  else if(F<s.t)add('caution',`Field of view (~${um(F)}) is smaller than the sample (${um(s.t)}): ${tomo?'interior (local) tomography only':'you image a window, not the whole width'}.`);
+  if(s.f<2)add('blocked','Below the ~2 µm resolution limit of the imaging optics (~0.65–1 µm pixels).');
+  else if(s.f<4)add('caution','Only a few pixels across the feature.');
+  if(tomo&&s.geom==='plate')add('caution','A plate is wide in one direction, so the edge-on view has long paths and truncated projections. Consider laminography or cutting a bar.');
+  if(tomo&&s.geom==='dense')add('caution','A dense part is usually larger than the field of view. Expect local tomography of a region of interest.');
+  if(insitu){
+    if(tomo){
+      if(tau<0.1)add('blocked','A tomogram needs hundreds of projections; even the fastest scans take ~0.1–1 s.');
+      else if(tau<60)add('caution','Fast tomography: fewer projections and more noise. Check rotation-stage speed.');
+      add('caution','The rig must rotate with the sample. Check that a rotating load frame is available.');
+    }else{
+      if(tau<1e-7)add('blocked','Camera frames this short are not available.');
+      else if(tau<1e-5)add('caution','µs frames: needs a fast camera and full flux; only a few hundred frames per burst.');
+    }
+    if(s.f<5&&tau<1e-3)add('caution','Fine pixels collect less flux per frame; short exposures will be noisy.');
+  }
+  return finish(r);
+}
+
+function ownRule(s){
+  if(s.track==='diff'&&s.stress&&s.strain==='single')return 'Stress needs the full strain tensor plus the material’s stiffness tensor.';
+  return null;
+}
+function feasibility(s){
+  const T=TRACKS[s.track],own=ownRule(s);
+  const ids=s[T.key]?[s[T.key]]:T.methods.map(t=>t.id);
+  const res=ids.map(id=>[id,T.check(id,s)]);
+  if(own)return {level:'blocked',msg:own,res};
+  const best=Math.min(...res.map(([,r])=>LV[r.level]));
+  const level=Object.keys(LV)[best];
+  const one=!!s[T.key];
+  let msg;
+  if(level==='blocked'){
+    msg=(one?'Conflicts with '+NAME[s[T.key]]+': ':'Rules out every '+T.noun.replace(/s$/,'').replace(/ques$/,'que').replace(/ods$/,'od')+'. ')
+      +res.map(([id,r])=>(one?'':NAME[id]+': ')+r.reasons.find(x=>x[0]==='blocked')[1]).join(one?' ':' · ');
+  }else{
+    const fits=res.filter(([,r])=>LV[r.level]<2).map(([id])=>NAME[id]);
+    msg='Works with '+fits.join(', ')+'.';
+    if(level==='caution'){const c=res.find(([,r])=>r.level==='caution');msg+=' Caution ('+NAME[c[0]]+'): '+c[1].reasons.find(x=>x[0]==='caution')[1]}
+  }
+  return {level,msg,res};
+}
+function withOpt(g,v){const s={...S};if(g==='stress')s.stress=true;else s[g]=v;return s}
+function optStatus(g,v){const s=withOpt(g,v);const own=ownRule(s);if(own)return {level:'blocked',msg:own};const st=feasibility(s);
+  // only show a caution the option itself adds: if the same caution is already there without it, the option is fine
+  if(st.level==='caution'){const b0={...S};if(g==='stress')b0.stress=false;else b0[g]=null;
+    if(!ownRule(b0)&&feasibility(b0).level!=='ok')return {...st,level:'ok'}}
+  return st}
+
+/* ---- rendering ---- */
+const $=q=>document.querySelector(q);
+const inspect=$('#inspect');
+function say(label,st){
+  const word={ok:'Available',caution:'Available with a caution',blocked:'Greyed out'}[st.level];
+  inspect.innerHTML=`<b>${label}</b> · ${word}. ${st.msg||''}`;
+}
+function isSel(g,v){return g==='stress'?S.stress:S[g]===v}
+function buildGroups(){
+  document.querySelectorAll('[data-g]').forEach(el=>{
+    const g=el.dataset.g,G=GROUPS[g];
+    el.innerHTML=(G.label?`<div class="glabel">${G.label}</div>`:'')+'<div class="opts"></div>';
+    const box=el.querySelector('.opts');
+    G.opts.forEach(([v,lab])=>{
+      const b=document.createElement('button');b.type='button';b.className='opt';b.id=`o-${g}-${v}`;
+      b.innerHTML=`<i class="tri" aria-hidden="true">!</i><i class="x" aria-hidden="true">✕</i><span class="lab">${lab}</span>`;
+      b.addEventListener('click',()=>{
+        const st=optStatus(g,v),sel=isSel(g,v);
+        if(!sel&&st.level==='blocked'){say(lab,st);return}
+        if(g==='stress')S.stress=!S.stress;else S[g]=sel?null:v;
+        render();say(lab,optStatus(g,v));
+      });
+      const hov=()=>say(lab,optStatus(g,v));
+      b.addEventListener('mouseenter',hov);b.addEventListener('focus',hov);
+      box.appendChild(b);
+    });
+  });
+}
+function buildSliders(){
+  document.querySelectorAll('[data-s]').forEach(el=>{
+    const k=el.dataset.s,c=SLIDERS[k];
+    el.innerHTML=`<div class="glabel"><span id="l-${k}">${c.label}</span><span class="sval" id="v-${k}"></span></div>
+      <input type="range" id="s-${k}" min="0" max="1000" step="1" aria-label="${c.label}">
+      <div class="ends"><span>${c.fmt(c.min)}</span><span>${c.fmt(c.max)}</span></div>`;
+    const inp=el.querySelector('input');
+    inp.addEventListener('input',()=>{S[k]=fromPos(k,+inp.value);render();say((c.labelFn?c.labelFn(S):c.label)+' = '+c.fmt(S[k]),feasibility(S))});
+  });
+}
+function track(k){
+  const cols={ok:'var(--ok)',caution:'var(--warn)',blocked:'var(--block)'};
+  const n=60,stops=[];
+  for(let i=0;i<=n;i++){const s={...S};s[k]=fromPos(k,i*1000/n);stops.push(`${cols[feasibility(s).level]} ${(i/n*100).toFixed(1)}%`)}
+  return `linear-gradient(90deg,${stops.join(',')})`;
+}
+function render(){
+  const T=TRACKS[S.track];
+  $('#tr-diff').setAttribute('aria-pressed',S.track==='diff');
+  $('#tr-img').setAttribute('aria-pressed',S.track==='img');
+  $('#exp-diff').hidden=S.track!=='diff';
+  $('#beam-diff').hidden=S.track!=='diff';
+  $('#exp-img').hidden=S.track!=='img';
+  $('#methods').style.setProperty('--hue',T.hue);
+  $('#mtitle').textContent=T.title;
+  $('#foot').textContent=T.foot;
+
+  const canFlash=PREV.track===S.track;PREV.track=S.track;
+  for(const g in GROUPS){const off=!!(GROUPS[g].track&&GROUPS[g].track!==S.track);document.querySelector(`[data-g="${g}"]`).hidden=off;if(off)continue;
+    for(const [v] of GROUPS[g].opts){
+      const b=document.getElementById(`o-${g}-${v}`),st=optStatus(g,v),sel=isSel(g,v);
+      const key=`o-${g}-${v}`;if(canFlash&&PREV[key]&&PREV[key]!==st.level)flash(b);PREV[key]=st.level;
+      b.setAttribute('aria-pressed',sel);
+      b.classList.toggle('blocked',st.level==='blocked'&&!sel);
+      b.classList.toggle('conflict',st.level==='blocked'&&sel);
+      b.classList.toggle('caution',st.level==='caution');
+      b.setAttribute('aria-disabled',st.level==='blocked'&&!sel);
+      b.title=st.msg||'';
+    }}
+  for(const k in SLIDERS){const c=SLIDERS[k];
+    const vis=(!c.track||c.track===S.track)&&(!c.when||c.when(S));
+    document.querySelector(`[data-s="${k}"]`).hidden=!vis;if(!vis)continue;
+    if(c.labelFn)document.getElementById(`l-${k}`).textContent=c.labelFn(S);
+    const inp=document.getElementById(`s-${k}`);
+    inp.value=toPos(k,S[k]);
+    document.getElementById(`v-${k}`).textContent=SLIDERS[k].fmt(S[k]);
+    inp.disabled=(k==='tau'&&S.mode!=='insitu');
+    inp.style.background=inp.disabled?'var(--line)':track(k);
+  }
+  const z=sizes(S);
+  $('#distro').hidden=isUni(S)||S.track!=='diff';
+  $('#grains').hidden=S.track!=='diff';
+  $('#distro').innerHTML=S.dist==='gradient'
+    ?`Gradient runs from ≈ <b>${um(z.lo)}</b> to <b>${um(z.hi)}</b>`
+    :`Fine ≈ <b>${um(z.lo)}</b> · coarse ≈ <b>${um(z.hi)}</b> · counts assume 50/50 by volume`;
+  $('#grains').innerHTML=isUni(S)?`<b>${sci(S.t/S.d)}</b> grains through thickness`:`<b>${sci(S.t/z.hi)}–${sci(S.t/z.lo)}</b> grains through thickness`;
+  $('#dvol').innerHTML=`Diffracting volume ≈ <b>${um(litW(S))} × ${um(S.bh)} × ${um(S.t)}</b> = <b>${vol(diffVol(S))}</b> · ≈ <b>${sci(grainsInBeam(S))}</b> grains`
+    +`<br>EDXRD gauge (2θ ≈ 6°) ≈ <b>${um(litW(S))} × ${um(S.bh)} × ${um(gaugeLen(S))}</b> = <b>${vol(gaugeVol(S))}</b> · ≈ <b>${sci(grainsInGauge(S))}</b> grains`;
+  $('#optics').innerHTML=`Pixel ≈ <b>${um(pixel(S))}</b> · field of view ≈ <b>${um(fov(S))}</b> on a 2048-px camera · sample <b>${um(S.t)}</b>`;
+
+  const box=$('#tcards');box.innerHTML='';
+  const base={...S};base[T.key]=null;
+  const own=ownRule(base);const fits=[];
+  T.methods.forEach(t=>{
+    const r=T.check(t.id,base);
+    const lvl=own?'blocked':r.level;
+    if(lvl!=='blocked')fits.push([t.id,lvl]);
+    const sel=S[T.key]===t.id;
+    const reasons=(own?[['blocked',own]]:[]).concat(r.reasons);
+    const st={level:lvl,msg:reasons.map(x=>x[1]).join(' ')||'Fits every choice so far.'};
+    const card=document.createElement('div');
+    card.className='tcard'+(sel?' sel':'')+(lvl==='blocked'?' blocked':'');
+    card.style.setProperty('--hue',T.hue);
+    const ck='m-'+t.id;if(canFlash&&PREV[ck]&&PREV[ck]!==lvl)card.classList.add('flash');PREV[ck]=lvl;
+    const word={ok:'Compatible',caution:'<i class="tri" aria-hidden="true">!</i> Caution',blocked:'✕ Ruled out'}[lvl];
+    const items=reasons.slice(0,4).map(([l,m])=>`<li class="${l==='blocked'?'b':l==='caution'?'c':''}">${m}</li>`).join('');
+    card.innerHTML=`<button type="button" aria-pressed="${sel}" aria-disabled="${lvl==='blocked'&&!sel}"><span class="tname">${t.name}</span><span class="pill ${lvl}">${sel?'Selected · ':''}${word}</span></button><ul>${items}</ul><details><summary>What it measures</summary><p>${t.desc}</p></details>`;
+    const btn=card.querySelector('button');
+    btn.addEventListener('click',()=>{if(lvl==='blocked'&&!sel){say(t.name,st);return}S[T.key]=sel?null:t.id;render();say(t.name,st)});
+    btn.addEventListener('mouseenter',()=>say(t.name,st));
+    box.appendChild(card);
+  });
+  $('#vcount').textContent=`${fits.length} of ${T.methods.length} ${T.noun} fit`;
+  $('#vchips').innerHTML=T.methods.map(t=>{const f=fits.find(x=>x[0]===t.id);const c=f?(f[1]==='ok'?'var(--ok)':'var(--warn)'):'var(--block)';
+    return `<span class="vchip" style="${f?'':'color:var(--off-ink);border-style:dashed'}"><i style="background:${c}"></i>${t.name}</span>`}).join('');
+}
+const PREV={};
+function flash(el){el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash')}
+function setTrack(t){S.track=t;render();inspect.textContent=t==='diff'
+  ?'Diffraction track: orientation, strain and phase from scattering. Sample and timescale choices carry over.'
+  :'Imaging track: pores, cracks, phases and shape from absorption or phase contrast. Sample and timescale choices carry over.'}
+$('#tr-diff').addEventListener('click',()=>setTrack('diff'));
+$('#tr-img').addEventListener('click',()=>setTrack('img'));
+$('#reset').addEventListener('click',()=>{const t=S.track;S={...EXAMPLE,track:t};render();inspect.textContent='Cleared every selection and reset the sliders. Start from any panel, including the technique cards.'});
+buildGroups();buildSliders();render();
+</script>
+</body>
+</html>
